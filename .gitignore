@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.env
+.env.local
+
+# Blender source files
+*.blend
+*.blend1
+K-VRC model/
+
+# Dev-only files
+server.js
+KVRC_CLAUDE_CODE_PROMPT.md
+
+# Claude Code
+.claude/
