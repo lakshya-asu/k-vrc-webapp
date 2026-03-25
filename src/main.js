@@ -23,8 +23,8 @@ renderer.toneMappingExposure = 0.8;
 const scene = new THREE.Scene();
 
 // ── Camera ────────────────────────────────────────────────────
-const CAM_BASE = { y: 2.25, z: 4.4 };
-const CAM_LOOK = { y: -0.65, z: -1.8 };
+const CAM_BASE = { y: 1.9, z: 4.4 };
+const CAM_LOOK = { y: -0.9, z: -1.8 };
 const CAM_MIN_Z = 3.2;   // closest
 const CAM_MAX_Z = 6.5;   // furthest
 const CAM_MIN_Y = 1.4;
@@ -36,8 +36,10 @@ let camY = CAM_BASE.y;
 camera.position.set(0, camY, camZ);
 camera.lookAt(0, CAM_LOOK.y, CAM_LOOK.z);
 
-// Scroll: up = farther + higher, down = closer + lower
+// Scroll: only on the 3D canvas, not inside the chat log
 window.addEventListener('wheel', (e) => {
+  // Ignore if scrolling inside the chat overlay
+  if (e.target.closest('#chat-overlay')) return;
   const delta = e.deltaY * 0.004;
   camZ = THREE.MathUtils.clamp(camZ + delta, CAM_MIN_Z, CAM_MAX_Z);
   camY = THREE.MathUtils.clamp(camY + delta * 0.5, CAM_MIN_Y, CAM_MAX_Y);

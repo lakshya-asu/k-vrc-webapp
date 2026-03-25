@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { EMOTION_MAP } from './emotions.js';
 import { attachFaceScreen, updateFaceScreen, tickFaceScreen } from './faceScreen.js';
 import { AnimationController } from './animationController.js';
@@ -31,8 +32,12 @@ function rand(a, b) { return a + Math.random() * (b - a); }
 export async function initRobot(scene, emotionMap) {
   currentEmotionCfg = emotionMap.neutral;
 
+  const dracoLoader = new DRACOLoader();
+  dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
+  const loader = new GLTFLoader();
+  loader.setDRACOLoader(dracoLoader);
   const gltf = await new Promise((resolve, reject) =>
-    new GLTFLoader().load('/models/kvrc.glb', resolve, undefined, reject));
+    loader.load('/models/kvrc.glb', resolve, undefined, reject));
 
   robotRoot = gltf.scene;
   scene.add(robotRoot);

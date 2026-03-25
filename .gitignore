@@ -18,3 +18,11 @@ KVRC_CLAUDE_CODE_PROMPT.md
 .env*.local
 
 data/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Training clips (large video files)
+*.mp4

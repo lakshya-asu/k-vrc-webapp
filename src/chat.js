@@ -158,6 +158,12 @@ export function initChat(robot, refs) {
   document.getElementById('send-btn')?.addEventListener('click', () => sendMessage(input.value));
   input?.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) sendMessage(input.value); });
 
+  // Collapse toggle
+  const overlay = document.getElementById('chat-overlay');
+  document.getElementById('chat-header')?.addEventListener('click', () => {
+    overlay?.classList.toggle('collapsed');
+  });
+
   addBubble("K-VRC online. What do you want.", 'robot');
   applyEmotionFull('neutral');
 }
