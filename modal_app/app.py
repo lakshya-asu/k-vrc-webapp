@@ -3,10 +3,11 @@ import modal
 # Persistent volume for model weights + data
 volume = modal.Volume.from_name("kvrc-data", create_if_missing=True)
 
-# Container image with all dependencies
+# Container image with all dependencies + local source package
 image = (
     modal.Image.debian_slim(python_version="3.11")
     .pip_install_from_requirements("requirements.txt")
+    .add_local_python_source("modal_app")
 )
 
 app = modal.App("kvrc-animation", image=image)
