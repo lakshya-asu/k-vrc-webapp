@@ -35,22 +35,37 @@ class MDMRefinementHead(nn.Module):
         self.n_frames = n_frames
         self.joint_dim = n_joints * 4  # quaternion xyzw
 
+        # Project context embedding to match d_model
         self.context_proj = nn.Linear(384, d_model)
+        # Project base rotations [n_joints*4] to d_model
+        self.pose_proj = nn.Linear(n_joints * 4, d_model)
+        # Combine context + pose features
+        self.combine = nn.Linear(d_model * 2, d_model)
+        # Temporal encoder over frame sequence
         encoder_layer = nn.TransformerEncoderLayer(d_model=d_model, nhead=4, batch_first=True)
         self.encoder = nn.TransformerEncoder(encoder_layer, num_layers=4)
+        # Output projection to delta quaternions
         self.out_proj = nn.Linear(d_model, self.joint_dim)
 
     def forward(self, context: torch.Tensor, base_rotations: torch.Tensor) -> torch.Tensor:
         """
         context: [B, 384]
-        base_rotations: [B, 60, 6, 4] quaternion xyzw
-        returns: delta quaternions [B, 60, 6, 4]
+        base_rotations: [B, T, n_joints, 4] quaternion xyzw
+        returns: delta quaternions [B, T, n_joints, 4]
         """
-        B = context.shape[0]
-        ctx = self.context_proj(context).unsqueeze(1).expand(-1, self.n_frames, -1)  # [B, 60, d]
-        out = self.encoder(ctx)  # [B, 60, d]
-        deltas = self.out_proj(out)  # [B, 60, 24]
-        return deltas.view(B, self.n_frames, self.n_joints, 4)
+        B, T = base_rotations.shape[0], base_rotations.shape[1]
+        # Project context, expand to all frames
+        ctx = self.context_proj(context).unsqueeze(1).expand(-1, T, -1)  # [B, T, d]
+        # Project base rotations at each frame
+        pose_flat = base_rotations.reshape(B, T, self.joint_dim)           # [B, T, n_joints*4]
+        pose = self.pose_proj(pose_flat)                                    # [B, T, d]
+        # Combine context and pose
+        combined = self.combine(torch.cat([ctx, pose], dim=-1))            # [B, T, d]
+        # Temporal self-attention
+        out = self.encoder(combined)                                        # [B, T, d]
+        # Project to delta quaternions
+        deltas = self.out_proj(out)                                        # [B, T, n_joints*4]
+        return deltas.view(B, T, self.n_joints, 4)
 
 
 class FaceExpressionHead(nn.Module):
