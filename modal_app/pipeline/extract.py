@@ -233,6 +233,8 @@ def load_video_frames(video_path: str) -> tuple[np.ndarray, float]:
             break
         frames.append(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
     cap.release()
+    if not frames:
+        raise ValueError(f"No frames could be read from {video_path}. Check the file path and format.")
     return np.stack(frames), fps
 
 

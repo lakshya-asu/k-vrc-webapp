@@ -22,9 +22,13 @@ def kp_dict_to_array(kp_dict: dict) -> np.ndarray:
     """Convert keypoint dict to [6, 2] float array in JOINT_ORDER."""
     arr = np.zeros((6, 2), dtype=np.float32)
     for i, joint in enumerate(JOINT_ORDER):
-        if joint in kp_dict:
-            arr[i, 0] = kp_dict[joint][0]
-            arr[i, 1] = kp_dict[joint][1]
+        try:
+            val = kp_dict.get(joint)
+            if val is not None and len(val) >= 2:
+                arr[i, 0] = float(val[0])
+                arr[i, 1] = float(val[1])
+        except (TypeError, ValueError, IndexError):
+            pass  # keep zeros for malformed joint data
     return arr
 
 
