@@ -69,14 +69,18 @@ def build_face_screen_dataset(raw_dir: str) -> dict:
                 for key, idx in EXPRESSION_KEY_TO_PARAM_IDX.items():
                     val = rec["expression_weights"].get(key)
                     if val is not None:
-                        face[idx] = float(np.clip(val, 0.0, 1.0))
+                        try:
+                            face[idx] = float(np.clip(float(val), 0.0, 1.0))
+                        except (TypeError, ValueError):
+                            pass  # keep the 0.5 default for this dimension
 
                 # Mood label
                 mood_str = rec.get("screen_mood", "")
                 mood_idx = MOOD_LABELS.index(mood_str) if mood_str in MOOD_LABELS else 0
 
                 # Energy
-                energy = float(np.clip(rec.get("motion_energy", 0.5), 0.0, 1.0))
+                energy_raw = rec.get("motion_energy")
+                energy = float(np.clip(energy_raw if energy_raw is not None else 0.5, 0.0, 1.0))
 
                 # Build context text from conversation window
                 context = rec.get("context_window", [])
