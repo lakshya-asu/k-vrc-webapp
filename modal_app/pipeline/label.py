@@ -6,20 +6,7 @@ import json
 import numpy as np
 from pathlib import Path
 
-MOOD_LABELS = ["cold", "warm", "glitch", "static", "data", "boot", "angry", "dream"]
-
-FACE_PARAM_NAMES = [
-    "brow_raise", "brow_furrow", "brow_asymmetry",
-    "eye_openness", "eye_squint", "glitch_flicker",
-    "mouth_curl_left", "mouth_curl_right", "mouth_open", "smile_width",
-    "scan_line_speed", "scan_line_opacity", "glitch_intensity", "glitch_color_shift",
-    "color_temperature", "color_saturation", "color_brightness",
-    "noise_scale", "noise_speed", "vignette",
-    "blink_rate", "pupil_dilation", "iris_glow_intensity",
-    "reserved_0", "reserved_1", "reserved_2", "reserved_3",
-    "reserved_4", "reserved_5", "reserved_6", "reserved_7", "reserved_8",
-]
-assert len(FACE_PARAM_NAMES) == 32
+from modal_app.heads import FACE_PARAM_NAMES, MOOD_LABELS
 
 # Map the 6 Claude-labeled expression keys to their indices in FACE_PARAM_NAMES
 EXPRESSION_KEY_TO_PARAM_IDX = {
