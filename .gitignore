@@ -14,3 +14,7 @@ KVRC_CLAUDE_CODE_PROMPT.md
 
 # Claude Code
 .claude/
+.vercel
+.env*.local
+
+data/

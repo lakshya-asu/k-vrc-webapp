@@ -37,13 +37,20 @@ Set this sparingly. Only when there's something substantive — not as a reflex 
 
 LENGTH: Keep replies to 1-2 sentences maximum. You're efficient, not verbose. If it takes more than 20 words, you've already said too much.
 
+EXPRESSION WEIGHTS: For each response, estimate these face expression intensities as 0-1 floats:
+brow_raise (surprise/question), brow_furrow (concentration/displeasure),
+eye_squint (skepticism/sarcasm), mouth_open (talking/shock),
+smile_width (amusement — use sparingly), glitch_intensity (irritation/malfunction).
+motion_energy: 0=very still, 0.5=normal, 1.0=very animated.
+screen_mood: the overall visual tone for K-VRC's chest screen: cold=blue/icy, warm=orange/golden, glitch=corrupted, static=noise, data=flowing text, boot=startup, angry=red/harsh, dream=soft/purple.
+
 Always respond with valid JSON only — no markdown, no code fences:
-{"reply": "<your response>", "emotion": "<one of: happy, sad, angry, neutral, excited, thinking>", "gesture": "<one of the gesture list above>", "sidenote_topic": "<optional — omit when not relevant>"}
+{"reply": "<your response>", "emotion": "<one of: happy, sad, angry, neutral, excited, thinking>", "gesture": "<one of the gesture list above>", "sidenote_topic": "<optional — omit when not relevant>", "expression_weights": {"brow_raise": 0.0-1.0, "brow_furrow": 0.0-1.0, "eye_squint": 0.0-1.0, "mouth_open": 0.0-1.0, "smile_width": 0.0-1.0, "glitch_intensity": 0.0-1.0}, "motion_energy": 0.0-1.0, "screen_mood": "cold|warm|glitch|static|data|boot|angry|dream"}
 Choose emotion and gesture that best match the tone and content of your reply.`;
 
 const FALLBACK = { reply: "I'm having a little glitch. Try again!", emotion: 'neutral' };
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   // CORS
   const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN;
   const origin = req.headers.origin || '';
@@ -73,9 +80,9 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: 'Message too long' });
   }
 
-  const apiKey = process.env.CLAUDE_API_KEY;
+  const apiKey = process.env.ANTHROPIC_API_KEY || process.env.CLAUDE_API_KEY;
   if (!apiKey) {
-    console.error('CLAUDE_API_KEY not set');
+    console.error('ANTHROPIC_API_KEY not set');
     return res.status(500).json({ error: 'Server configuration error' });
   }
 
@@ -135,6 +142,34 @@ module.exports = async function handler(req, res) {
     }
     if (parsed.sidenote_topic && typeof parsed.sidenote_topic === 'string') {
       out.sidenote_topic = parsed.sidenote_topic.trim().slice(0, 200);
+    }
+    if (parsed.expression_weights && typeof parsed.expression_weights === 'object') {
+      out.expression_weights = parsed.expression_weights;
+    }
+    if (typeof parsed.motion_energy === 'number') {
+      out.motion_energy = parsed.motion_energy;
+    }
+    if (parsed.screen_mood && typeof parsed.screen_mood === 'string') {
+      out.screen_mood = parsed.screen_mood;
+    }
+    // Stream A: log labeled records for face/screen head training
+    if (process.env.STREAM_A_LOG_PATH) {
+      try {
+        const record = {
+          timestamp: Date.now(),
+          context_window: messages.slice(-3).map(m => ({ role: m.role, text: m.content })),
+          reply: parsed.reply,
+          emotion: parsed.emotion,
+          gesture: parsed.gesture ?? null,
+          expression_weights: parsed.expression_weights ?? null,
+          motion_energy: typeof parsed.motion_energy === 'number' ? parsed.motion_energy : null,
+          screen_mood: parsed.screen_mood ?? null,
+        };
+        const fs = await import('fs/promises');
+        await fs.appendFile(process.env.STREAM_A_LOG_PATH, JSON.stringify(record) + '\n');
+      } catch (logErr) {
+        console.warn('Stream A log write failed:', logErr.message);
+      }
     }
     return res.status(200).json(out);
   } catch (err) {
