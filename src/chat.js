@@ -109,6 +109,7 @@ async function sendMessage(text) {
     emotion        = data.emotion ?? 'neutral';
     sidenote_topic = data.sidenote_topic ?? null;
     if (data.gesture) robotRef?.playGesture(data.gesture);
+    if (data.infer_result) robotRef?.applyInferResult(data.infer_result);
   } catch (err) {
     console.error(err);
     addBubble("K-VRC is offline. Try again?", 'robot');

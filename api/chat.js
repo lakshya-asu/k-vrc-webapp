@@ -152,6 +152,24 @@ export default async function handler(req, res) {
     if (parsed.screen_mood && typeof parsed.screen_mood === 'string') {
       out.screen_mood = parsed.screen_mood;
     }
+    // Modal inference: clip selection + motion deltas (non-blocking)
+    const MODAL_URL = process.env.MODAL_INFER_URL || 'https://lakshya-asu--kvrc-animation-serve.modal.run';
+    try {
+      const modalRes = await fetch(`${MODAL_URL}/infer`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: parsed.reply,
+          history: messages.slice(-3).map(m => ({ role: m.role, text: m.content })),
+        }),
+      });
+      if (modalRes.ok) {
+        out.infer_result = await modalRes.json();
+      }
+    } catch (modalErr) {
+      console.warn('Modal infer failed:', modalErr.message);
+    }
+
     // Stream A: log labeled records for face/screen head training
     if (process.env.STREAM_A_LOG_PATH) {
       try {

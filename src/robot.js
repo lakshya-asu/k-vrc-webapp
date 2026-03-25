@@ -150,6 +150,12 @@ export async function initRobot(scene, emotionMap) {
     triggerHeadJerk,
     playGesture: name => animCtrl.playGesture(name),
     get faceScreenMesh() { return faceScreenMesh; },
+    applyInferResult(result) {
+      if (!result) return;
+      if (result.clip_weights && Object.keys(result.clip_weights).length > 0) {
+        animCtrl.blendClips(result.clip_weights);
+      }
+    },
   };
 }
 
