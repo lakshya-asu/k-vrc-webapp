@@ -70,12 +70,14 @@ function updateEmotionUI(emotion) {
 function applyEmotionFull(emotion) {
   setEmotion(emotion);
   updateEmotionUI(emotion);
+  robotRef?.setEmotionName(emotion);
   if (sceneRefs) {
     const cfg = applyEmotion(emotion, sceneRefs);
     robotRef?.setEmotionCfg(cfg);
     robotRef?.startBodyMotion(cfg.bodyMotion);
   }
   if (emotion === 'angry') robotRef?.triggerHeadJerk();
+  if (emotion === 'thinking') robotRef?.setExpression('thinking_default');
 }
 
 // ── Send message ─────────────────────────────────────────────
@@ -95,7 +97,7 @@ async function sendMessage(text) {
   history = [...history, { role: 'user', text: trimmed }].slice(-20);
   applyEmotionFull('thinking');
 
-  let reply, emotion, sidenote_topic = null;
+  let reply, emotion, data = null, sidenote_topic = null;
   try {
     const res = await fetch('/api/chat', {
       method: 'POST',
@@ -104,7 +106,7 @@ async function sendMessage(text) {
     });
     if (res.status === 400) { addBubble('Message too long.', 'robot'); applyEmotionFull('neutral'); return; }
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
+    data = await res.json();
     reply          = data.reply;
     emotion        = data.emotion ?? 'neutral';
     sidenote_topic = data.sidenote_topic ?? null;
@@ -120,6 +122,7 @@ async function sendMessage(text) {
   history = [...history, { role: 'model', text: reply }].slice(-20);
   addBubble(reply, 'robot');
   applyEmotionFull(emotion);
+  robotRef?.setExpression(data.expression ?? 'neutral_idle');
   setTimeout(() => speak(reply), 300);
 
   if (sidenote_topic) fetchSidenote(sidenote_topic, trimmed);
