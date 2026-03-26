@@ -124,18 +124,33 @@ export async function initRobot(scene, emotionMap) {
     side: THREE.DoubleSide,
   });
 
-  // Log all mesh names to help identify the visor mesh
+  // ── Identify visor mesh BEFORE materials are overwritten ────
+  // (attachFaceScreen relies on original material names from Blender)
+  const VISOR_KEYS = ['visor','screen','face','display','screenface','glass','lens','monitor','window','panel'];
+  let preVisorMesh = null;
+  robotRoot.traverse(obj => {
+    if (preVisorMesh || !obj.isMesh) return;
+    const n = obj.name.toLowerCase();
+    const matName = (Array.isArray(obj.material) ? obj.material[0] : obj.material)?.name?.toLowerCase() ?? '';
+    if (VISOR_KEYS.some(k => n.includes(k) || matName.includes(k))) {
+      preVisorMesh = obj;
+      console.log('K-VRC: visor mesh identified:', obj.name, '/ mat:', matName || '(unnamed)');
+    }
+  });
+
+  // Log all meshes for debugging
   const allMeshNames = [];
   robotRoot.traverse(obj => {
     if (!obj.isMesh) return;
     const matName = (Array.isArray(obj.material) ? obj.material[0] : obj.material)?.name ?? 'unnamed';
-    allMeshNames.push(`${obj.name} (mat: ${matName})`);
+    allMeshNames.push(`"${obj.name}" mat:"${matName}"`);
   });
   console.log('K-VRC meshes:', allMeshNames);
 
   let colored = 0;
   robotRoot.traverse(obj => {
     if (!obj.isMesh) return;
+    if (obj === preVisorMesh) return;  // visor keeps its slot for the face screen
     const n = obj.name.toLowerCase();
     const isJoint = ['neck','hand','toe','foot','hips','pelvis','elbow','knee','ear'].some(k => n.includes(k));
     obj.material = isJoint ? jointMat : armorMat;
@@ -143,8 +158,8 @@ export async function initRobot(scene, emotionMap) {
   });
   console.log(`K-VRC: colored ${colored} mesh objects`);
 
-  // Attach face screen after coloring so it overwrites just the visor mesh
-  const faceScreenMesh = attachFaceScreen(robotRoot, scene, bones.head);
+  // Attach face screen — pass pre-identified visor so it doesn't need to search
+  const faceScreenMesh = attachFaceScreen(robotRoot, scene, bones.head, preVisorMesh);
   robotRoot.__faceScreenMesh = faceScreenMesh;
 
   window.addEventListener('mousemove', e => {

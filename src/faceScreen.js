@@ -636,7 +636,8 @@ export function setSpeakingAmplitude(amp) {
 }
 
 // ── Attach to mesh ────────────────────────────────────────────
-export function attachFaceScreen(robotScene, threeScene, faceBone) {
+// hintMesh: pre-identified visor mesh (identified before materials were overwritten)
+export function attachFaceScreen(robotScene, threeScene, faceBone, hintMesh = null) {
   const mat = new THREE.MeshStandardMaterial({
     map: faceTexture,
     emissiveMap: faceTexture,
@@ -649,45 +650,9 @@ export function attachFaceScreen(robotScene, threeScene, faceBone) {
   });
   faceMaterial = mat;
 
-  const KEYS = ['visor','screen','face','display','screenface','glass','lens','monitor','window','panel'];
-
-  const allMeshes = [];
-  let visorMesh = null;
-  robotScene.traverse(obj => {
-    if (!obj.isMesh) return;
-    allMeshes.push(obj);
-    if (visorMesh) return;
-    const n = obj.name.toLowerCase();
-    const matName = (Array.isArray(obj.material) ? obj.material[0] : obj.material)?.name?.toLowerCase() ?? '';
-    if (KEYS.some(k => n.includes(k) || matName.includes(k))) {
-      visorMesh = obj;
-    }
-  });
-
-  console.log('attachFaceScreen — all meshes:',
-    allMeshes.map(m => `"${m.name}" mat:"${(Array.isArray(m.material) ? m.material[0] : m.material)?.name ?? ''}"`));
-
-  // Second pass: proximity — smallest mesh near the head bone
-  if (!visorMesh && faceBone) {
-    const headPos = new THREE.Vector3();
-    faceBone.getWorldPosition(headPos);
-    let best = null, bestScore = Infinity;
-    allMeshes.forEach(m => {
-      const vc = m.geometry.attributes.position.count;
-      const wpos = new THREE.Vector3();
-      m.getWorldPosition(wpos);
-      const dist = wpos.distanceTo(headPos);
-      // Prefer meshes close to the head and with relatively few verts (flat panel)
-      if (dist < 0.5) {
-        const score = dist + vc * 0.0001;
-        if (score < bestScore) { bestScore = score; best = m; }
-      }
-    });
-    if (best) {
-      visorMesh = best;
-      console.log('Face screen: found by proximity', visorMesh.name);
-    }
-  }
+  // Use pre-identified mesh if supplied — avoids relying on material names
+  // that are wiped out by the armor material traverse
+  const visorMesh = hintMesh ?? null;
 
   if (visorMesh) {
     console.log('Face screen: applying to', visorMesh.name);
@@ -697,7 +662,7 @@ export function attachFaceScreen(robotScene, threeScene, faceBone) {
   }
 
   // Fallback floating plane (positioned in front of head bone each frame)
-  console.warn('Face screen: no mesh found — using fallback plane');
+  console.warn('Face screen: no visor mesh — using fallback plane');
   const plane = new THREE.Mesh(new THREE.PlaneGeometry(0.38, 0.30), mat);
   plane.renderOrder = 1;
   plane.__isFallback = true;
