@@ -144,10 +144,10 @@ export default async function handler(req, res) {
       out.sidenote_topic = parsed.sidenote_topic.trim().slice(0, 200);
     }
     out.expression = EXPRESSION_SLUGS.includes(parsed.expression) ? parsed.expression : 'neutral_idle';
-    // Modal inference: clip selection + motion deltas (non-blocking)
+    // Modal inference: clip selection + motion deltas — 1.5s timeout so cold starts don't block
     const MODAL_URL = process.env.MODAL_INFER_URL || 'https://lakshya-asu--kvrc-animation-serve.modal.run';
     try {
-      const modalRes = await fetch(`${MODAL_URL}/infer`, {
+      const modalFetch = fetch(`${MODAL_URL}/infer`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -155,11 +155,15 @@ export default async function handler(req, res) {
           history: messages.slice(-3).map(m => ({ role: m.role, text: m.content })),
         }),
       });
+      const modalTimeout = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('timeout')), 1500)
+      );
+      const modalRes = await Promise.race([modalFetch, modalTimeout]);
       if (modalRes.ok) {
         out.infer_result = await modalRes.json();
       }
     } catch (modalErr) {
-      console.warn('Modal infer failed:', modalErr.message);
+      console.warn('Modal infer skipped:', modalErr.message);
     }
 
     // Stream A: log labeled records for face/screen head training

@@ -4,5 +4,8 @@
   "framework": null,
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" }
-  ]
+  ],
+  "functions": {
+    "api/tts.js": { "maxDuration": 60 }
+  }
 }
