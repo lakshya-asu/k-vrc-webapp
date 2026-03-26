@@ -3,8 +3,9 @@ const HINTS = [
   { label: 'Try saying',  text: '"what are you thinking about?"' },
   { label: 'Fun fact',    text: '100 face states — every reply changes the expression' },
   { label: 'Try saying',  text: '"tell me something surprising"' },
-  { label: 'Fun fact',    text: 'Voice trained on real audio — mouth syncs live to amplitude' },
-  { label: 'Controls',   text: 'Scroll to zoom · move the mouse to turn the head' },
+  { label: 'Controls',    text: 'Hold T or the mic icon to talk' },
+  { label: 'Fun fact',    text: 'Voice syncs live to audio amplitude' },
+  { label: 'Controls',    text: 'Scroll to zoom · move the mouse to turn the head' },
   { label: 'Try saying',  text: '"show me how you feel right now"' },
 ];
 

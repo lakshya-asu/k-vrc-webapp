@@ -5,7 +5,7 @@
 <img src="K-VRC.gif" width="220" align="right" />
 **A sarcastic AI robot that learned to move, feel, and speak.**
 
-K-VRC is a real-time 3D robot character powered by Claude AI. It converses with a dry, deadpan personality, expresses itself through 100 handcrafted face states, moves its body using patterns distilled from real motion capture data, and speaks in a cloned voice — with its mouth driven by live audio amplitude.
+K-VRC is a real-time 3D robot character powered by Claude AI. It converses with a dry, deadpan personality, expresses itself through 100 handcrafted face states, moves its body using patterns distilled from real motion capture data, and speaks with an emotion-matched voice — with its face screen reacting live to audio amplitude.
 
 **→ [Live Demo](https://k-vrc.vercel.app)**
 &nbsp;&nbsp;·&nbsp;&nbsp;
@@ -49,17 +49,17 @@ The face is rendered from a weight-based system with full expression blending:
 - Smooth morphing between states at a configurable blend speed
 - Boot animation, procedural blink, random glitch events, and emotion-reactive color palette
 - Claude picks one expression slug per response; the face morphs to it instantly
+- Idle expression cycling — 16 cold/subtle expressions rotate every 8–14 s between replies
 
-### 🎙️ Cloned Voice + Live Mouth Animation
+### 🎙️ Voice — OpenAI TTS + Whisper STT
 
-K-VRC speaks in a voice cloned from source audio using [XTTS v2](https://huggingface.co/coqui/XTTS-v2):
+K-VRC speaks and listens using OpenAI's APIs:
 
-- Voice reference extracted from training video, uploaded to a Modal shared volume
-- XTTS v2 model (~1.9 GB) cached on the volume — cold start ~30s, warm ~instant
-- Inference runs on a T4 GPU via a FastAPI ASGI endpoint deployed on Modal
-- Vercel proxies the request to Modal; the frontend receives raw MP3 bytes
-- Audio decoded via **Web Audio API** (`AudioContext` → `AnalyserNode`) for real-time amplitude
-- Mouth open parameter driven frame-by-frame from the analyser's frequency data — the robot's lips sync to actual audio energy, not a timer
+- **TTS** — `gpt-4o-mini-tts` with the `echo` voice; each reply carries an emotion tag (`neutral`, `happy`, `sad`, `excited`, `angry`, `thinking`) that drives the delivery style via the `instructions` parameter
+- **STT** — push-to-talk via OpenAI Whisper: hold **T** or the mic icon, speak, release — transcript auto-fires into Claude
+- **Live mic visualizer** — 4 cyan frequency bars animate to your voice while recording
+- **Face screen reacts to audio** — emissive intensity and expression scale pulse gently with speech amplitude, so the display breathes with the voice
+- Audio decoded via **Web Audio API** (`AudioContext` → `AnalyserNode`); mouth open parameter driven frame-by-frame from frequency data
 
 ### 💬 Character AI Chat
 
@@ -68,12 +68,11 @@ K-VRC speaks in a voice cloned from source audio using [XTTS v2](https://hugging
 - Structured JSON responses carry `reply`, `emotion`, `gesture`, `expression`, and optional `sidenote_topic`
 - Conversation history window (last 20 turns) for contextual replies
 - Sidenote panel surfaces Lakshya's research interests when conversation touches relevant topics (causal RL, sim-to-real, embodied AI, etc.)
-- Voice input via Web Speech API
 
 ### 🏗️ Scene
 
 - Three.js with Draco-compressed GLB, HDR environment lighting, Unreal bloom post-processing
-- `MeshStandardMaterial` armor (orange-red) + dark joint materials, IBL from photostudio HDR
+- Hand-painted Blender materials — orange-red armor, dark joints, emissive face screen
 - Scroll to zoom camera, mouse-tracking head and chest rotation
 - Procedural body float, emotion-reactive rim lighting (cyan RectAreaLight + PointLight)
 
@@ -84,11 +83,13 @@ K-VRC speaks in a voice cloned from source audio using [XTTS v2](https://hugging
 ```
 Browser (Three.js + Web Audio API)
     │
-    ├─ /api/chat  ──► Vercel Serverless ──► Anthropic Claude Haiku
-    │                      │
-    │                      └──► Modal /infer ──► MiniLM + prediction heads (T4)
+    ├─ /api/chat     ──► Vercel Serverless ──► Anthropic Claude Haiku
+    │                          │
+    │                          └──► Modal /infer ──► MiniLM + prediction heads (T4)
     │
-    ├─ /api/tts   ──► Vercel Serverless ──► Modal /tts ──► XTTS v2 (T4)
+    ├─ /api/tts      ──► Vercel Serverless ──► OpenAI gpt-4o-mini-tts (echo)
+    │
+    ├─ /api/stt      ──► Vercel Serverless ──► OpenAI Whisper
     │
     └─ /api/sidenote ──► Vercel Serverless ──► Claude Haiku
 ```
@@ -99,7 +100,8 @@ Browser (Three.js + Web Audio API)
 | 3D | Draco GLB, RGBELoader HDR, EffectComposer bloom |
 | AI Chat | Claude Haiku (`claude-haiku-4-5`) via Anthropic API |
 | Animation Inference | Modal (T4), MiniLM, custom PyTorch heads |
-| Voice Synthesis | Modal (T4), XTTS v2 (coqui), ffmpeg |
+| Voice Synthesis | OpenAI `gpt-4o-mini-tts` (echo voice, emotion-driven) |
+| Speech Recognition | OpenAI Whisper (`whisper-1`) |
 | Hosting | Vercel (frontend + API), Modal (GPU inference) |
 
 ---
@@ -115,8 +117,8 @@ npm install
 Create `.env`:
 ```
 ANTHROPIC_API_KEY=sk-ant-...
+OPENAI_API_KEY=sk-...
 MODAL_INFER_URL=https://lakshya-asu--kvrc-animation-serve.modal.run
-MODAL_TTS_URL=https://lakshya-asu--kvrc-tts-serve.modal.run
 ```
 
 ```bash
