@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { EMOTION_MAP } from './emotions.js';
-import { attachFaceScreen, updateFaceScreen, tickFaceScreen } from './faceScreen.js';
+import { attachFaceScreen, updateFaceScreen, tickFaceScreen, setExpression as faceSetExpression, initExpressionLibrary } from './faceScreen.js';
 import { AnimationController } from './animationController.js';
 
 const BONES = {
@@ -18,6 +18,7 @@ let robotRoot = null;
 let bones = {};
 let baseY = 0;
 let clock = 0;
+let _currentEmotionName = 'neutral';
 let currentEmotionCfg = null;
 let blinkTimer = rand(3, 6);
 let targetHeadYaw = 0, targetHeadPitch = 0, targetChestYaw = 0;
@@ -103,6 +104,10 @@ export async function initRobot(scene, emotionMap) {
     animCtrl.playGesture('idle');
   }
 
+  // Load expression library and wire into faceScreen
+  const { EXPRESSION_LIBRARY } = await import('./expressionLibrary.js');
+  initExpressionLibrary(EXPRESSION_LIBRARY);
+
   // Attach face screen FIRST so we can skip it during material assignment
   const faceScreenMesh = attachFaceScreen(robotRoot, scene, bones.head);
   robotRoot.__faceScreenMesh = faceScreenMesh;
@@ -146,10 +151,18 @@ export async function initRobot(scene, emotionMap) {
     root: robotRoot,
     bones,
     setEmotionCfg: cfg => { currentEmotionCfg = cfg; },
+    setEmotionName: name => { _currentEmotionName = name; },
     startBodyMotion,
     triggerHeadJerk,
     playGesture: name => animCtrl.playGesture(name),
     get faceScreenMesh() { return faceScreenMesh; },
+    setExpression: name => {
+      const motionEnergy = faceSetExpression(name);
+      if (currentEmotionCfg) {
+        const baseAmp = EMOTION_MAP[_currentEmotionName]?.floatAmp ?? 0.03;
+        currentEmotionCfg = { ...currentEmotionCfg, floatAmp: baseAmp * motionEnergy };
+      }
+    },
     applyInferResult(result) {
       if (!result) return;
       if (result.clip_weights && Object.keys(result.clip_weights).length > 0) {
