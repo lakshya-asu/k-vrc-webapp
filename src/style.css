@@ -237,6 +237,10 @@ html, body {
   font-size: 1.1rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
   color: rgba(255,255,255,0.92);
   margin-bottom: 0;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+#contact-icon {
+  width: 28px; height: 28px; flex-shrink: 0;
 }
 #contact-created {
   font-family: var(--font-ui);

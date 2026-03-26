@@ -108,57 +108,19 @@ export async function initRobot(scene, emotionMap) {
   // Wire expression library into faceScreen
   initExpressionLibrary(EXPRESSION_LIBRARY);
 
-  // ── Apply K-VRC colors first, then overlay face screen on top ──
-  const armorMat = new THREE.MeshStandardMaterial({
-    color: 0xe03818,
-    emissive: 0x1a0400,
-    roughness: 0.55,
-    metalness: 0.1,
-    side: THREE.DoubleSide,
-  });
-  const jointMat = new THREE.MeshStandardMaterial({
-    color: 0x1e1e22,
-    emissive: 0x050505,
-    roughness: 0.4,
-    metalness: 0.6,
-    side: THREE.DoubleSide,
-  });
-
-  // ── Identify visor mesh BEFORE materials are overwritten ────
-  // (attachFaceScreen relies on original material names from Blender)
-  const VISOR_KEYS = ['visor','screen','face','display','screenface','glass','lens','monitor','window','panel'];
+  // ── Find the screen mesh (by name) then attach face canvas ──
+  // GLB materials from Blender are kept as-is; only the screen gets overridden.
+  const VISOR_KEYS = ['visor','screen','display','screenface','monitor'];
   let preVisorMesh = null;
   robotRoot.traverse(obj => {
     if (preVisorMesh || !obj.isMesh) return;
     const n = obj.name.toLowerCase();
-    const matName = (Array.isArray(obj.material) ? obj.material[0] : obj.material)?.name?.toLowerCase() ?? '';
-    if (VISOR_KEYS.some(k => n.includes(k) || matName.includes(k))) {
+    if (VISOR_KEYS.some(k => n.includes(k))) {
       preVisorMesh = obj;
-      console.log('K-VRC: visor mesh identified:', obj.name, '/ mat:', matName || '(unnamed)');
+      console.log('K-VRC: screen mesh found:', obj.name);
     }
   });
 
-  // Log all meshes for debugging
-  const allMeshNames = [];
-  robotRoot.traverse(obj => {
-    if (!obj.isMesh) return;
-    const matName = (Array.isArray(obj.material) ? obj.material[0] : obj.material)?.name ?? 'unnamed';
-    allMeshNames.push(`"${obj.name}" mat:"${matName}"`);
-  });
-  console.log('K-VRC meshes:', allMeshNames);
-
-  let colored = 0;
-  robotRoot.traverse(obj => {
-    if (!obj.isMesh) return;
-    if (obj === preVisorMesh) return;  // visor keeps its slot for the face screen
-    const n = obj.name.toLowerCase();
-    const isJoint = ['neck','hand','toe','foot','hips','pelvis','elbow','knee','ear'].some(k => n.includes(k));
-    obj.material = isJoint ? jointMat : armorMat;
-    colored++;
-  });
-  console.log(`K-VRC: colored ${colored} mesh objects`);
-
-  // Attach face screen — pass pre-identified visor so it doesn't need to search
   const faceScreenMesh = attachFaceScreen(robotRoot, scene, bones.head, preVisorMesh);
   robotRoot.__faceScreenMesh = faceScreenMesh;
 
