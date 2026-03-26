@@ -295,6 +295,19 @@ html, body {
 #contact-icon {
   width: 28px; height: 28px; flex-shrink: 0;
 }
+#contact-tagline {
+  font-family: var(--font-ui);
+  font-size: 0.67rem; font-weight: 400;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 0.02em;
+  margin-bottom: 0.1rem;
+}
+#ldr-link {
+  color: rgba(0,229,255,0.55);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+#ldr-link:hover { color: var(--accent); }
 #contact-created {
   font-family: var(--font-ui);
   font-size: 0.76rem; font-weight: 500;
