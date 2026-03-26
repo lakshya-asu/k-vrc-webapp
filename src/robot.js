@@ -108,11 +108,7 @@ export async function initRobot(scene, emotionMap) {
   // Wire expression library into faceScreen
   initExpressionLibrary(EXPRESSION_LIBRARY);
 
-  // Attach face screen FIRST so we can skip it during material assignment
-  const faceScreenMesh = attachFaceScreen(robotRoot, scene, bones.head);
-  robotRoot.__faceScreenMesh = faceScreenMesh;
-
-  // ── Apply K-VRC colors (Standard — responds to IBL from HDR environment) ──
+  // ── Apply K-VRC colors first, then overlay face screen on top ──
   const armorMat = new THREE.MeshStandardMaterial({
     color: 0xe03818,
     emissive: 0x1a0400,
@@ -131,13 +127,16 @@ export async function initRobot(scene, emotionMap) {
   let colored = 0;
   robotRoot.traverse(obj => {
     if (!obj.isMesh) return;
-    if (obj === faceScreenMesh) return;
     const n = obj.name.toLowerCase();
     const isJoint = ['neck','hand','toe','foot','hips','pelvis'].some(k => n.includes(k));
     obj.material = isJoint ? jointMat : armorMat;
     colored++;
   });
   console.log(`K-VRC: colored ${colored} mesh objects`);
+
+  // Attach face screen after coloring so it overwrites just the visor mesh
+  const faceScreenMesh = attachFaceScreen(robotRoot, scene, bones.head);
+  robotRoot.__faceScreenMesh = faceScreenMesh;
 
   window.addEventListener('mousemove', e => {
     const nx =  (e.clientX / window.innerWidth)  * 2 - 1;
