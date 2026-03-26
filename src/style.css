@@ -297,3 +297,51 @@ html, body {
   margin-top: 4px;
 }
 #sidenote-links a:hover { text-decoration: underline; }
+
+/* ── Hints / instruction panel ───────────────────────────── */
+#hints-panel {
+  position: fixed;
+  top: 5rem; right: 1.6rem;
+  z-index: 25;
+  display: flex; align-items: flex-start; gap: 0.7rem;
+  background: rgba(6,8,12,0.88);
+  border: 1px solid rgba(0,229,255,0.18);
+  border-radius: 12px;
+  padding: 0.8rem 0.85rem 0.8rem 1rem;
+  backdrop-filter: blur(20px);
+  max-width: 230px;
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+#hints-panel.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+#hints-content {
+  flex: 1;
+  display: flex; flex-direction: column; gap: 0.22rem;
+}
+#hints-label {
+  font-family: var(--font-heading);
+  font-size: 0.6rem; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--accent);
+}
+#hints-text {
+  font-family: var(--font-ui);
+  font-size: 0.8rem; font-weight: 400;
+  color: rgba(255,255,255,0.82);
+  line-height: 1.45;
+}
+#hints-close {
+  background: none; border: none; cursor: pointer;
+  color: rgba(255,255,255,0.2); font-size: 0.68rem;
+  padding: 0.1rem; line-height: 1;
+  transition: color 0.2s;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+#hints-close:hover { color: rgba(255,255,255,0.6); }

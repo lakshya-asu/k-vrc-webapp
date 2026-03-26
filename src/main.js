@@ -8,6 +8,7 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { EMOTION_MAP, applyEmotion } from './emotions.js';
 import { initRobot, updateRobot } from './robot.js';
 import { initChat } from './chat.js';
+import { initHints } from './hints.js';
 import './style.css';
 
 // ── Renderer ─────────────────────────────────────────────────
@@ -118,6 +119,7 @@ const clock = new THREE.Clock();
     const robot = await initRobot(scene, EMOTION_MAP);
     applyEmotion('neutral', { rimLight, faceLight, bloomPass });
     initChat(robot, { rimLight, faceLight, bloomPass });
+    initHints();
   } catch (err) {
     console.error('K-VRC boot error:', err);
   } finally {
