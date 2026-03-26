@@ -7,6 +7,7 @@ canvas.width = W; canvas.height = H;
 const ctx = canvas.getContext('2d', { willReadFrequently: true });
 
 export const faceTexture = new THREE.CanvasTexture(canvas);
+faceTexture.flipY = false;
 faceTexture.minFilter = THREE.NearestFilter;
 faceTexture.magFilter = THREE.NearestFilter;
 
