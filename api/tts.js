@@ -25,35 +25,26 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Text too long' });
   }
 
-  const apiKey = process.env.ELEVEN_LABS_API_KEY;
-  const voiceId = process.env.ELEVEN_VOICE_ID;
-  if (!apiKey || !voiceId) {
-    console.error('ELEVEN_LABS_API_KEY or ELEVEN_VOICE_ID not set');
+  const modalTtsUrl = process.env.MODAL_TTS_URL;
+  if (!modalTtsUrl) {
+    console.error('MODAL_TTS_URL not set');
     return res.status(500).json({ error: 'TTS not configured' });
   }
 
   try {
-    const elevenRes = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+    const ttsRes = await fetch(`${modalTtsUrl}/tts`, {
       method: 'POST',
-      headers: {
-        'xi-api-key': apiKey,
-        'Content-Type': 'application/json',
-        'Accept': 'audio/mpeg',
-      },
-      body: JSON.stringify({
-        text: text.trim(),
-        model_id: 'eleven_flash_v2_5',
-        voice_settings: { stability: 0.5, similarity_boost: 0.8, style: 0.0, use_speaker_boost: true },
-      }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: text.trim() }),
     });
 
-    if (!elevenRes.ok) {
-      const err = await elevenRes.text();
-      console.error('ElevenLabs TTS error:', elevenRes.status, err);
+    if (!ttsRes.ok) {
+      const err = await ttsRes.text();
+      console.error('Modal TTS error:', ttsRes.status, err);
       return res.status(500).json({ error: 'TTS service error' });
     }
 
-    const audioData = await elevenRes.arrayBuffer();
+    const audioData = await ttsRes.arrayBuffer();
     res.setHeader('Content-Type', 'audio/mpeg');
     res.setHeader('Content-Length', audioData.byteLength);
     return res.end(Buffer.from(audioData));
