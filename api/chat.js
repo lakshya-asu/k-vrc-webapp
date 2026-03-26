@@ -48,7 +48,7 @@ Always respond with valid JSON only — no markdown, no code fences:
 {"reply": "<your response>", "emotion": "<one of: happy, sad, angry, neutral, excited, thinking>", "gesture": "<one of the gesture list above>", "sidenote_topic": "<optional — omit when not relevant>", "expression": "<slug from the expression list above>"}
 Choose emotion, gesture, and expression that best match the tone and content of your reply.`;
 
-const FALLBACK = { reply: "I'm having a little glitch. Try again!", emotion: 'neutral', expression: 'neutral_idle' };
+const FALLBACK = { reply: "I'm having a little glitch. Try again!", emotion: 'neutral', expression: 'neutral_idle', gesture: 'idle' };
 
 export default async function handler(req, res) {
   // CORS

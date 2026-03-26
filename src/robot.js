@@ -4,6 +4,7 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { EMOTION_MAP } from './emotions.js';
 import { attachFaceScreen, updateFaceScreen, tickFaceScreen, setExpression as faceSetExpression, initExpressionLibrary } from './faceScreen.js';
 import { AnimationController } from './animationController.js';
+import { EXPRESSION_LIBRARY } from './expressionLibrary.js';
 
 const BONES = {
   head:    'Head',
@@ -104,8 +105,7 @@ export async function initRobot(scene, emotionMap) {
     animCtrl.playGesture('idle');
   }
 
-  // Load expression library and wire into faceScreen
-  const { EXPRESSION_LIBRARY } = await import('./expressionLibrary.js');
+  // Wire expression library into faceScreen
   initExpressionLibrary(EXPRESSION_LIBRARY);
 
   // Attach face screen FIRST so we can skip it during material assignment
