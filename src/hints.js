@@ -59,5 +59,5 @@ export function initHints() {
   document.getElementById('chat-input')?.addEventListener('keydown', e => {
     if (e.key === 'Enter') dismiss();
   });
-  window.addEventListener('keydown', e => { if (e.code === 'Backquote') dismiss(); }, { once: true });
+  window.addEventListener('keydown', e => { if (e.code === 'KeyT') dismiss(); }, { once: true });
 }

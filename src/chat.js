@@ -294,15 +294,15 @@ function setupMic() {
   btn.addEventListener('touchstart', e => { e.preventDefault(); startRecording(); }, { passive: false });
   btn.addEventListener('touchend', () => stopRecording());
 
-  // Hold backtick (`) to record — skipped when chat input is focused
+  // Hold T to record — skipped when chat input is focused
   window.addEventListener('keydown', e => {
-    if (e.code !== 'Backquote' || e.repeat) return;
+    if (e.code !== 'KeyT' || e.repeat) return;
     if (document.activeElement?.id === 'chat-input') return;
     e.preventDefault();
     startRecording();
   });
   window.addEventListener('keyup', e => {
-    if (e.code !== 'Backquote') return;
+    if (e.code !== 'KeyT') return;
     stopRecording();
   });
 }
