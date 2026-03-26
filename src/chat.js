@@ -77,7 +77,11 @@ function applyEmotionFull(emotion) {
     robotRef?.startBodyMotion(cfg.bodyMotion);
   }
   if (emotion === 'angry') robotRef?.triggerHeadJerk();
-  if (emotion === 'thinking') robotRef?.setExpression('thinking_default');
+  if (emotion === 'thinking') {
+    robotRef?.setExpression('thinking_default');
+    const label = document.getElementById('emotion-label');
+    if (label) label.textContent = 'thinking_default';
+  }
 }
 
 // ── Send message ─────────────────────────────────────────────
@@ -122,7 +126,10 @@ async function sendMessage(text) {
   history = [...history, { role: 'model', text: reply }].slice(-20);
   addBubble(reply, 'robot');
   applyEmotionFull(emotion);
-  robotRef?.setExpression(data.expression ?? 'neutral_idle');
+  const expr = data.expression ?? 'neutral_idle';
+  robotRef?.setExpression(expr);
+  const label = document.getElementById('emotion-label');
+  if (label) label.textContent = expr;
   setTimeout(() => speak(reply), 300);
 
   if (sidenote_topic) fetchSidenote(sidenote_topic, trimmed);
