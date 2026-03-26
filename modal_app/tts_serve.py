@@ -30,7 +30,7 @@ tts_image = (
     .env({"COQUI_TOS_AGREED": "1", "TTS_HOME": "/data/tts_cache"})
 )
 
-tts_app = modal.App("kvrc-tts", image=tts_image)
+app = modal.App("kvrc-tts", image=tts_image)
 
 web_app = FastAPI()
 
@@ -92,7 +92,7 @@ def health():
     return {"status": "ok"}
 
 
-@tts_app.function(
+@app.function(
     gpu="T4",
     volumes={VOLUME_PATH: volume},
     timeout=120,
