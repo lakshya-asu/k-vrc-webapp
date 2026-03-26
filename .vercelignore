@@ -6,3 +6,5 @@ server.js
 KVRC_CLAUDE_CODE_PROMPT.md
 .claude/
 tools/
+modal_app/
+requirements.txt
