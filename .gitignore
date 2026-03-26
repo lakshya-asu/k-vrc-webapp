@@ -26,3 +26,6 @@ __pycache__/
 
 # Training clips (large video files)
 *.mp4
+!face_emotions.mp4
+!K-VRC.gif
+.superpowers/

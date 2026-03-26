@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Helmet body -->
+  <rect x="10" y="20" width="44" height="36" rx="10" fill="#e06010"/>
+  <!-- Helmet top dome -->
+  <ellipse cx="32" cy="20" rx="22" ry="14" fill="#e06010"/>
+  <!-- Helmet highlight stripe -->
+  <rect x="26" y="8" width="12" height="5" rx="2.5" fill="#ff9940" opacity="0.8"/>
+  <!-- Side ear bumps -->
+  <rect x="6" y="28" width="6" height="10" rx="3" fill="#c04800"/>
+  <rect x="52" y="28" width="6" height="10" rx="3" fill="#c04800"/>
+  <!-- Visor (black face screen) -->
+  <rect x="16" y="26" width="32" height="22" rx="5" fill="#0a0a0a"/>
+  <!-- Eyes -->
+  <circle cx="24" cy="35" r="4.5" fill="white"/>
+  <circle cx="40" cy="35" r="4.5" fill="white"/>
+  <!-- Smile -->
+  <path d="M24 44 Q32 49 40 44" stroke="white" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+</svg>
