@@ -15,7 +15,7 @@ function getAudioCtx() {
   return _audioCtx;
 }
 
-async function speak(text) {
+async function speak(text, emotion = 'neutral') {
   // Stop any playing audio
   if (_currentSource) { try { _currentSource.stop(); } catch (_) {} _currentSource = null; }
   setSpeakingAmplitude(0);
@@ -25,7 +25,7 @@ async function speak(text) {
     const res = await fetch('/api/tts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text }),
+      body: JSON.stringify({ text, emotion }),
     });
     if (!res.ok) return;
     arrayBuffer = await res.arrayBuffer();
@@ -174,7 +174,7 @@ async function sendMessage(text) {
   robotRef?.setExpression(expr);
   const label = document.getElementById('emotion-label');
   if (label) label.textContent = expr;
-  setTimeout(() => speak(reply), 300);
+  setTimeout(() => speak(reply, emotion), 300);
 
   if (sidenote_topic) fetchSidenote(sidenote_topic, trimmed);
   else hideSidenote();

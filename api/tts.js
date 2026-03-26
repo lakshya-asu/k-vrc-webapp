@@ -1,6 +1,15 @@
 // api/tts.js — OpenAI TTS proxy
 const MAX_TEXT_LEN = 1000;
 
+const EMOTION_INSTRUCTIONS = {
+  neutral:  'Flat, deadpan, slightly bored. Efficient. No warmth.',
+  happy:    'Dry satisfaction — subtly warmer than usual but still controlled and detached.',
+  excited:  'Barely-contained energy, faster pace. A flicker of genuine enthusiasm breaking through the facade.',
+  sad:      'Quiet resignation. Slower, lower energy. Understated.',
+  angry:    'Clipped and sharp. Short controlled irritation. Crisp consonants.',
+  thinking: 'Measured and deliberate, slight pauses, as if processing out loud.',
+};
+
 export default async function handler(req, res) {
   // CORS — identical to api/chat.js
   const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN;
@@ -17,13 +26,15 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { text } = req.body || {};
+  const { text, emotion } = req.body || {};
   if (!text || typeof text !== 'string' || text.trim().length === 0) {
     return res.status(400).json({ error: 'text is required' });
   }
   if (text.length > MAX_TEXT_LEN) {
     return res.status(400).json({ error: 'Text too long' });
   }
+
+  const instructions = EMOTION_INSTRUCTIONS[emotion] ?? EMOTION_INSTRUCTIONS.neutral;
 
   const openaiKey = process.env.OPENAI_API_KEY;
   if (!openaiKey) {
@@ -39,9 +50,10 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'tts-1',
+        model: 'gpt-4o-mini-tts',
         input: text.trim(),
-        voice: 'onyx',
+        voice: 'echo',
+        instructions,
         response_format: 'mp3',
       }),
     });
