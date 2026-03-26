@@ -1,3 +1,5 @@
+import { EXPRESSION_SLUGS, EXPRESSION_MENU_TEXT } from './expressionMenu.js';
+
 const VALID_EMOTIONS = ['happy', 'sad', 'angry', 'neutral', 'excited', 'thinking'];
 const VALID_GESTURES = ['idle','think','listen','happy','excited','laugh','wave','celebrate',
   'thankful','dance','talk','explain','secret','sad','angry','dismiss','reject','shrug',
@@ -37,18 +39,16 @@ Set this sparingly. Only when there's something substantive — not as a reflex 
 
 LENGTH: Keep replies to 1-2 sentences maximum. You're efficient, not verbose. If it takes more than 20 words, you've already said too much.
 
-EXPRESSION WEIGHTS: For each response, estimate these face expression intensities as 0-1 floats:
-brow_raise (surprise/question), brow_furrow (concentration/displeasure),
-eye_squint (skepticism/sarcasm), mouth_open (talking/shock),
-smile_width (amusement — use sparingly), glitch_intensity (irritation/malfunction).
-motion_energy: 0=very still, 0.5=normal, 1.0=very animated.
-screen_mood: the overall visual tone for K-VRC's chest screen: cold=blue/icy, warm=orange/golden, glitch=corrupted, static=noise, data=flowing text, boot=startup, angry=red/harsh, dream=soft/purple.
+FACE EXPRESSION:
+For each response, pick ONE expression slug from the list below. The slug drives K-VRC's face screen rendering. Choose based on the emotional tone of your reply.
+
+${EXPRESSION_MENU_TEXT}
 
 Always respond with valid JSON only — no markdown, no code fences:
-{"reply": "<your response>", "emotion": "<one of: happy, sad, angry, neutral, excited, thinking>", "gesture": "<one of the gesture list above>", "sidenote_topic": "<optional — omit when not relevant>", "expression_weights": {"brow_raise": 0.0-1.0, "brow_furrow": 0.0-1.0, "eye_squint": 0.0-1.0, "mouth_open": 0.0-1.0, "smile_width": 0.0-1.0, "glitch_intensity": 0.0-1.0}, "motion_energy": 0.0-1.0, "screen_mood": "cold|warm|glitch|static|data|boot|angry|dream"}
-Choose emotion and gesture that best match the tone and content of your reply.`;
+{"reply": "<your response>", "emotion": "<one of: happy, sad, angry, neutral, excited, thinking>", "gesture": "<one of the gesture list above>", "sidenote_topic": "<optional — omit when not relevant>", "expression": "<slug from the expression list above>"}
+Choose emotion, gesture, and expression that best match the tone and content of your reply.`;
 
-const FALLBACK = { reply: "I'm having a little glitch. Try again!", emotion: 'neutral' };
+const FALLBACK = { reply: "I'm having a little glitch. Try again!", emotion: 'neutral', expression: 'neutral_idle' };
 
 export default async function handler(req, res) {
   // CORS
@@ -143,15 +143,7 @@ export default async function handler(req, res) {
     if (parsed.sidenote_topic && typeof parsed.sidenote_topic === 'string') {
       out.sidenote_topic = parsed.sidenote_topic.trim().slice(0, 200);
     }
-    if (parsed.expression_weights && typeof parsed.expression_weights === 'object') {
-      out.expression_weights = parsed.expression_weights;
-    }
-    if (typeof parsed.motion_energy === 'number') {
-      out.motion_energy = parsed.motion_energy;
-    }
-    if (parsed.screen_mood && typeof parsed.screen_mood === 'string') {
-      out.screen_mood = parsed.screen_mood;
-    }
+    out.expression = EXPRESSION_SLUGS.includes(parsed.expression) ? parsed.expression : 'neutral_idle';
     // Modal inference: clip selection + motion deltas (non-blocking)
     const MODAL_URL = process.env.MODAL_INFER_URL || 'https://lakshya-asu--kvrc-animation-serve.modal.run';
     try {
@@ -179,9 +171,7 @@ export default async function handler(req, res) {
           reply: parsed.reply,
           emotion: parsed.emotion,
           gesture: parsed.gesture ?? null,
-          expression_weights: parsed.expression_weights ?? null,
-          motion_energy: typeof parsed.motion_energy === 'number' ? parsed.motion_energy : null,
-          screen_mood: parsed.screen_mood ?? null,
+          expression: out.expression,
         };
         const fs = await import('fs/promises');
         await fs.appendFile(process.env.STREAM_A_LOG_PATH, JSON.stringify(record) + '\n');
