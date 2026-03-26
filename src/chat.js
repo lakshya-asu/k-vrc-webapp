@@ -75,6 +75,20 @@ function addBubble(text, role) {
   log.scrollTop = log.scrollHeight;
 }
 
+function showTyping() {
+  const log = document.getElementById('chat-log');
+  const div = document.createElement('div');
+  div.className = 'bubble robot typing-bubble';
+  div.id = 'typing-indicator';
+  div.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+function hideTyping() {
+  document.getElementById('typing-indicator')?.remove();
+}
+
 const EMOTION_UI = {
   neutral:  { dot: '#00e5ff', bg: 'radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0,229,255,0.05) 0%, transparent 70%)' },
   happy:    { dot: '#00ff88', bg: 'radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0,255,136,0.07) 0%, transparent 70%)' },
@@ -127,6 +141,7 @@ async function sendMessage(text) {
   const historySnapshot = history.slice(-20);
   history = [...history, { role: 'user', text: trimmed }].slice(-20);
   applyEmotionFull('thinking');
+  showTyping();
 
   let reply, emotion, data = null, sidenote_topic = null;
   try {
@@ -135,6 +150,7 @@ async function sendMessage(text) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: trimmed, history: historySnapshot }),
     });
+    hideTyping();
     if (res.status === 400) { addBubble('Message too long.', 'robot'); applyEmotionFull('neutral'); return; }
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     data = await res.json();
@@ -144,6 +160,7 @@ async function sendMessage(text) {
     if (data.gesture) robotRef?.playGesture(data.gesture);
     if (data.infer_result) robotRef?.applyInferResult(data.infer_result);
   } catch (err) {
+    hideTyping();
     console.error(err);
     addBubble("K-VRC is offline. Try again?", 'robot');
     applyEmotionFull('sad');

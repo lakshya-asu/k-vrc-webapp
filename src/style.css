@@ -108,7 +108,7 @@ html, body {
   display: flex; flex-direction: column; gap: 0.75rem;
   overflow: hidden;
   max-height: 400px;
-  transition: max-height 0.35s ease, opacity 0.25s ease;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
   opacity: 1;
 }
 #chat-overlay.collapsed #chat-body {
@@ -136,6 +136,7 @@ html, body {
   font-size: 0.875rem;
   line-height: 1.55;
   color: var(--text);
+  animation: bubbleIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .bubble.robot {
   align-self: flex-start;
@@ -146,6 +147,28 @@ html, body {
   align-self: flex-end;
   background: rgba(0,229,255,0.07);
   border: 1px solid rgba(0,229,255,0.15);
+}
+@keyframes bubbleIn {
+  from { opacity: 0; transform: translateY(7px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)   scale(1); }
+}
+
+/* ── Typing indicator ─────────────────────────────────────── */
+.typing-bubble {
+  display: flex; align-items: center; gap: 5px;
+  padding: 0.65rem 0.9rem;
+  min-width: 56px;
+}
+.typing-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: rgba(0, 229, 255, 0.55);
+  animation: typingBounce 1.1s infinite ease-in-out;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.18s; }
+.typing-dot:nth-child(3) { animation-delay: 0.36s; }
+@keyframes typingBounce {
+  0%, 65%, 100% { transform: translateY(0);    opacity: 0.35; }
+  32%           { transform: translateY(-5px); opacity: 1; }
 }
 
 /* ── Input bar ────────────────────────────────────────────── */
@@ -244,9 +267,9 @@ html, body {
 }
 #contact-created {
   font-family: var(--font-ui);
-  font-size: 0.68rem; font-weight: 300;
-  color: rgba(255,255,255,0.25);
-  letter-spacing: 0.04em;
+  font-size: 0.76rem; font-weight: 500;
+  color: rgba(255,255,255,0.52);
+  letter-spacing: 0.03em;
   margin-bottom: 0.3rem;
 }
 .contact-link {
