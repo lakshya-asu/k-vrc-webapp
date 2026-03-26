@@ -355,50 +355,50 @@ html, body {
 }
 #sidenote-links a:hover { text-decoration: underline; }
 
-/* ── Hints / instruction panel ───────────────────────────── */
+/* ── Hints — anchored above the input bar ────────────────── */
 #hints-panel {
-  position: fixed;
-  top: 5rem; right: 1.6rem;
-  z-index: 25;
-  display: flex; align-items: flex-start; gap: 0.7rem;
-  background: rgba(6,8,12,0.88);
-  border: 1px solid rgba(0,229,255,0.18);
-  border-radius: 12px;
-  padding: 0.8rem 0.85rem 0.8rem 1rem;
-  backdrop-filter: blur(20px);
-  max-width: 230px;
+  position: absolute;
+  bottom: calc(100% + 0.55rem);
+  left: 0; right: 0;
+  text-align: center;
   opacity: 0;
-  transform: translateY(-6px);
+  transform: translateY(4px);
   pointer-events: none;
-  transition: opacity 0.35s ease, transform 0.35s ease;
+  transition: opacity 0.38s ease, transform 0.38s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 #hints-panel.visible {
   opacity: 1;
   transform: translateY(0);
-  pointer-events: auto;
-}
-#hints-content {
-  flex: 1;
-  display: flex; flex-direction: column; gap: 0.22rem;
 }
 #hints-label {
   font-family: var(--font-heading);
-  font-size: 0.6rem; font-weight: 700;
-  letter-spacing: 0.2em; text-transform: uppercase;
+  font-size: 0.58rem; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--accent);
+  opacity: 0.7;
+}
+#hints-sep {
+  font-size: 0.58rem;
+  color: rgba(255,255,255,0.18);
+  margin: 0 0.15rem;
 }
 #hints-text {
   font-family: var(--font-ui);
-  font-size: 0.8rem; font-weight: 400;
-  color: rgba(255,255,255,0.82);
-  line-height: 1.45;
+  font-size: 0.68rem; font-weight: 400;
+  color: rgba(255,255,255,0.38);
 }
-#hints-close {
-  background: none; border: none; cursor: pointer;
-  color: rgba(255,255,255,0.2); font-size: 0.68rem;
-  padding: 0.1rem; line-height: 1;
-  transition: color 0.2s;
+
+/* ── Voice hint label ────────────────────────────────────── */
+#voice-hint {
+  font-family: var(--font-heading);
+  font-size: 0.55rem; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(255,255,255,0.16);
+  white-space: nowrap;
+  user-select: none;
   flex-shrink: 0;
-  margin-top: 1px;
+  padding-right: 0.1rem;
 }
-#hints-close:hover { color: rgba(255,255,255,0.6); }

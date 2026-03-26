@@ -9,10 +9,9 @@ const HINTS = [
 ];
 
 export function initHints() {
-  const panel    = document.getElementById('hints-panel');
-  const labelEl  = document.getElementById('hints-label');
-  const textEl   = document.getElementById('hints-text');
-  const closeBtn = document.getElementById('hints-close');
+  const panel   = document.getElementById('hints-panel');
+  const labelEl = document.getElementById('hints-label');
+  const textEl  = document.getElementById('hints-text');
   if (!panel) return;
 
   let idx = 0;
@@ -53,12 +52,12 @@ export function initHints() {
     timer = setTimeout(advance, 5500);
   }, 2800);
 
-  closeBtn.addEventListener('click', dismiss);
 
   // Dismiss when user starts chatting
-  document.getElementById('send-btn')?.addEventListener('click',  dismiss);
-  document.getElementById('mic-btn')?.addEventListener('click',   dismiss);
+  document.getElementById('send-btn')?.addEventListener('click',     dismiss);
+  document.getElementById('mic-btn')?.addEventListener('mousedown',  dismiss);
   document.getElementById('chat-input')?.addEventListener('keydown', e => {
     if (e.key === 'Enter') dismiss();
   });
+  window.addEventListener('keydown', e => { if (e.code === 'Backquote') dismiss(); }, { once: true });
 }
