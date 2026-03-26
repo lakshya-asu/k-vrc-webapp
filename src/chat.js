@@ -3,39 +3,66 @@ import { applyEmotion } from './emotions.js';
 import { fetchSidenote, hideSidenote } from './sidenote.js';
 
 let history = [];
-let ttsVoice = null;
 let sceneRefs = null;
 let robotRef = null;
-let _ampInterval = null;
 
 // ── TTS ──────────────────────────────────────────────────────
-function setupTTS() {
-  if (!window.speechSynthesis) return;
-  const load = () => {
-    const voices = window.speechSynthesis.getVoices();
-    ttsVoice = voices.find(v => v.name.includes('Google') && v.lang.startsWith('en'))
-            ?? voices.find(v => v.lang.startsWith('en'))
-            ?? voices[0] ?? null;
-  };
-  window.speechSynthesis.addEventListener('voiceschanged', load);
-  load();
+let _audioCtx = null;
+let _currentSource = null;
+
+function getAudioCtx() {
+  if (!_audioCtx || _audioCtx.state === 'closed') _audioCtx = new AudioContext();
+  return _audioCtx;
 }
 
-function speak(text) {
-  if (!window.speechSynthesis || !ttsVoice) return;
-  window.speechSynthesis.cancel();
-  const utt = new SpeechSynthesisUtterance(text);
-  utt.voice = ttsVoice;
-  utt.rate = 0.95;
-  utt.pitch = 0.85;
-  utt.onstart = () => {
-    _ampInterval = setInterval(() => {
-      setSpeakingAmplitude(0.3 + Math.random() * 0.7);
-    }, 110);
+async function speak(text) {
+  // Stop any playing audio
+  if (_currentSource) { try { _currentSource.stop(); } catch (_) {} _currentSource = null; }
+  setSpeakingAmplitude(0);
+
+  let arrayBuffer;
+  try {
+    const res = await fetch('/api/tts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text }),
+    });
+    if (!res.ok) return;
+    arrayBuffer = await res.arrayBuffer();
+  } catch { return; }
+
+  const ctx = getAudioCtx();
+  if (ctx.state === 'suspended') await ctx.resume();
+
+  let audioBuffer;
+  try { audioBuffer = await ctx.decodeAudioData(arrayBuffer); } catch { return; }
+
+  const analyser = ctx.createAnalyser();
+  analyser.fftSize = 256;
+  const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+  const source = ctx.createBufferSource();
+  source.buffer = audioBuffer;
+  source.connect(analyser);
+  analyser.connect(ctx.destination);
+  _currentSource = source;
+
+  let rafId;
+  const tick = () => {
+    analyser.getByteFrequencyData(dataArray);
+    const avg = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
+    setSpeakingAmplitude(avg / 128);
+    rafId = requestAnimationFrame(tick);
   };
-  utt.onboundary = () => setSpeakingAmplitude(0.5 + Math.random() * 0.5);
-  utt.onend = () => { clearInterval(_ampInterval); setSpeakingAmplitude(0); };
-  window.speechSynthesis.speak(utt);
+
+  source.onended = () => {
+    cancelAnimationFrame(rafId);
+    setSpeakingAmplitude(0);
+    _currentSource = null;
+  };
+
+  source.start();
+  tick();
 }
 
 // ── Chat UI ──────────────────────────────────────────────────
@@ -162,7 +189,6 @@ function setupMic() {
 export function initChat(robot, refs) {
   robotRef = robot;
   sceneRefs = refs;
-  setupTTS();
   setupMic();
 
   const input = document.getElementById('chat-input');
