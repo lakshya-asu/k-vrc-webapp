@@ -187,6 +187,18 @@ export class AnimationController {
     this._play(pick, true);
   }
 
+  /**
+   * Play the top-weighted clip from Modal's clip_weights dict.
+   * weights: { clipName: float, ... } — normalized clip names as keys.
+   */
+  blendClips(weights) {
+    const entries = Object.entries(weights).sort((a, b) => b[1] - a[1]);
+    if (!entries.length) return;
+    const [topName, topWeight] = entries[0];
+    if (topWeight < 0.1) return;  // not confident enough
+    this._play(topName, true);
+  }
+
   get availableGestures() {
     return Object.keys(GESTURE_CLIPS).filter(g =>
       GESTURE_CLIPS[g].some(c => this.clips[c])

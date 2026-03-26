@@ -3,39 +3,66 @@ import { applyEmotion } from './emotions.js';
 import { fetchSidenote, hideSidenote } from './sidenote.js';
 
 let history = [];
-let ttsVoice = null;
 let sceneRefs = null;
 let robotRef = null;
-let _ampInterval = null;
 
 // ── TTS ──────────────────────────────────────────────────────
-function setupTTS() {
-  if (!window.speechSynthesis) return;
-  const load = () => {
-    const voices = window.speechSynthesis.getVoices();
-    ttsVoice = voices.find(v => v.name.includes('Google') && v.lang.startsWith('en'))
-            ?? voices.find(v => v.lang.startsWith('en'))
-            ?? voices[0] ?? null;
-  };
-  window.speechSynthesis.addEventListener('voiceschanged', load);
-  load();
+let _audioCtx = null;
+let _currentSource = null;
+
+function getAudioCtx() {
+  if (!_audioCtx || _audioCtx.state === 'closed') _audioCtx = new AudioContext();
+  return _audioCtx;
 }
 
-function speak(text) {
-  if (!window.speechSynthesis || !ttsVoice) return;
-  window.speechSynthesis.cancel();
-  const utt = new SpeechSynthesisUtterance(text);
-  utt.voice = ttsVoice;
-  utt.rate = 0.95;
-  utt.pitch = 0.85;
-  utt.onstart = () => {
-    _ampInterval = setInterval(() => {
-      setSpeakingAmplitude(0.3 + Math.random() * 0.7);
-    }, 110);
+async function speak(text) {
+  // Stop any playing audio
+  if (_currentSource) { try { _currentSource.stop(); } catch (_) {} _currentSource = null; }
+  setSpeakingAmplitude(0);
+
+  let arrayBuffer;
+  try {
+    const res = await fetch('/api/tts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text }),
+    });
+    if (!res.ok) return;
+    arrayBuffer = await res.arrayBuffer();
+  } catch { return; }
+
+  const ctx = getAudioCtx();
+  if (ctx.state === 'suspended') await ctx.resume();
+
+  let audioBuffer;
+  try { audioBuffer = await ctx.decodeAudioData(arrayBuffer); } catch { return; }
+
+  const analyser = ctx.createAnalyser();
+  analyser.fftSize = 256;
+  const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+  const source = ctx.createBufferSource();
+  source.buffer = audioBuffer;
+  source.connect(analyser);
+  analyser.connect(ctx.destination);
+  _currentSource = source;
+
+  let rafId;
+  const tick = () => {
+    analyser.getByteFrequencyData(dataArray);
+    const avg = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
+    setSpeakingAmplitude(avg / 128);
+    rafId = requestAnimationFrame(tick);
   };
-  utt.onboundary = () => setSpeakingAmplitude(0.5 + Math.random() * 0.5);
-  utt.onend = () => { clearInterval(_ampInterval); setSpeakingAmplitude(0); };
-  window.speechSynthesis.speak(utt);
+
+  source.onended = () => {
+    cancelAnimationFrame(rafId);
+    setSpeakingAmplitude(0);
+    _currentSource = null;
+  };
+
+  source.start();
+  tick();
 }
 
 // ── Chat UI ──────────────────────────────────────────────────
@@ -70,12 +97,18 @@ function updateEmotionUI(emotion) {
 function applyEmotionFull(emotion) {
   setEmotion(emotion);
   updateEmotionUI(emotion);
+  robotRef?.setEmotionName(emotion);
   if (sceneRefs) {
     const cfg = applyEmotion(emotion, sceneRefs);
     robotRef?.setEmotionCfg(cfg);
     robotRef?.startBodyMotion(cfg.bodyMotion);
   }
   if (emotion === 'angry') robotRef?.triggerHeadJerk();
+  if (emotion === 'thinking') {
+    robotRef?.setExpression('thinking_default');
+    const label = document.getElementById('emotion-label');
+    if (label) label.textContent = 'thinking_default';
+  }
 }
 
 // ── Send message ─────────────────────────────────────────────
@@ -95,7 +128,7 @@ async function sendMessage(text) {
   history = [...history, { role: 'user', text: trimmed }].slice(-20);
   applyEmotionFull('thinking');
 
-  let reply, emotion, sidenote_topic = null;
+  let reply, emotion, data = null, sidenote_topic = null;
   try {
     const res = await fetch('/api/chat', {
       method: 'POST',
@@ -104,11 +137,12 @@ async function sendMessage(text) {
     });
     if (res.status === 400) { addBubble('Message too long.', 'robot'); applyEmotionFull('neutral'); return; }
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
+    data = await res.json();
     reply          = data.reply;
     emotion        = data.emotion ?? 'neutral';
     sidenote_topic = data.sidenote_topic ?? null;
     if (data.gesture) robotRef?.playGesture(data.gesture);
+    if (data.infer_result) robotRef?.applyInferResult(data.infer_result);
   } catch (err) {
     console.error(err);
     addBubble("K-VRC is offline. Try again?", 'robot');
@@ -119,6 +153,10 @@ async function sendMessage(text) {
   history = [...history, { role: 'model', text: reply }].slice(-20);
   addBubble(reply, 'robot');
   applyEmotionFull(emotion);
+  const expr = data.expression ?? 'neutral_idle';
+  robotRef?.setExpression(expr);
+  const label = document.getElementById('emotion-label');
+  if (label) label.textContent = expr;
   setTimeout(() => speak(reply), 300);
 
   if (sidenote_topic) fetchSidenote(sidenote_topic, trimmed);
@@ -151,12 +189,17 @@ function setupMic() {
 export function initChat(robot, refs) {
   robotRef = robot;
   sceneRefs = refs;
-  setupTTS();
   setupMic();
 
   const input = document.getElementById('chat-input');
   document.getElementById('send-btn')?.addEventListener('click', () => sendMessage(input.value));
   input?.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) sendMessage(input.value); });
+
+  // Collapse toggle
+  const overlay = document.getElementById('chat-overlay');
+  document.getElementById('chat-header')?.addEventListener('click', () => {
+    overlay?.classList.toggle('collapsed');
+  });
 
   addBubble("K-VRC online. What do you want.", 'robot');
   applyEmotionFull('neutral');

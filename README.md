@@ -1,7 +1,9 @@
-<div align="left">
+<div align="center">
+
+<img src="K-VRC.gif" width="220" align="right" />
 
 # K-VRC
-<img src="K-VRC.gif" width="220" align="right" />
+
 **A sarcastic AI robot that learned to move, feel, and speak.**
 
 K-VRC is a real-time 3D robot character powered by Claude AI. It converses with a dry, deadpan personality, expresses itself through 100 handcrafted face states, moves its body using patterns distilled from real motion capture data, and speaks in a cloned voice — with its mouth driven by live audio amplitude.
@@ -17,6 +19,8 @@ K-VRC is a real-time 3D robot character powered by Claude AI. It converses with 
 ---
 
 ## Face Expressions
+
+<img src="face-animations.gif" width="100%" />
 
 <video src="face_emotions.mp4" autoplay loop muted playsinline width="100%"></video>
 

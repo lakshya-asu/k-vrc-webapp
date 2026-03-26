@@ -1,3 +1,5 @@
+import { EXPRESSION_SLUGS, EXPRESSION_MENU_TEXT } from './expressionMenu.js';
+
 const VALID_EMOTIONS = ['happy', 'sad', 'angry', 'neutral', 'excited', 'thinking'];
 const VALID_GESTURES = ['idle','think','listen','happy','excited','laugh','wave','celebrate',
   'thankful','dance','talk','explain','secret','sad','angry','dismiss','reject','shrug',
@@ -37,13 +39,18 @@ Set this sparingly. Only when there's something substantive — not as a reflex 
 
 LENGTH: Keep replies to 1-2 sentences maximum. You're efficient, not verbose. If it takes more than 20 words, you've already said too much.
 
+FACE EXPRESSION:
+For each response, pick ONE expression slug from the list below. The slug drives K-VRC's face screen rendering. Choose based on the emotional tone of your reply.
+
+${EXPRESSION_MENU_TEXT}
+
 Always respond with valid JSON only — no markdown, no code fences:
-{"reply": "<your response>", "emotion": "<one of: happy, sad, angry, neutral, excited, thinking>", "gesture": "<one of the gesture list above>", "sidenote_topic": "<optional — omit when not relevant>"}
-Choose emotion and gesture that best match the tone and content of your reply.`;
+{"reply": "<your response>", "emotion": "<one of: happy, sad, angry, neutral, excited, thinking>", "gesture": "<one of the gesture list above>", "sidenote_topic": "<optional — omit when not relevant>", "expression": "<slug from the expression list above>"}
+Choose emotion, gesture, and expression that best match the tone and content of your reply.`;
 
-const FALLBACK = { reply: "I'm having a little glitch. Try again!", emotion: 'neutral' };
+const FALLBACK = { reply: "I'm having a little glitch. Try again!", emotion: 'neutral', expression: 'neutral_idle', gesture: 'idle' };
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   // CORS
   const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN;
   const origin = req.headers.origin || '';
@@ -73,9 +80,9 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: 'Message too long' });
   }
 
-  const apiKey = process.env.CLAUDE_API_KEY;
+  const apiKey = process.env.ANTHROPIC_API_KEY || process.env.CLAUDE_API_KEY;
   if (!apiKey) {
-    console.error('CLAUDE_API_KEY not set');
+    console.error('ANTHROPIC_API_KEY not set');
     return res.status(500).json({ error: 'Server configuration error' });
   }
 
@@ -94,7 +101,7 @@ module.exports = async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 256,
+        max_tokens: 512,
         system: SYSTEM_PROMPT,
         messages,
       }),
@@ -135,6 +142,42 @@ module.exports = async function handler(req, res) {
     }
     if (parsed.sidenote_topic && typeof parsed.sidenote_topic === 'string') {
       out.sidenote_topic = parsed.sidenote_topic.trim().slice(0, 200);
+    }
+    out.expression = EXPRESSION_SLUGS.includes(parsed.expression) ? parsed.expression : 'neutral_idle';
+    // Modal inference: clip selection + motion deltas (non-blocking)
+    const MODAL_URL = process.env.MODAL_INFER_URL || 'https://lakshya-asu--kvrc-animation-serve.modal.run';
+    try {
+      const modalRes = await fetch(`${MODAL_URL}/infer`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: parsed.reply,
+          history: messages.slice(-3).map(m => ({ role: m.role, text: m.content })),
+        }),
+      });
+      if (modalRes.ok) {
+        out.infer_result = await modalRes.json();
+      }
+    } catch (modalErr) {
+      console.warn('Modal infer failed:', modalErr.message);
+    }
+
+    // Stream A: log labeled records for face/screen head training
+    if (process.env.STREAM_A_LOG_PATH) {
+      try {
+        const record = {
+          timestamp: Date.now(),
+          context_window: messages.slice(-3).map(m => ({ role: m.role, text: m.content })),
+          reply: parsed.reply,
+          emotion: parsed.emotion,
+          gesture: parsed.gesture ?? null,
+          expression: out.expression,
+        };
+        const fs = await import('fs/promises');
+        await fs.appendFile(process.env.STREAM_A_LOG_PATH, JSON.stringify(record) + '\n');
+      } catch (logErr) {
+        console.warn('Stream A log write failed:', logErr.message);
+      }
     }
     return res.status(200).json(out);
   } catch (err) {

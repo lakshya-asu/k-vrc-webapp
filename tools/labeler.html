@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>K-VRC Expression Labeler</title>
+<style>
+  body { background: #0a0a0f; color: #ccc; font-family: monospace; margin: 0; padding: 24px; }
+  h2 { color: #00e5ff; margin: 0 0 4px; letter-spacing: 2px; }
+  .subtitle { color: #445; font-size: 12px; margin: 0 0 20px; }
+  .reply-box { background: #0d1017; border: 1px solid #1a2030; border-radius: 6px; padding: 16px 20px; margin-bottom: 20px; font-size: 15px; color: #cce; line-height: 1.5; max-width: 700px; }
+  .mood-hint { font-size: 11px; color: #445; margin-top: 8px; }
+  .options { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+  .option { cursor: pointer; border: 2px solid #1a2030; border-radius: 8px; padding: 10px; text-align: center; transition: border-color 0.15s, transform 0.1s; }
+  .option:hover { border-color: #00e5ff; transform: scale(1.03); }
+  .option canvas { display: block; margin: 0 auto 8px; border-radius: 4px; }
+  .option .name { font-size: 11px; color: #889; letter-spacing: 1px; }
+  .progress { font-size: 12px; color: #445; margin-bottom: 16px; }
+  .controls { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
+  button { background: #0d1017; border: 1px solid #1a2030; color: #aaa; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-family: monospace; font-size: 12px; }
+  button:hover { border-color: #00e5ff; color: #00e5ff; }
+  #status { font-size: 12px; color: #445; }
+  .done-msg { color: #00ff88; font-size: 14px; margin: 20px 0; }
+</style>
+</head>
+<body>
+
+<h2>K-VRC EXPRESSION LABELER</h2>
+<p class="subtitle">Click the expression that best matches the reply. Labels saved to localStorage.</p>
+
+<div id="app"></div>
+
+<script>
+// ── Expression library (compact) ─────────────────────────────
+const EXPR_LIB = [
+  { name:'neutral_idle', mood:'cold', w:{br:0.1,bf:0.0,es:0.0,mo:0.0,sw:0.0,gi:0.0}, me:0.2 },
+  { name:'thinking_default', mood:'cold', w:{br:0.0,bf:0.4,es:0.3,mo:0.0,sw:0.0,gi:0.0}, me:0.3 },
+  { name:'cold_assessment', mood:'cold', w:{br:0.0,bf:0.2,es:0.4,mo:0.0,sw:0.0,gi:0.0}, me:0.2 },
+  { name:'wry_deflection', mood:'cold', w:{br:0.0,bf:0.6,es:0.5,mo:0.0,sw:0.15,gi:0.0}, me:0.3 },
+  { name:'skeptical_narrow', mood:'cold', w:{br:0.3,bf:0.4,es:0.5,mo:0.0,sw:0.0,gi:0.0}, me:0.2 },
+  { name:'deadpan', mood:'cold', w:{br:0.0,bf:0.05,es:0.05,mo:0.0,sw:0.0,gi:0.0}, me:0.1 },
+  { name:'focused_lock', mood:'cold', w:{br:0.0,bf:0.3,es:0.2,mo:0.0,sw:0.0,gi:0.0}, me:0.15 },
+  { name:'ice_stare', mood:'cold', w:{br:0.0,bf:0.15,es:0.35,mo:0.0,sw:0.0,gi:0.0}, me:0.2 },
+  { name:'precise_scan', mood:'cold', w:{br:0.0,bf:0.2,es:0.2,mo:0.0,sw:0.0,gi:0.0}, me:0.25 },
+  { name:'mild_contempt', mood:'cold', w:{br:0.0,bf:0.5,es:0.3,mo:0.0,sw:0.08,gi:0.0}, me:0.2 },
+  { name:'calculating', mood:'cold', w:{br:0.0,bf:0.3,es:0.15,mo:0.0,sw:0.0,gi:0.0}, me:0.3 },
+  { name:'logical_void', mood:'cold', w:{br:0.0,bf:0.1,es:0.05,mo:0.0,sw:0.0,gi:0.0}, me:0.1 },
+  { name:'cold_curiosity', mood:'cold', w:{br:0.2,bf:0.0,es:0.1,mo:0.0,sw:0.0,gi:0.0}, me:0.25 },
+  { name:'cold_sarcasm', mood:'cold', w:{br:0.0,bf:0.3,es:0.6,mo:0.0,sw:0.12,gi:0.0}, me:0.25 },
+  { name:'polite_disbelief', mood:'cold', w:{br:0.4,bf:0.2,es:0.3,mo:0.0,sw:0.0,gi:0.0}, me:0.25 },
+  { name:'resigned_acceptance', mood:'cold', w:{br:0.0,bf:0.3,es:0.2,mo:0.0,sw:0.0,gi:0.0}, me:0.15 },
+  { name:'cold_surprise', mood:'cold', w:{br:0.7,bf:0.0,es:0.1,mo:0.15,sw:0.0,gi:0.0}, me:0.4 },
+  { name:'warm_idle', mood:'warm', w:{br:0.1,bf:0.0,es:0.0,mo:0.0,sw:0.3,gi:0.0}, me:0.35 },
+  { name:'warm_smile', mood:'warm', w:{br:0.2,bf:0.0,es:0.0,mo:0.0,sw:0.6,gi:0.0}, me:0.4 },
+  { name:'soft_engaged', mood:'warm', w:{br:0.3,bf:0.0,es:0.0,mo:0.1,sw:0.0,gi:0.0}, me:0.35 },
+  { name:'amused_glint', mood:'warm', w:{br:0.0,bf:0.0,es:0.2,mo:0.0,sw:0.4,gi:0.0}, me:0.3 },
+  { name:'warm_open', mood:'warm', w:{br:0.2,bf:0.0,es:0.0,mo:0.15,sw:0.2,gi:0.0}, me:0.4 },
+  { name:'pleased_quiet', mood:'warm', w:{br:0.0,bf:0.0,es:0.0,mo:0.0,sw:0.3,gi:0.0}, me:0.25 },
+  { name:'warm_surprised', mood:'warm', w:{br:0.6,bf:0.0,es:0.0,mo:0.3,sw:0.2,gi:0.0}, me:0.5 },
+  { name:'warm_amused', mood:'warm', w:{br:0.0,bf:0.0,es:0.15,mo:0.0,sw:0.5,gi:0.0}, me:0.4 },
+  { name:'content_flat', mood:'warm', w:{br:0.0,bf:0.0,es:0.0,mo:0.0,sw:0.15,gi:0.0}, me:0.2 },
+  { name:'enthusiastic_bright', mood:'warm', w:{br:0.4,bf:0.0,es:0.0,mo:0.2,sw:0.4,gi:0.0}, me:0.6 },
+  { name:'warm_knowing', mood:'warm', w:{br:0.1,bf:0.0,es:0.2,mo:0.0,sw:0.35,gi:0.0}, me:0.25 },
+  { name:'warmly_skeptical', mood:'warm', w:{br:0.3,bf:0.0,es:0.2,mo:0.0,sw:0.15,gi:0.0}, me:0.35 },
+  { name:'warm_confusion', mood:'warm', w:{br:0.5,bf:0.0,es:0.0,mo:0.2,sw:0.0,gi:0.0}, me:0.4 },
+  { name:'glitch_flicker', mood:'glitch', w:{br:0.0,bf:0.0,es:0.1,mo:0.0,sw:0.0,gi:0.4}, me:0.5 },
+  { name:'glitch_spike', mood:'glitch', w:{br:0.0,bf:0.5,es:0.0,mo:0.0,sw:0.0,gi:0.9}, me:0.7 },
+  { name:'glitch_contempt', mood:'glitch', w:{br:0.0,bf:0.6,es:0.4,mo:0.0,sw:0.0,gi:0.5}, me:0.4 },
+  { name:'corrupted_grin', mood:'glitch', w:{br:0.0,bf:0.0,es:0.0,mo:0.0,sw:0.4,gi:0.6}, me:0.5 },
+  { name:'static_burst', mood:'glitch', w:{br:0.0,bf:0.0,es:0.0,mo:0.0,sw:0.0,gi:0.7}, me:0.6 },
+  { name:'glitch_rage', mood:'glitch', w:{br:0.0,bf:0.8,es:0.5,mo:0.0,sw:0.0,gi:0.6}, me:0.7 },
+  { name:'error_state', mood:'glitch', w:{br:0.0,bf:0.4,es:0.0,mo:0.0,sw:0.0,gi:0.8}, me:0.4 },
+  { name:'corrupted_neutral', mood:'glitch', w:{br:0.0,bf:0.1,es:0.0,mo:0.0,sw:0.0,gi:0.3}, me:0.3 },
+  { name:'glitch_twitch', mood:'glitch', w:{br:0.0,bf:0.3,es:0.0,mo:0.0,sw:0.0,gi:0.5}, me:0.55 },
+  { name:'system_stress', mood:'glitch', w:{br:0.0,bf:0.5,es:0.3,mo:0.0,sw:0.0,gi:0.45}, me:0.5 },
+  { name:'data_corruption', mood:'glitch', w:{br:0.2,bf:0.0,es:0.0,mo:0.0,sw:0.0,gi:0.6}, me:0.45 },
+  { name:'glitch_smirk', mood:'glitch', w:{br:0.0,bf:0.0,es:0.2,mo:0.0,sw:0.35,gi:0.35}, me:0.4 },
+  { name:'cascade_fail', mood:'glitch', w:{br:0.3,bf:0.7,es:0.0,mo:0.0,sw:0.0,gi:1.0}, me:0.8 },
+  { name:'static_blank', mood:'static', w:{br:0.0,bf:0.0,es:0.0,mo:0.0,sw:0.0,gi:0.0}, me:0.1 },
+  { name:'uncertain_hold', mood:'static', w:{br:0.2,bf:0.0,es:0.0,mo:0.0,sw:0.0,gi:0.0}, me:0.15 },
+  { name:'gray_null', mood:'static', w:{br:0.0,bf:0.0,es:0.0,mo:0.0,sw:0.0,gi:0.0}, me:0.05 },
+  { name:'static_wait', mood:'static', w:{br:0.0,bf:0.1,es:0.0,mo:0.0,sw:0.0,gi:0.0}, me:0.12 },
+  { name:'flat_affect', mood:'static', w:{br:0.0,bf:0.1,es:0.05,mo:0.0,sw:0.0,gi:0.0}, me:0.1 },
+  { name:'static_haze', mood:'static', w:{br:0.1,bf:0.0,es:0.0,mo:0.0,sw:0.0,gi:0.0}, me:0.15 },
+  { name:'static_pause', mood:'static', w:{br:0.0,bf:0.2,es:0.1,mo:0.0,sw:0.0,gi:0.0}, me:0.1 },
+  { name:'static_drift', mood:'static', w:{br:0.1,bf:0.0,es:0.1,mo:0.0,sw:0.0,gi:0.0}, me:0.12 },
+  { name:'static_load', mood:'static', w:{br:0.0,bf:0.15,es:0.0,mo:0.0,sw:0.0,gi:0.0}, me:0.2 },
+  { name:'void_stare', mood:'static', w:{br:0.0,bf:0.0,es:0.0,mo:0.0,sw:0.0,gi:0.0}, me:0.08 },
+  { name:'data_flow', mood:'data', w:{br:0.0,bf:0.2,es:0.15,mo:0.0,sw:0.0,gi:0.0}, me:0.4 },
+  { name:'data_scan', mood:'data', w:{br:0.0,bf:0.15,es:0.3,mo:0.0,sw:0.0,gi:0.0}, me:0.35 },
+  { name:'data_crunch', mood:'data', w:{br:0.0,bf:0.5,es:0.4,mo:0.0,sw:0.0,gi:0.0}, me:0.45 },
+  { name:'data_intake', mood:'data', w:{br:0.2,bf:0.0,es:0.0,mo:0.1,sw:0.0,gi:0.0}, me:0.3 },
+  { name:'data_parse', mood:'data', w:{br:0.0,bf:0.3,es:0.35,mo:0.0,sw:0.0,gi:0.0}, me:0.4 },
+  { name:'data_output', mood:'data', w:{br:0.0,bf:0.2,es:0.0,mo:0.15,sw:0.0,gi:0.0}, me:0.45 },
+  { name:'data_load', mood:'data', w:{br:0.0,bf:0.0,es:0.2,mo:0.0,sw:0.0,gi:0.0}, me:0.3 },
+  { name:'data_query', mood:'data', w:{br:0.3,bf:0.2,es:0.0,mo:0.0,sw:0.0,gi:0.0}, me:0.35 },
+  { name:'dense_analysis', mood:'data', w:{br:0.0,bf:0.6,es:0.5,mo:0.0,sw:0.0,gi:0.0}, me:0.4 },
+  { name:'data_index', mood:'data', w:{br:0.0,bf:0.25,es:0.2,mo:0.0,sw:0.0,gi:0.0}, me:0.3 },
+  { name:'data_stream', mood:'data', w:{br:0.0,bf:0.15,es:0.2,mo:0.0,sw:0.0,gi:0.0}, me:0.5 },
+  { name:'data_overload', mood:'data', w:{br:0.5,bf:0.0,es:0.4,mo:0.2,sw:0.0,gi:0.0}, me:0.55 },
+  { name:'data_cascade', mood:'data', w:{br:0.0,bf:0.4,es:0.5,mo:0.1,sw:0.0,gi:0.0}, me:0.65 },
+  { name:'boot_init', mood:'boot', w:{br:0.3,bf:0.0,es:0.0,mo:0.0,sw:0.0,gi:0.0}, me:0.3 },
+  { name:'boot_startup', mood:'boot', w:{br:0.4,bf:0.0,es:0.0,mo:0.1,sw:0.0,gi:0.0}, me:0.35 },
+  { name:'boot_calibrate', mood:'boot', w:{br:0.0,bf:0.15,es:0.2,mo:0.0,sw:0.0,gi:0.0}, me:0.25 },
+  { name:'boot_ready', mood:'boot', w:{br:0.15,bf:0.0,es:0.0,mo:0.0,sw:0.0,gi:0.0}, me:0.3 },
+  { name:'reboot_signal', mood:'boot', w:{br:0.5,bf:0.0,es:0.1,mo:0.0,sw:0.0,gi:0.0}, me:0.4 },
+  { name:'boot_check', mood:'boot', w:{br:0.0,bf:0.2,es:0.3,mo:0.0,sw:0.0,gi:0.0}, me:0.3 },
+  { name:'boot_scan', mood:'boot', w:{br:0.2,bf:0.0,es:0.25,mo:0.0,sw:0.0,gi:0.0}, me:0.35 },
+  { name:'boot_progress', mood:'boot', w:{br:0.0,bf:0.1,es:0.0,mo:0.0,sw:0.0,gi:0.0}, me:0.3 },
+  { name:'boot_complete', mood:'boot', w:{br:0.0,bf:0.0,es:0.0,mo:0.0,sw:0.1,gi:0.0}, me:0.25 },
+  { name:'fresh_context', mood:'boot', w:{br:0.25,bf:0.0,es:0.0,mo:0.0,sw:0.0,gi:0.0}, me:0.3 },
+  { name:'angry_seethe', mood:'angry', w:{br:0.0,bf:0.7,es:0.5,mo:0.0,sw:0.0,gi:0.0}, me:0.5 },
+  { name:'angry_snap', mood:'angry', w:{br:0.0,bf:0.9,es:0.6,mo:0.0,sw:0.0,gi:0.0}, me:0.75 },
+  { name:'frustrated_tense', mood:'angry', w:{br:0.0,bf:0.65,es:0.4,mo:0.0,sw:0.0,gi:0.0}, me:0.5 },
+  { name:'impatient_glare', mood:'angry', w:{br:0.0,bf:0.6,es:0.5,mo:0.0,sw:0.0,gi:0.0}, me:0.45 },
+  { name:'sharp_contempt', mood:'angry', w:{br:0.0,bf:0.75,es:0.55,mo:0.0,sw:0.0,gi:0.0}, me:0.5 },
+  { name:'fed_up', mood:'angry', w:{br:0.0,bf:0.8,es:0.0,mo:0.1,sw:0.0,gi:0.0}, me:0.55 },
+  { name:'eye_roll_internal', mood:'angry', w:{br:0.3,bf:0.0,es:0.3,mo:0.0,sw:0.0,gi:0.0}, me:0.4 },
+  { name:'tense_disgust', mood:'angry', w:{br:0.0,bf:0.7,es:0.4,mo:0.05,sw:0.0,gi:0.0}, me:0.5 },
+  { name:'gritted_tolerance', mood:'angry', w:{br:0.0,bf:0.6,es:0.35,mo:0.0,sw:0.0,gi:0.0}, me:0.4 },
+  { name:'flared_anger', mood:'angry', w:{br:0.1,bf:0.85,es:0.5,mo:0.0,sw:0.0,gi:0.0}, me:0.7 },
+  { name:'slow_burn', mood:'angry', w:{br:0.0,bf:0.55,es:0.3,mo:0.0,sw:0.0,gi:0.0}, me:0.35 },
+  { name:'barely_contained', mood:'angry', w:{br:0.0,bf:0.8,es:0.45,mo:0.05,sw:0.0,gi:0.0}, me:0.6 },
+  { name:'dream_soft', mood:'dream', w:{br:0.1,bf:0.0,es:0.0,mo:0.0,sw:0.2,gi:0.0}, me:0.3 },
+  { name:'dream_float', mood:'dream', w:{br:0.15,bf:0.0,es:0.0,mo:0.0,sw:0.15,gi:0.0}, me:0.25 },
+  { name:'dream_wonder', mood:'dream', w:{br:0.5,bf:0.0,es:0.0,mo:0.15,sw:0.2,gi:0.0}, me:0.4 },
+  { name:'imaginative_glow', mood:'dream', w:{br:0.35,bf:0.0,es:0.0,mo:0.0,sw:0.25,gi:0.0}, me:0.35 },
+  { name:'dream_muse', mood:'dream', w:{br:0.3,bf:0.0,es:0.1,mo:0.0,sw:0.0,gi:0.0}, me:0.3 },
+  { name:'dream_haze', mood:'dream', w:{br:0.2,bf:0.0,es:0.0,mo:0.0,sw:0.0,gi:0.0}, me:0.2 },
+  { name:'creative_spark', mood:'dream', w:{br:0.6,bf:0.0,es:0.0,mo:0.2,sw:0.0,gi:0.0}, me:0.5 },
+  { name:'dream_flow', mood:'dream', w:{br:0.25,bf:0.0,es:0.0,mo:0.0,sw:0.2,gi:0.0}, me:0.35 },
+  { name:'whimsy_light', mood:'dream', w:{br:0.3,bf:0.0,es:0.0,mo:0.0,sw:0.4,gi:0.0}, me:0.4 },
+  { name:'star_gaze', mood:'dream', w:{br:0.4,bf:0.0,es:0.05,mo:0.0,sw:0.0,gi:0.0}, me:0.25 },
+  { name:'dream_unfold', mood:'dream', w:{br:0.45,bf:0.0,es:0.0,mo:0.1,sw:0.15,gi:0.0}, me:0.4 },
+  { name:'dream_dissolve', mood:'dream', w:{br:0.1,bf:0.0,es:0.15,mo:0.0,sw:0.1,gi:0.0}, me:0.2 },
+];
+
+const MOOD_COLORS = {
+  cold:   { primary: '#00cfff', secondary: '#0066aa', bg: '#010810' },
+  warm:   { primary: '#ffaa22', secondary: '#ff6600', bg: '#0f0500' },
+  glitch: { primary: '#ff00ee', secondary: '#880077', bg: '#080005' },
+  static: { primary: '#aaaaaa', secondary: '#555555', bg: '#060606' },
+  data:   { primary: '#00ff88', secondary: '#00aa55', bg: '#010a04' },
+  boot:   { primary: '#00e5ff', secondary: '#0088aa', bg: '#040c10' },
+  angry:  { primary: '#ff2200', secondary: '#881100', bg: '#0f0000' },
+  dream:  { primary: '#cc88ff', secondary: '#7744bb', bg: '#070010' },
+};
+
+// ── Canvas drawing ────────────────────────────────────────────
+const CW = 140, CH = 140;
+
+function drawFace(canvas, entry, t) {
+  const ctx = canvas.getContext('2d');
+  const c = MOOD_COLORS[entry.mood] ?? MOOD_COLORS.cold;
+  const w = entry.w;
+
+  // Background
+  ctx.fillStyle = c.bg;
+  ctx.fillRect(0, 0, CW, CH);
+
+  ctx.fillStyle = c.primary;
+  ctx.strokeStyle = c.primary;
+  ctx.shadowColor = c.primary;
+  ctx.shadowBlur = 18;
+
+  const EY = CH * 0.42, EX_OFF = CW * 0.175, ES = CW * 0.12;
+
+  // Eyes
+  const eyeH = ES * 1.6 * (1 - w.es * 0.75);
+  [CW/2 - EX_OFF, CW/2 + EX_OFF].forEach(ex => {
+    ctx.beginPath();
+    ctx.ellipse(ex, EY, ES * 0.5, Math.max(eyeH * 0.5, 1.5), 0, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // Brows
+  const browY = EY - ES * 0.9 - w.br * ES * 0.6;
+  ctx.lineWidth = 5; ctx.lineCap = 'round';
+  ctx.shadowBlur = 8;
+  if (w.bf > 0.15) {
+    const furrX = w.bf * ES * 0.5;
+    ctx.beginPath();
+    ctx.moveTo(CW/2 - EX_OFF - ES * 0.5, browY - furrX * 0.5);
+    ctx.lineTo(CW/2 - EX_OFF + ES * 0.4, browY + furrX * 0.5);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(CW/2 + EX_OFF + ES * 0.5, browY - furrX * 0.5);
+    ctx.lineTo(CW/2 + EX_OFF - ES * 0.4, browY + furrX * 0.5);
+    ctx.stroke();
+  } else {
+    [CW/2 - EX_OFF, CW/2 + EX_OFF].forEach(ex => {
+      ctx.beginPath();
+      ctx.moveTo(ex - ES * 0.5, browY);
+      ctx.lineTo(ex + ES * 0.5, browY);
+      ctx.stroke();
+    });
+  }
+
+  // Mouth
+  const MY = CH * 0.65;
+  ctx.lineWidth = 5; ctx.lineCap = 'round';
+  ctx.shadowBlur = 10;
+  if (w.mo > 0.1) {
+    ctx.beginPath();
+    ctx.ellipse(CW/2, MY, 22 + w.sw * 14, 8 + w.mo * 14, 0, 0, Math.PI * 2);
+    ctx.fill();
+  } else if (w.sw > 0.05) {
+    ctx.beginPath();
+    ctx.arc(CW/2, MY - 6, 16 + w.sw * 20, 0.1 * Math.PI, 0.9 * Math.PI);
+    ctx.stroke();
+  } else {
+    ctx.globalAlpha = 0.6;
+    ctx.beginPath();
+    ctx.moveTo(CW/2 - 14, MY);
+    ctx.lineTo(CW/2 + 14, MY);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  }
+
+  // Glitch lines
+  if (w.gi > 0.05) {
+    ctx.shadowBlur = 0;
+    for (let i = 0; i < Math.floor(w.gi * 6); i++) {
+      ctx.globalAlpha = 0.3 + Math.random() * 0.4;
+      ctx.fillStyle = c.primary;
+      ctx.fillRect(0, Math.random() * CH, CW, 1 + Math.random() * 2);
+    }
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = c.primary;
+    ctx.strokeStyle = c.primary;
+  }
+
+  // Scanlines
+  ctx.shadowBlur = 0;
+  ctx.globalAlpha = 0.06;
+  ctx.fillStyle = '#000';
+  for (let y = 0; y < CH; y += 3) ctx.fillRect(0, y, CW, 1);
+  ctx.globalAlpha = 1;
+
+  // Vignette
+  const vig = ctx.createRadialGradient(CW/2, CH/2, CH*0.2, CW/2, CH/2, CH*0.65);
+  vig.addColorStop(0, 'rgba(0,0,0,0)');
+  vig.addColorStop(1, 'rgba(0,0,0,0.6)');
+  ctx.fillStyle = vig;
+  ctx.fillRect(0, 0, CW, CH);
+}
+
+// ── Sampling ──────────────────────────────────────────────────
+function pickOptions(hintMood) {
+  const byMood = {};
+  EXPR_LIB.forEach(e => {
+    if (!byMood[e.mood]) byMood[e.mood] = [];
+    byMood[e.mood].push(e);
+  });
+
+  const picked = new Set();
+  const result = [];
+
+  // 1 from same mood
+  const sameMoodPool = byMood[hintMood] ?? [];
+  if (sameMoodPool.length) {
+    const e = sameMoodPool[Math.floor(Math.random() * sameMoodPool.length)];
+    picked.add(e.name); result.push(e);
+  }
+
+  // 1 from a different mood
+  const otherMoods = Object.keys(byMood).filter(m => m !== hintMood);
+  if (otherMoods.length) {
+    const om = otherMoods[Math.floor(Math.random() * otherMoods.length)];
+    const pool = byMood[om].filter(e => !picked.has(e.name));
+    if (pool.length) {
+      const e = pool[Math.floor(Math.random() * pool.length)];
+      picked.add(e.name); result.push(e);
+    }
+  }
+
+  // 2 fully random (deduplicated)
+  const all = EXPR_LIB.filter(e => !picked.has(e.name));
+  for (let i = 0; i < 2 && all.length; i++) {
+    const idx = Math.floor(Math.random() * all.length);
+    const e = all.splice(idx, 1)[0];
+    picked.add(e.name); result.push(e);
+  }
+
+  // Shuffle result
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+
+  return result;
+}
+
+// ── State ─────────────────────────────────────────────────────
+let samples = [];
+let idx = 0;
+let labels = JSON.parse(localStorage.getItem('kvrc_labels') || '[]');
+let options = [];
+let animId = null;
+let t = 0;
+
+function saveLabels() {
+  localStorage.setItem('kvrc_labels', JSON.stringify(labels));
+}
+
+function exportLabels() {
+  const blob = new Blob([JSON.stringify(labels, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'labels.json'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function stopAnimation() {
+  if (animId) { cancelAnimationFrame(animId); animId = null; }
+}
+
+function renderOptions(canvases) {
+  stopAnimation();
+  const loop = (ts) => {
+    t = ts / 1000;
+    canvases.forEach((cv, i) => {
+      if (options[i]) drawFace(cv, options[i], t);
+    });
+    animId = requestAnimationFrame(loop);
+  };
+  animId = requestAnimationFrame(loop);
+}
+
+function render() {
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+
+  if (idx >= samples.length) {
+    app.innerHTML = '<div class="done-msg">All samples labeled. Export your labels below.</div>';
+    const btn = document.createElement('button');
+    btn.textContent = `Export labels.json (${labels.length} labels)`;
+    btn.onclick = exportLabels;
+    app.appendChild(btn);
+    stopAnimation();
+    return;
+  }
+
+  const sample = samples[idx];
+  options = pickOptions(sample.hint_mood);
+
+  // Reply box
+  const box = document.createElement('div');
+  box.className = 'reply-box';
+  box.innerHTML = `"${sample.reply}"<div class="mood-hint">hint: ${sample.hint_mood}</div>`;
+  app.appendChild(box);
+
+  // Progress
+  const prog = document.createElement('div');
+  prog.className = 'progress';
+  prog.textContent = `${idx + 1} / ${samples.length}  ·  labeled: ${labels.length}`;
+  app.appendChild(prog);
+
+  // Options
+  const optDiv = document.createElement('div');
+  optDiv.className = 'options';
+  const canvases = [];
+
+  options.forEach((entry, i) => {
+    const card = document.createElement('div');
+    card.className = 'option';
+
+    const cv = document.createElement('canvas');
+    cv.width = CW; cv.height = CH;
+    canvases.push(cv);
+
+    const name = document.createElement('div');
+    name.className = 'name';
+    name.textContent = entry.name.replace(/_/g, ' ');
+
+    card.appendChild(cv);
+    card.appendChild(name);
+    card.onclick = () => {
+      labels.push({ reply: sample.reply, expression_name: entry.name });
+      saveLabels();
+      idx++;
+      stopAnimation();
+      render();
+    };
+    optDiv.appendChild(card);
+  });
+
+  app.appendChild(optDiv);
+
+  // Controls
+  const ctrl = document.createElement('div');
+  ctrl.className = 'controls';
+
+  const skip = document.createElement('button');
+  skip.textContent = 'Skip';
+  skip.onclick = () => { idx++; stopAnimation(); render(); };
+
+  const exp = document.createElement('button');
+  exp.textContent = `Export (${labels.length})`;
+  exp.onclick = exportLabels;
+
+  const status = document.createElement('span');
+  status.id = 'status';
+  status.textContent = 'Labels auto-saved to localStorage';
+
+  ctrl.appendChild(skip);
+  ctrl.appendChild(exp);
+  ctrl.appendChild(status);
+  app.appendChild(ctrl);
+
+  renderOptions(canvases);
+}
+
+// ── Init ──────────────────────────────────────────────────────
+fetch('./samples.json')
+  .then(r => r.json())
+  .then(data => {
+    samples = data;
+    // Shuffle samples for variety
+    for (let i = samples.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [samples[i], samples[j]] = [samples[j], samples[i]];
+    }
+    render();
+  })
+  .catch(() => {
+    document.getElementById('app').innerHTML =
+      '<p style="color:#f44">Could not load samples.json. Serve this file from the tools/ directory.</p>';
+  });
+</script>
+</body>
+</html>

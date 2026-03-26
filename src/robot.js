@@ -1,8 +1,10 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { EMOTION_MAP } from './emotions.js';
-import { attachFaceScreen, updateFaceScreen, tickFaceScreen } from './faceScreen.js';
+import { attachFaceScreen, updateFaceScreen, tickFaceScreen, setExpression as faceSetExpression, initExpressionLibrary } from './faceScreen.js';
 import { AnimationController } from './animationController.js';
+import { EXPRESSION_LIBRARY } from './expressionLibrary.js';
 
 const BONES = {
   head:    'Head',
@@ -17,6 +19,7 @@ let robotRoot = null;
 let bones = {};
 let baseY = 0;
 let clock = 0;
+let _currentEmotionName = 'neutral';
 let currentEmotionCfg = null;
 let blinkTimer = rand(3, 6);
 let targetHeadYaw = 0, targetHeadPitch = 0, targetChestYaw = 0;
@@ -26,13 +29,30 @@ let activeShakeTimeout = null;
 let armRestQ = {};
 const animCtrl = new AnimationController();
 
+// ── Face idle cycling ─────────────────────────────────────────
+const FACE_IDLE_POOL = [
+  'neutral_idle', 'deadpan', 'cold_assessment', 'thinking_default',
+  'focused_lock', 'ice_stare', 'mild_contempt', 'logical_void',
+  'cold_curiosity', 'cold_sarcasm', 'calculating', 'wry_deflection',
+  'resigned_acceptance', 'precise_scan', 'skeptical_narrow', 'polite_disbelief',
+];
+let _faceIdleTimer = 0;
+let _faceIdleInterval = rand(8, 14);
+let _faceIdleLast = null;
+let _faceOverrideTimer = 0;          // counts down after LLM sets an expression
+const FACE_OVERRIDE_HOLD = 12;       // seconds to hold LLM expression before idle resumes
+
 function rand(a, b) { return a + Math.random() * (b - a); }
 
 export async function initRobot(scene, emotionMap) {
   currentEmotionCfg = emotionMap.neutral;
 
+  const dracoLoader = new DRACOLoader();
+  dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
+  const loader = new GLTFLoader();
+  loader.setDRACOLoader(dracoLoader);
   const gltf = await new Promise((resolve, reject) =>
-    new GLTFLoader().load('/models/kvrc.glb', resolve, undefined, reject));
+    loader.load('/models/kvrc.glb', resolve, undefined, reject));
 
   robotRoot = gltf.scene;
   scene.add(robotRoot);
@@ -98,36 +118,24 @@ export async function initRobot(scene, emotionMap) {
     animCtrl.playGesture('idle');
   }
 
-  // Attach face screen FIRST so we can skip it during material assignment
-  const faceScreenMesh = attachFaceScreen(robotRoot, scene, bones.head);
-  robotRoot.__faceScreenMesh = faceScreenMesh;
+  // Wire expression library into faceScreen
+  initExpressionLibrary(EXPRESSION_LIBRARY);
 
-  // ── Apply K-VRC colors (Standard — responds to IBL from HDR environment) ──
-  const armorMat = new THREE.MeshStandardMaterial({
-    color: 0xe03818,
-    emissive: 0x1a0400,
-    roughness: 0.55,
-    metalness: 0.1,
-    side: THREE.DoubleSide,
-  });
-  const jointMat = new THREE.MeshStandardMaterial({
-    color: 0x1e1e22,
-    emissive: 0x050505,
-    roughness: 0.4,
-    metalness: 0.6,
-    side: THREE.DoubleSide,
-  });
-
-  let colored = 0;
+  // ── Find the screen mesh (by name) then attach face canvas ──
+  // GLB materials from Blender are kept as-is; only the screen gets overridden.
+  const VISOR_KEYS = ['visor','screen','display','screenface','monitor'];
+  let preVisorMesh = null;
   robotRoot.traverse(obj => {
-    if (!obj.isMesh) return;
-    if (obj === faceScreenMesh) return;
+    if (preVisorMesh || !obj.isMesh) return;
     const n = obj.name.toLowerCase();
-    const isJoint = ['neck','hand','toe','foot','hips','pelvis'].some(k => n.includes(k));
-    obj.material = isJoint ? jointMat : armorMat;
-    colored++;
+    if (VISOR_KEYS.some(k => n.includes(k))) {
+      preVisorMesh = obj;
+      console.log('K-VRC: screen mesh found:', obj.name);
+    }
   });
-  console.log(`K-VRC: colored ${colored} mesh objects`);
+
+  const faceScreenMesh = attachFaceScreen(robotRoot, scene, bones.head, preVisorMesh);
+  robotRoot.__faceScreenMesh = faceScreenMesh;
 
   window.addEventListener('mousemove', e => {
     const nx =  (e.clientX / window.innerWidth)  * 2 - 1;
@@ -141,10 +149,25 @@ export async function initRobot(scene, emotionMap) {
     root: robotRoot,
     bones,
     setEmotionCfg: cfg => { currentEmotionCfg = cfg; },
+    setEmotionName: name => { _currentEmotionName = name; },
     startBodyMotion,
     triggerHeadJerk,
     playGesture: name => animCtrl.playGesture(name),
     get faceScreenMesh() { return faceScreenMesh; },
+    setExpression: name => {
+      _faceOverrideTimer = FACE_OVERRIDE_HOLD; // pause idle cycling for 12 s
+      const motionEnergy = faceSetExpression(name);
+      if (currentEmotionCfg) {
+        const baseAmp = EMOTION_MAP[_currentEmotionName]?.floatAmp ?? 0.03;
+        currentEmotionCfg = { ...currentEmotionCfg, floatAmp: baseAmp * motionEnergy };
+      }
+    },
+    applyInferResult(result) {
+      if (!result) return;
+      if (result.clip_weights && Object.keys(result.clip_weights).length > 0) {
+        animCtrl.blendClips(result.clip_weights);
+      }
+    },
   };
 }
 
@@ -179,6 +202,20 @@ export function updateRobot(delta) {
   // Face
   tickFaceScreen(delta * 1000);
   updateFaceScreen(robotRoot.__faceScreenMesh);
+
+  // Face idle cycling — rotates through subtle expressions when LLM isn't driving
+  _faceOverrideTimer = Math.max(0, _faceOverrideTimer - delta);
+  if (_faceOverrideTimer === 0) {
+    _faceIdleTimer += delta;
+    if (_faceIdleTimer >= _faceIdleInterval) {
+      _faceIdleTimer = 0;
+      _faceIdleInterval = rand(8, 14);
+      const pool = FACE_IDLE_POOL.filter(n => n !== _faceIdleLast);
+      const pick = pool[Math.floor(Math.random() * pool.length)];
+      _faceIdleLast = pick;
+      faceSetExpression(pick);
+    }
+  }
 }
 
 export function startBodyMotion(name) {

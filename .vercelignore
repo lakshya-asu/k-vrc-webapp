@@ -1,0 +1,10 @@
+node_modules/
+*.blend
+*.blend1
+K-VRC model/
+server.js
+KVRC_CLAUDE_CODE_PROMPT.md
+.claude/
+tools/
+modal_app/
+requirements.txt

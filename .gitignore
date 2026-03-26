@@ -14,9 +14,19 @@ KVRC_CLAUDE_CODE_PROMPT.md
 
 # Claude Code
 .claude/
+.vercel
+.env*.local
+
+data/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
 
 # Training clips (large video files)
 *.mp4
 !face_emotions.mp4
-K-VRC.gif
 !K-VRC.gif
+!face-animations.gif
+.superpowers/
