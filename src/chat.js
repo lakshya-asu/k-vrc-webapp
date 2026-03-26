@@ -180,26 +180,117 @@ async function sendMessage(text) {
   else hideSidenote();
 }
 
-// ── Mic ──────────────────────────────────────────────────────
+// ── Mic (MediaRecorder + Whisper STT) ────────────────────────
+let _micStream = null;
+let _mediaRecorder = null;
+let _audioChunks = [];
+let _micAnalyser = null;
+let _micAnimId = null;
+let _micActive = false;
+let _micBusy = false;
+
+function _animateMicBars() {
+  if (!_micActive || !_micAnalyser) return;
+  const data = new Uint8Array(_micAnalyser.frequencyBinCount);
+  const bars = document.querySelectorAll('.mic-bar');
+  // pick 4 representative frequency bins spread across the spectrum
+  const picks = [0.08, 0.22, 0.42, 0.65];
+  function frame() {
+    if (!_micActive) return;
+    _micAnimId = requestAnimationFrame(frame);
+    _micAnalyser.getByteFrequencyData(data);
+    bars.forEach((bar, i) => {
+      const val = data[Math.floor(picks[i] * data.length)] / 255;
+      bar.style.height = `${3 + val * 17}px`;
+    });
+  }
+  frame();
+}
+
+function _stopMicBars() {
+  if (_micAnimId) { cancelAnimationFrame(_micAnimId); _micAnimId = null; }
+  document.querySelectorAll('.mic-bar').forEach(b => { b.style.height = '3px'; });
+}
+
+async function _blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
 function setupMic() {
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   const btn = document.getElementById('mic-btn');
-  if (!SR) { btn?.style && (btn.style.display = 'none'); return; }
-  const recog = new SR();
-  recog.lang = 'en-US';
-  recog.interimResults = false;
-  let active = false;
-  btn?.addEventListener('click', () => {
-    active ? recog.stop() : recog.start();
-    active = !active;
-    btn.classList.toggle('active', active);
+  if (!btn) return;
+  if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) {
+    btn.style.display = 'none';
+    return;
+  }
+
+  btn.addEventListener('click', async () => {
+    if (_micBusy) return;
+
+    if (!_micActive) {
+      // ── Start recording ────────────────────────────────────
+      let stream;
+      try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+      catch { console.warn('Mic access denied'); return; }
+
+      _micStream = stream;
+      _micActive = true;
+      btn.classList.add('active');
+
+      // Analyser for bar visualisation
+      const actx = new AudioContext();
+      const src = actx.createMediaStreamSource(stream);
+      _micAnalyser = actx.createAnalyser();
+      _micAnalyser.fftSize = 32;
+      src.connect(_micAnalyser);
+
+      // Recorder for audio capture
+      _audioChunks = [];
+      _mediaRecorder = new MediaRecorder(stream);
+      _mediaRecorder.ondataavailable = e => { if (e.data.size > 0) _audioChunks.push(e.data); };
+      _mediaRecorder.start(100);
+
+      _animateMicBars();
+
+    } else {
+      // ── Stop and transcribe ────────────────────────────────
+      _micActive = false;
+      _micBusy = true;
+      btn.classList.remove('active');
+      btn.classList.add('transcribing');
+      _stopMicBars();
+
+      const stopped = new Promise(resolve => { _mediaRecorder.onstop = resolve; });
+      _mediaRecorder.stop();
+      _micStream?.getTracks().forEach(t => t.stop());
+      await stopped;
+
+      const blob = new Blob(_audioChunks, { type: _mediaRecorder.mimeType || 'audio/webm' });
+
+      try {
+        const base64 = await _blobToBase64(blob);
+        const res = await fetch('/api/stt', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ audio: base64, mimeType: blob.type }),
+        });
+        if (res.ok) {
+          const { text } = await res.json();
+          if (text?.trim()) sendMessage(text.trim());
+        }
+      } catch (err) {
+        console.error('STT error:', err);
+      } finally {
+        _micBusy = false;
+        btn.classList.remove('transcribing');
+      }
+    }
   });
-  recog.addEventListener('result', e => {
-    document.getElementById('chat-input').value = e.results[0][0].transcript;
-    active = false;
-    btn.classList.remove('active');
-  });
-  recog.addEventListener('end', () => { active = false; btn.classList.remove('active'); });
 }
 
 // ── Init ─────────────────────────────────────────────────────
