@@ -20,6 +20,8 @@ K-VRC is a real-time 3D robot character powered by Claude AI. It converses with 
 
 ## Face Expressions
 
+<img src="face-animations.gif" width="100%" />
+
 <video src="face_emotions.mp4" autoplay loop muted playsinline width="100%"></video>
 
 K-VRC's face screen renders in real-time on a canvas texture mapped onto the robot's visor. Each expression is defined by six continuous weight parameters — brow raise, brow furrow, eye squint, mouth open, smile width, and glitch intensity — blended smoothly in the renderer. There are 100 named expressions across six emotional moods (cold, warm, reactive, digital, expressive, dark), each selected by Claude per response.

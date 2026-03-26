@@ -28,4 +28,5 @@ __pycache__/
 *.mp4
 !face_emotions.mp4
 !K-VRC.gif
+!face-animations.gif
 .superpowers/

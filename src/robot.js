@@ -29,6 +29,19 @@ let activeShakeTimeout = null;
 let armRestQ = {};
 const animCtrl = new AnimationController();
 
+// ── Face idle cycling ─────────────────────────────────────────
+const FACE_IDLE_POOL = [
+  'neutral_idle', 'deadpan', 'cold_assessment', 'thinking_default',
+  'focused_lock', 'ice_stare', 'mild_contempt', 'logical_void',
+  'cold_curiosity', 'cold_sarcasm', 'calculating', 'wry_deflection',
+  'resigned_acceptance', 'precise_scan', 'skeptical_narrow', 'polite_disbelief',
+];
+let _faceIdleTimer = 0;
+let _faceIdleInterval = rand(8, 14);
+let _faceIdleLast = null;
+let _faceOverrideTimer = 0;          // counts down after LLM sets an expression
+const FACE_OVERRIDE_HOLD = 12;       // seconds to hold LLM expression before idle resumes
+
 function rand(a, b) { return a + Math.random() * (b - a); }
 
 export async function initRobot(scene, emotionMap) {
@@ -142,6 +155,7 @@ export async function initRobot(scene, emotionMap) {
     playGesture: name => animCtrl.playGesture(name),
     get faceScreenMesh() { return faceScreenMesh; },
     setExpression: name => {
+      _faceOverrideTimer = FACE_OVERRIDE_HOLD; // pause idle cycling for 12 s
       const motionEnergy = faceSetExpression(name);
       if (currentEmotionCfg) {
         const baseAmp = EMOTION_MAP[_currentEmotionName]?.floatAmp ?? 0.03;
@@ -188,6 +202,20 @@ export function updateRobot(delta) {
   // Face
   tickFaceScreen(delta * 1000);
   updateFaceScreen(robotRoot.__faceScreenMesh);
+
+  // Face idle cycling — rotates through subtle expressions when LLM isn't driving
+  _faceOverrideTimer = Math.max(0, _faceOverrideTimer - delta);
+  if (_faceOverrideTimer === 0) {
+    _faceIdleTimer += delta;
+    if (_faceIdleTimer >= _faceIdleInterval) {
+      _faceIdleTimer = 0;
+      _faceIdleInterval = rand(8, 14);
+      const pool = FACE_IDLE_POOL.filter(n => n !== _faceIdleLast);
+      const pick = pool[Math.floor(Math.random() * pool.length)];
+      _faceIdleLast = pick;
+      faceSetExpression(pick);
+    }
+  }
 }
 
 export function startBodyMotion(name) {
