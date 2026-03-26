@@ -525,7 +525,14 @@ function draw() {
   ctx.fillStyle = c.bg;
   ctx.fillRect(0, 0, W, H);
 
-  // Expression
+  // Expression — subtle scale bob with speech amplitude
+  ctx.save();
+  if (amplitude > 0.02) {
+    const bob = 1 + amplitude * 0.016;
+    ctx.translate(W / 2, H / 2);
+    ctx.scale(bob, bob);
+    ctx.translate(-W / 2, -H / 2);
+  }
   ctx.textBaseline = 'middle';
   ctx.textAlign = 'center';
   ctx.fillStyle = c.primary;
@@ -539,6 +546,7 @@ function draw() {
     expr(c, blinkProgress);
   }
   noGlow();
+  ctx.restore();
 
   // Speaking waveform
   if (amplitude > 0.02) drawWaveform(amplitude);
@@ -598,6 +606,11 @@ export function tickFaceScreen(deltaMs) {
   }
 
   draw();
+
+  // Emissive intensity breathes slightly with voice amplitude
+  if (faceMaterial && !fadeAnimId) {
+    faceMaterial.emissiveIntensity = 1.8 + amplitude * 0.38;
+  }
 }
 
 // ── Public API ────────────────────────────────────────────────

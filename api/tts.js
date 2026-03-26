@@ -1,4 +1,4 @@
-// api/tts.js
+// api/tts.js — OpenAI TTS proxy
 const MAX_TEXT_LEN = 1000;
 
 export default async function handler(req, res) {
@@ -25,22 +25,30 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Text too long' });
   }
 
-  const modalTtsUrl = process.env.MODAL_TTS_URL;
-  if (!modalTtsUrl) {
-    console.error('MODAL_TTS_URL not set');
+  const openaiKey = process.env.OPENAI_API_KEY;
+  if (!openaiKey) {
+    console.error('OPENAI_API_KEY not set');
     return res.status(500).json({ error: 'TTS not configured' });
   }
 
   try {
-    const ttsRes = await fetch(`${modalTtsUrl}/tts`, {
+    const ttsRes = await fetch('https://api.openai.com/v1/audio/speech', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: text.trim() }),
+      headers: {
+        'Authorization': `Bearer ${openaiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'tts-1',
+        input: text.trim(),
+        voice: 'onyx',
+        response_format: 'mp3',
+      }),
     });
 
     if (!ttsRes.ok) {
       const err = await ttsRes.text();
-      console.error('Modal TTS error:', ttsRes.status, err);
+      console.error('OpenAI TTS error:', ttsRes.status, err);
       return res.status(500).json({ error: 'TTS service error' });
     }
 
