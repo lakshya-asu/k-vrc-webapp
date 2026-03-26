@@ -475,12 +475,13 @@ function drawWeighted(weights, c, blink) {
     });
   }
 
-  // Mouth
+  // Mouth — live amplitude expands mouth_open during speech
   const MY = H * 0.65;
+  const liveMouthOpen = Math.max(weights.mouth_open, amplitude * 0.9);
   ctx.lineWidth = 7; ctx.lineCap = 'round';
-  if (weights.mouth_open > 0.1) {
+  if (liveMouthOpen > 0.1) {
     ctx.beginPath();
-    ctx.ellipse(W/2, MY, 35 + weights.smile_width * 20, 12 + weights.mouth_open * 20, 0, 0, Math.PI * 2);
+    ctx.ellipse(W/2, MY, 35 + weights.smile_width * 20, 12 + liveMouthOpen * 20, 0, 0, Math.PI * 2);
     ctx.fill();
   } else if (weights.smile_width > 0.05) {
     ctx.beginPath();
