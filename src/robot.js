@@ -124,11 +124,20 @@ export async function initRobot(scene, emotionMap) {
     side: THREE.DoubleSide,
   });
 
+  // Log all mesh names to help identify the visor mesh
+  const allMeshNames = [];
+  robotRoot.traverse(obj => {
+    if (!obj.isMesh) return;
+    const matName = (Array.isArray(obj.material) ? obj.material[0] : obj.material)?.name ?? 'unnamed';
+    allMeshNames.push(`${obj.name} (mat: ${matName})`);
+  });
+  console.log('K-VRC meshes:', allMeshNames);
+
   let colored = 0;
   robotRoot.traverse(obj => {
     if (!obj.isMesh) return;
     const n = obj.name.toLowerCase();
-    const isJoint = ['neck','hand','toe','foot','hips','pelvis'].some(k => n.includes(k));
+    const isJoint = ['neck','hand','toe','foot','hips','pelvis','elbow','knee','ear'].some(k => n.includes(k));
     obj.material = isJoint ? jointMat : armorMat;
     colored++;
   });

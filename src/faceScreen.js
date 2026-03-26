@@ -641,40 +641,65 @@ export function attachFaceScreen(robotScene, threeScene, faceBone) {
     map: faceTexture,
     emissiveMap: faceTexture,
     emissive: new THREE.Color(1, 1, 1),
-    emissiveIntensity: 1.4,
+    emissiveIntensity: 1.8,
     color: new THREE.Color(0, 0, 0),
     transparent: false,
     toneMapped: false,
+    side: THREE.FrontSide,
   });
   faceMaterial = mat;
 
-  // Try to find visor/screen mesh by name or material
+  const KEYS = ['visor','screen','face','display','screenface','glass','lens','monitor','window','panel'];
+
+  const allMeshes = [];
   let visorMesh = null;
   robotScene.traverse(obj => {
-    if (visorMesh || !obj.isMesh) return;
+    if (!obj.isMesh) return;
+    allMeshes.push(obj);
+    if (visorMesh) return;
     const n = obj.name.toLowerCase();
-    const matName = (Array.isArray(obj.material) ? obj.material[0] : obj.material)?.name ?? '';
-    if (['visor','screen','face','display','screenface'].some(k => n.includes(k) || matName.toLowerCase().includes(k))) {
+    const matName = (Array.isArray(obj.material) ? obj.material[0] : obj.material)?.name?.toLowerCase() ?? '';
+    if (KEYS.some(k => n.includes(k) || matName.includes(k))) {
       visorMesh = obj;
     }
   });
 
-  if (visorMesh) {
-    console.log('Face screen: found mesh', visorMesh.name);
-    if (Array.isArray(visorMesh.material)) {
-      const idx = visorMesh.material.findIndex(m => m?.name?.toLowerCase().includes('screen') || m?.name?.toLowerCase().includes('face'));
-      if (idx >= 0) visorMesh.material[idx] = mat;
-      else visorMesh.material = mat;
-    } else {
-      visorMesh.material = mat;
+  console.log('attachFaceScreen — all meshes:',
+    allMeshes.map(m => `"${m.name}" mat:"${(Array.isArray(m.material) ? m.material[0] : m.material)?.name ?? ''}"`));
+
+  // Second pass: proximity — smallest mesh near the head bone
+  if (!visorMesh && faceBone) {
+    const headPos = new THREE.Vector3();
+    faceBone.getWorldPosition(headPos);
+    let best = null, bestScore = Infinity;
+    allMeshes.forEach(m => {
+      const vc = m.geometry.attributes.position.count;
+      const wpos = new THREE.Vector3();
+      m.getWorldPosition(wpos);
+      const dist = wpos.distanceTo(headPos);
+      // Prefer meshes close to the head and with relatively few verts (flat panel)
+      if (dist < 0.5) {
+        const score = dist + vc * 0.0001;
+        if (score < bestScore) { bestScore = score; best = m; }
+      }
+    });
+    if (best) {
+      visorMesh = best;
+      console.log('Face screen: found by proximity', visorMesh.name);
     }
+  }
+
+  if (visorMesh) {
+    console.log('Face screen: applying to', visorMesh.name);
+    visorMesh.material = mat;
     draw();
     return visorMesh;
   }
 
-  // Fallback floating plane
-  console.warn('Face screen: no visor mesh found, using fallback plane');
-  const plane = new THREE.Mesh(new THREE.PlaneGeometry(0.3, 0.24), mat);
+  // Fallback floating plane (positioned in front of head bone each frame)
+  console.warn('Face screen: no mesh found — using fallback plane');
+  const plane = new THREE.Mesh(new THREE.PlaneGeometry(0.38, 0.30), mat);
+  plane.renderOrder = 1;
   plane.__isFallback = true;
   plane.__faceBone = faceBone;
   threeScene.add(plane);
@@ -689,7 +714,7 @@ export function updateFaceScreen(mesh) {
   if (!bone) return;
   bone.getWorldPosition(mesh.position);
   bone.getWorldQuaternion(mesh.quaternion);
-  _faceOffset.set(0, 0, 0.06).applyQuaternion(mesh.quaternion);
+  _faceOffset.set(0, 0, 0.22).applyQuaternion(mesh.quaternion);
   mesh.position.add(_faceOffset);
   mesh.updateMatrixWorld();
 }
