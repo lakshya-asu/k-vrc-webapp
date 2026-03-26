@@ -31,6 +31,8 @@ const MORPH_SPEED = 4;        // units/sec
 // faceMaterial reference set by attachFaceScreen
 let faceMaterial = null;
 let fadeAnimId = null;
+let _expressionWeights = null; // null = use emotion draw path
+let _expressionMood = null;    // null = use emotion color path
 
 function randomBetween(a, b) { return a + Math.random() * (b - a); }
 
@@ -44,7 +46,21 @@ const COLORS = {
   angry:    { primary: '#ff2200', secondary: '#881100', bg: '#100000' },
 };
 
-function getColors() { return COLORS[currentEmotion] ?? COLORS.neutral; }
+const MOOD_COLORS = {
+  cold:   { primary: '#00cfff', secondary: '#0066aa', bg: '#010810' },
+  warm:   { primary: '#ffaa22', secondary: '#ff6600', bg: '#0f0500' },
+  glitch: { primary: '#ff00ee', secondary: '#880077', bg: '#080005' },
+  static: { primary: '#aaaaaa', secondary: '#555555', bg: '#060606' },
+  data:   { primary: '#00ff88', secondary: '#00aa55', bg: '#010a04' },
+  boot:   { primary: '#00e5ff', secondary: '#0088aa', bg: '#040c10' },
+  angry:  { primary: '#ff2200', secondary: '#881100', bg: '#0f0000' },
+  dream:  { primary: '#cc88ff', secondary: '#7744bb', bg: '#070010' },
+};
+
+function getColors() {
+  if (_expressionMood) return MOOD_COLORS[_expressionMood] ?? MOOD_COLORS.cold;
+  return COLORS[currentEmotion] ?? COLORS.neutral;
+}
 
 // ── Eye shape definitions ─────────────────────────────────────
 // Each eye is defined as a draw function: (ctx, cx, cy, w, h, color, blink)
@@ -421,6 +437,78 @@ function drawBlink(p) {
   noGlow();
 }
 
+// ── Weighted expression draw ──────────────────────────────────
+function drawWeighted(weights, c, blink) {
+  const EY = H * 0.42, EX_OFF = W * 0.175, ES = W * 0.12;
+
+  ctx.fillStyle = c.primary;
+  ctx.strokeStyle = c.primary;
+
+  // Eyes: squint compresses eye height
+  const eyeH = ES * 1.6 * (1 - weights.eye_squint * 0.75) * (1 - blink);
+  [W/2 - EX_OFF, W/2 + EX_OFF].forEach(ex => {
+    ctx.beginPath();
+    ctx.ellipse(ex, EY, ES * 0.5, Math.max(eyeH * 0.5, 2), 0, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // Brow: brow_raise moves brows up; brow_furrow angles them inward
+  const browY = EY - ES * 0.9 - weights.brow_raise * ES * 0.6;
+  ctx.lineWidth = 8; ctx.lineCap = 'round';
+  if (weights.brow_furrow > 0.15) {
+    const furrX = weights.brow_furrow * ES * 0.5;
+    ctx.beginPath();
+    ctx.moveTo(W/2 - EX_OFF - ES * 0.5, browY - furrX * 0.5);
+    ctx.lineTo(W/2 - EX_OFF + ES * 0.4, browY + furrX * 0.5);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(W/2 + EX_OFF + ES * 0.5, browY - furrX * 0.5);
+    ctx.lineTo(W/2 + EX_OFF - ES * 0.4, browY + furrX * 0.5);
+    ctx.stroke();
+  } else {
+    [W/2 - EX_OFF, W/2 + EX_OFF].forEach(ex => {
+      ctx.beginPath();
+      ctx.moveTo(ex - ES * 0.5, browY);
+      ctx.lineTo(ex + ES * 0.5, browY);
+      ctx.stroke();
+    });
+  }
+
+  // Mouth
+  const MY = H * 0.65;
+  ctx.lineWidth = 7; ctx.lineCap = 'round';
+  if (weights.mouth_open > 0.1) {
+    ctx.beginPath();
+    ctx.ellipse(W/2, MY, 35 + weights.smile_width * 20, 12 + weights.mouth_open * 20, 0, 0, Math.PI * 2);
+    ctx.fill();
+  } else if (weights.smile_width > 0.05) {
+    ctx.beginPath();
+    ctx.arc(W/2, MY - 10, 25 + weights.smile_width * 30, 0.1 * Math.PI, 0.9 * Math.PI);
+    ctx.stroke();
+  } else {
+    ctx.globalAlpha = 0.6;
+    ctx.beginPath();
+    ctx.moveTo(W/2 - 22, MY);
+    ctx.lineTo(W/2 + 22, MY);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  }
+
+  // Glitch overlay
+  if (weights.glitch_intensity > 0.05) {
+    noGlow();
+    const intensity = weights.glitch_intensity;
+    for (let i = 0; i < Math.floor(intensity * 8); i++) {
+      ctx.globalAlpha = 0.3 + Math.random() * 0.4;
+      ctx.fillStyle = c.primary;
+      ctx.fillRect(0, Math.random() * H, W, 2 + Math.random() * 3);
+    }
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = c.primary;
+    ctx.strokeStyle = c.primary;
+  }
+}
+
 // ── Main draw ─────────────────────────────────────────────────
 function draw() {
   const c = getColors();
@@ -442,8 +530,12 @@ function draw() {
   ctx.strokeStyle = c.primary;
   glow(c.primary, 24);
 
-  const expr = EXPRESSIONS[currentEmotion] ?? EXPRESSIONS.neutral;
-  expr(c, blinkProgress);
+  if (_expressionWeights) {
+    drawWeighted(_expressionWeights, c, blinkProgress);
+  } else {
+    const expr = EXPRESSIONS[currentEmotion] ?? EXPRESSIONS.neutral;
+    expr(c, blinkProgress);
+  }
   noGlow();
 
   // Speaking waveform
@@ -508,9 +600,33 @@ export function tickFaceScreen(deltaMs) {
 
 // ── Public API ────────────────────────────────────────────────
 export function setEmotion(emotion) {
-  if (emotion === currentEmotion && !booting) return;
+  _expressionWeights = null;                           // always clear first
+  _expressionMood = null;
+  if (emotion === currentEmotion && !booting) return;  // guard retained, moved to line 3
   currentEmotion = emotion;
-  morphP = 0; // trigger morph
+  morphP = 0;
+}
+
+export function setExpression(name) {
+  if (!setExpression._lib) {
+    _expressionWeights = null;
+    _expressionMood = null;
+    return 0.5;
+  }
+  const entry = setExpression._lib.find(e => e.name === name)
+    ?? setExpression._lib.find(e => e.name === 'neutral_idle');
+  if (!entry) {
+    _expressionWeights = null;
+    _expressionMood = null;
+    return 0.5;
+  }
+  _expressionWeights = { ...entry.weights };
+  _expressionMood = entry.mood;
+  return entry.motion_energy;
+}
+
+export function initExpressionLibrary(lib) {
+  setExpression._lib = lib;
 }
 
 export function setSpeakingAmplitude(amp) {
