@@ -1,12 +1,12 @@
 const HINTS = [
-  { label: 'Try saying',  text: '"do a little dance"' },
-  { label: 'Try saying',  text: '"what are you thinking about?"' },
-  { label: 'Fun fact',    text: '100 face states — every reply changes the expression' },
-  { label: 'Try saying',  text: '"tell me something surprising"' },
-  { label: 'Controls',    text: 'Hold T or the mic icon to talk' },
-  { label: 'Fun fact',    text: 'Voice syncs live to audio amplitude' },
-  { label: 'Controls',    text: 'Scroll to zoom · move the mouse to turn the head' },
-  { label: 'Try saying',  text: '"show me how you feel right now"' },
+  { label: 'Try saying', text: '"do a little dance"' },
+  { label: 'Try saying', text: '"what are you thinking about?"' },
+  { label: 'Fun fact',   text: '100 face states — every reply changes the expression' },
+  { label: 'Try saying', text: '"tell me something surprising"' },
+  { label: 'Fun fact',   text: 'Voice syncs live to audio amplitude' },
+  { label: 'Controls',  text: 'Scroll to zoom · mouse to turn the head' },
+  { label: 'Try saying', text: '"show me how you feel right now"' },
+  { label: 'Try saying', text: '"explain the universe in one sentence"' },
 ];
 
 export function initHints() {
@@ -26,6 +26,7 @@ export function initHints() {
       if (dismissed) return;
       labelEl.textContent = h.label;
       textEl.textContent  = h.text;
+      panel.classList.toggle('try-saying', h.label === 'Try saying');
       panel.classList.add('visible');
     }, 320);
   }
@@ -44,11 +45,22 @@ export function initHints() {
     panel.classList.remove('visible');
   }
 
+  // Click "Try saying" hint → paste into input
+  panel.addEventListener('click', () => {
+    const h = HINTS[idx % HINTS.length];
+    if (h.label !== 'Try saying') return;
+    const input = document.getElementById('chat-input');
+    if (!input) return;
+    input.value = h.text.replace(/^"|"$/g, '');
+    input.focus();
+  });
+
   // Initial reveal after loading clears
   timer = setTimeout(() => {
     if (dismissed) return;
     labelEl.textContent = HINTS[0].label;
     textEl.textContent  = HINTS[0].text;
+    panel.classList.toggle('try-saying', HINTS[0].label === 'Try saying');
     panel.classList.add('visible');
     timer = setTimeout(advance, 5500);
   }, 2800);

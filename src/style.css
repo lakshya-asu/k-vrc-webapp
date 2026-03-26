@@ -355,10 +355,10 @@ html, body {
 }
 #sidenote-links a:hover { text-decoration: underline; }
 
-/* ── Hints — anchored above the input bar ────────────────── */
+/* ── Rotating hints — anchored above the input bar ──────── */
 #hints-panel {
   position: absolute;
-  bottom: calc(100% + 0.55rem);
+  bottom: calc(100% + 1.45rem);
   left: 0; right: 0;
   text-align: center;
   opacity: 0;
@@ -372,7 +372,11 @@ html, body {
 #hints-panel.visible {
   opacity: 1;
   transform: translateY(0);
+  pointer-events: auto;
 }
+#hints-panel.try-saying { cursor: pointer; }
+#hints-panel.try-saying:hover #hints-text { color: rgba(255,255,255,0.7); transition: color 0.15s; }
+#hints-panel.try-saying:hover #hints-label { opacity: 1; transition: opacity 0.15s; }
 #hints-label {
   font-family: var(--font-heading);
   font-size: 0.58rem; font-weight: 700;
@@ -389,9 +393,24 @@ html, body {
   font-family: var(--font-ui);
   font-size: 0.68rem; font-weight: 400;
   color: rgba(255,255,255,0.38);
+  transition: color 0.15s;
 }
 
-/* ── Voice hint label ────────────────────────────────────── */
+/* ── Persistent controls hint ────────────────────────────── */
+#controls-hint {
+  position: absolute;
+  bottom: calc(100% + 0.38rem);
+  left: 0; right: 0;
+  display: flex; align-items: center; justify-content: center; gap: 0.28rem;
+  font-family: var(--font-heading);
+  font-size: 0.55rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: rgba(255,255,255,0.18);
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ── Voice hint label (inside input row) ─────────────────── */
 #voice-hint {
   font-family: var(--font-heading);
   font-size: 0.55rem; font-weight: 600;
