@@ -229,67 +229,81 @@ function setupMic() {
     return;
   }
 
-  btn.addEventListener('click', async () => {
-    if (_micBusy) return;
+  async function startRecording() {
+    if (_micActive || _micBusy) return;
+    let stream;
+    try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+    catch { console.warn('Mic access denied'); return; }
 
-    if (!_micActive) {
-      // ── Start recording ────────────────────────────────────
-      let stream;
-      try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
-      catch { console.warn('Mic access denied'); return; }
+    _micStream = stream;
+    _micActive = true;
+    btn.classList.add('active');
 
-      _micStream = stream;
-      _micActive = true;
-      btn.classList.add('active');
+    const actx = new AudioContext();
+    const src = actx.createMediaStreamSource(stream);
+    _micAnalyser = actx.createAnalyser();
+    _micAnalyser.fftSize = 32;
+    src.connect(_micAnalyser);
 
-      // Analyser for bar visualisation
-      const actx = new AudioContext();
-      const src = actx.createMediaStreamSource(stream);
-      _micAnalyser = actx.createAnalyser();
-      _micAnalyser.fftSize = 32;
-      src.connect(_micAnalyser);
+    _audioChunks = [];
+    _mediaRecorder = new MediaRecorder(stream);
+    _mediaRecorder.ondataavailable = e => { if (e.data.size > 0) _audioChunks.push(e.data); };
+    _mediaRecorder.start(100);
+    _animateMicBars();
+  }
 
-      // Recorder for audio capture
-      _audioChunks = [];
-      _mediaRecorder = new MediaRecorder(stream);
-      _mediaRecorder.ondataavailable = e => { if (e.data.size > 0) _audioChunks.push(e.data); };
-      _mediaRecorder.start(100);
+  async function stopRecording() {
+    if (!_micActive) return;
+    _micActive = false;
+    _micBusy = true;
+    btn.classList.remove('active');
+    btn.classList.add('transcribing');
+    _stopMicBars();
 
-      _animateMicBars();
+    const stopped = new Promise(resolve => { _mediaRecorder.onstop = resolve; });
+    _mediaRecorder.stop();
+    _micStream?.getTracks().forEach(t => t.stop());
+    await stopped;
 
-    } else {
-      // ── Stop and transcribe ────────────────────────────────
-      _micActive = false;
-      _micBusy = true;
-      btn.classList.remove('active');
-      btn.classList.add('transcribing');
-      _stopMicBars();
-
-      const stopped = new Promise(resolve => { _mediaRecorder.onstop = resolve; });
-      _mediaRecorder.stop();
-      _micStream?.getTracks().forEach(t => t.stop());
-      await stopped;
-
-      const blob = new Blob(_audioChunks, { type: _mediaRecorder.mimeType || 'audio/webm' });
-
-      try {
-        const base64 = await _blobToBase64(blob);
-        const res = await fetch('/api/stt', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ audio: base64, mimeType: blob.type }),
-        });
-        if (res.ok) {
-          const { text } = await res.json();
-          if (text?.trim()) sendMessage(text.trim());
-        }
-      } catch (err) {
-        console.error('STT error:', err);
-      } finally {
-        _micBusy = false;
-        btn.classList.remove('transcribing');
+    const blob = new Blob(_audioChunks, { type: _mediaRecorder.mimeType || 'audio/webm' });
+    try {
+      const base64 = await _blobToBase64(blob);
+      const res = await fetch('/api/stt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ audio: base64, mimeType: blob.type }),
+      });
+      if (res.ok) {
+        const { text } = await res.json();
+        if (text?.trim()) sendMessage(text.trim());
       }
+    } catch (err) {
+      console.error('STT error:', err);
+    } finally {
+      _micBusy = false;
+      btn.classList.remove('transcribing');
     }
+  }
+
+  // Hold button to record
+  btn.addEventListener('mousedown', e => { e.preventDefault(); startRecording(); });
+  btn.addEventListener('mouseup', () => stopRecording());
+  btn.addEventListener('mouseleave', () => { if (_micActive) stopRecording(); });
+
+  // Touch (mobile)
+  btn.addEventListener('touchstart', e => { e.preventDefault(); startRecording(); }, { passive: false });
+  btn.addEventListener('touchend', () => stopRecording());
+
+  // Hold backtick (`) to record — skipped when chat input is focused
+  window.addEventListener('keydown', e => {
+    if (e.code !== 'Backquote' || e.repeat) return;
+    if (document.activeElement?.id === 'chat-input') return;
+    e.preventDefault();
+    startRecording();
+  });
+  window.addEventListener('keyup', e => {
+    if (e.code !== 'Backquote') return;
+    stopRecording();
   });
 }
 
