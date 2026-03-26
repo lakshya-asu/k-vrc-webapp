@@ -14,3 +14,9 @@ KVRC_CLAUDE_CODE_PROMPT.md
 
 # Claude Code
 .claude/
+
+# Training clips (large video files)
+*.mp4
+!face_emotions.mp4
+K-VRC.gif
+!K-VRC.gif
