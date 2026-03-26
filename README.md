@@ -1,4 +1,4 @@
-<div align="center">
+<div align="left">
 
 <img src="K-VRC.gif" width="220" align="right" />
 
