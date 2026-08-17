@@ -2,6 +2,22 @@
 
 # K-VRC
 
+## Animus proof branch
+
+`feat/animus-poc` uses K-VRC as the first Project Animus character. It adds a
+provider-neutral actor contract, a small local-model route, Codex Luna and
+Hermes operator routes, and a deterministic fallback.
+
+Verified baseline: the current browser maps an LLM gesture label to baked GLB
+clips. The repository contains a learned-animation scaffold, but it does not
+track trained head weights, training data, an evaluation receipt, or a deploy
+receipt. The current `blendClips` implementation plays the top clip rather than
+performing weighted blending. Do not treat the historic learned-animation
+section below as a verified deployment claim.
+
+Start with [the Animus documentation](docs/animus/README.md) and
+[the repository truth pass](docs/animus/truth-pass.md).
+
 <img src="K-VRC.gif" width="220" align="right" />
 **A sarcastic AI robot that learned to move, feel, and speak.**
 

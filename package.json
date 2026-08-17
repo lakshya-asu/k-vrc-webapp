@@ -7,7 +7,9 @@
     "dev": "vite",
     "api": "node server.js",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:animus": "node --test tests_js/animus-contract.test.js tests_js/animus-director.test.js",
+    "animus:poc": "node scripts/animus-poc.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
