@@ -24,6 +24,11 @@ __pycache__/
 *.pyc
 *.pyo
 
+# Animus voice pipeline: isolated venv, vendored binary, rendered output
+.venv-voice/
+voice/animus_voice/vendor/
+voice/animus_voice/out/
+
 # Training clips (large video files)
 *.mp4
 !face_emotions.mp4

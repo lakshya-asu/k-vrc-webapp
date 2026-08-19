@@ -1,0 +1,21 @@
+{
+  "metadata": {
+    "soundFile": "hello.wav",
+    "duration": 1.60
+  },
+  "mouthCues": [
+    { "start": 0.00, "end": 0.12, "value": "X" },
+    { "start": 0.12, "end": 0.22, "value": "H" },
+    { "start": 0.22, "end": 0.34, "value": "C" },
+    { "start": 0.34, "end": 0.46, "value": "B" },
+    { "start": 0.46, "end": 0.58, "value": "E" },
+    { "start": 0.58, "end": 0.70, "value": "X" },
+    { "start": 0.70, "end": 0.82, "value": "D" },
+    { "start": 0.82, "end": 0.92, "value": "A" },
+    { "start": 0.92, "end": 1.04, "value": "B" },
+    { "start": 1.04, "end": 1.18, "value": "F" },
+    { "start": 1.18, "end": 1.30, "value": "G" },
+    { "start": 1.30, "end": 1.44, "value": "C" },
+    { "start": 1.44, "end": 1.60, "value": "X" }
+  ]
+}
