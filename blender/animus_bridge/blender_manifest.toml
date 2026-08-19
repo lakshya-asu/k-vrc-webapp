@@ -1,0 +1,19 @@
+schema_version = "1.0.0"
+
+id = "animus_bridge"
+version = "0.1.0"
+name = "Animus Bridge"
+tagline = "Typed localhost animation API for Animus actor takes"
+maintainer = "Lakshya Jain <jainlakshya04@gmail.com>"
+type = "add-on"
+
+blender_version_min = "4.5.0"
+
+license = ["SPDX:Apache-2.0"]
+
+tags = ["Animation"]
+
+platforms = ["windows-x64", "linux-x64", "macos-arm64"]
+
+[permissions]
+network = "Local loopback socket on 127.0.0.1 for the Animus actor pipeline"
