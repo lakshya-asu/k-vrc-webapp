@@ -143,9 +143,45 @@ def _voice_layers(jobs, voice_mode, out_dir, profile):
     return voice_receipts
 
 
+def load_plan_file(path, actor_id="kvrc", control_level="perform"):
+    """Replay a saved plan (or a full receipt) without any brain.
+
+    The file may be a bare actor plan or an actor receipt whose 'plan'
+    key holds one. The plan is re-validated against the strict contract
+    with the caller's authority, and its provenance is kept with a
+    'replayed_from' marker so a re-render never masquerades as a fresh
+    model authorship.
+    """
+    with open(path, "r", encoding="utf-8-sig") as handle:
+        data = json.load(handle)
+    candidate = data.get("plan") if isinstance(data, dict) and "plan" in data else data
+    if not isinstance(candidate, dict):
+        raise ActorLoopError(f"no actor plan found in '{path}'")
+    original_provenance = candidate.get("provenance") or {}
+    # provenance is re-stamped below; actor_id and control_level are
+    # authority-owned, the validator stamps them from the caller.
+    candidate = {
+        key: value
+        for key, value in candidate.items()
+        if key not in ("provenance", "actor_id", "control_level")
+    }
+    authority = {"actor_id": actor_id, "control_level": control_level}
+    checked = validate_actor_plan(candidate, authority)
+    if not checked["ok"]:
+        raise ActorLoopError(
+            f"replayed plan from '{path}' violated the actor contract:\n"
+            + "\n".join(checked["errors"])
+        )
+    plan = dict(checked["value"])
+    provenance = dict(original_provenance)
+    provenance["replayed_from"] = os.path.basename(path)
+    plan["provenance"] = provenance
+    return plan
+
+
 def _launch_stage(port, profile_path, run_dir, blender, deadline,
                   render_dir=None, render_audio=None, render_audio_start=None,
-                  face_frames=None, render_engine=None):
+                  face_frames=None, render_engine=None, render_size=None):
     done_file = os.path.join(run_dir, "stage.done")
     report_path = os.path.join(run_dir, "stage-report.json")
     log_path = os.path.join(run_dir, "stage.log")
@@ -172,6 +208,8 @@ def _launch_stage(port, profile_path, run_dir, blender, deadline,
     ]
     if render_dir:
         command += ["--render-dir", render_dir]
+        if render_size:
+            command += ["--render-size", render_size]
         if render_audio:
             command += ["--render-audio", render_audio]
             if render_audio_start is not None:
@@ -214,6 +252,8 @@ def run_actor_loop(
     stage_deadline=300.0,
     sender=None,
     render_dir=None,
+    render_size=None,
+    plan_file=None,
 ):
     """Run the whole chain. Returns the full receipt dict.
 
@@ -221,15 +261,27 @@ def run_actor_loop(
     socket or Blender process; tests route it through fake bpy.
     """
     profile = load_profile(profile_path)
-    plan = build_plan(
-        line,
-        instruction=instruction,
-        speech=speech,
-        target=target,
-        actor_id=actor_id,
-        control_level=control_level,
-        brain=brain,
-    )
+    if plan_file:
+        plan = load_plan_file(
+            plan_file, actor_id=actor_id, control_level=control_level
+        )
+        if not line:
+            speech_texts = [
+                beat["speech"]["text"]
+                for beat in plan["beats"]
+                if beat.get("speech")
+            ]
+            line = speech_texts[0] if speech_texts else plan.get("summary", "")
+    else:
+        plan = build_plan(
+            line,
+            instruction=instruction,
+            speech=speech,
+            target=target,
+            actor_id=actor_id,
+            control_level=control_level,
+            brain=brain,
+        )
     jobs = map_plan_to_bridge_jobs(plan, profile)
 
     os.makedirs(out_dir, exist_ok=True)
@@ -288,7 +340,7 @@ def run_actor_loop(
             render_dir=render_dir, render_audio=render_audio,
             render_audio_start=render_audio_start,
             face_frames=face_report["dir"] if face_report else None,
-            render_engine=render_engine,
+            render_engine=render_engine, render_size=render_size,
         )
         try:
             if not wait_for_bridge("127.0.0.1", stage_port, deadline_s=120.0):
@@ -307,7 +359,9 @@ def run_actor_loop(
             with open(done_file, "w", encoding="utf-8") as handle:
                 handle.write("done\n")
             try:
-                process.wait(timeout=600 if render_dir else 60)
+                # 1080p EEVEE renders of the longer takes need well over
+                # ten minutes; the encode keeps running after done-file.
+                process.wait(timeout=2400 if render_dir else 60)
             except subprocess.TimeoutExpired:
                 process.kill()
             log_handle.close()

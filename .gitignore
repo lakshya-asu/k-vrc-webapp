@@ -24,8 +24,9 @@ __pycache__/
 *.pyc
 *.pyo
 
-# Animus voice pipeline: isolated venv, vendored binary, rendered output
+# Animus voice pipeline: isolated venvs, vendored binary, rendered output
 .venv-voice/
+.venv-voice2/
 voice/animus_voice/vendor/
 voice/animus_voice/out/
 

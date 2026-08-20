@@ -327,3 +327,29 @@ test('a viseme artifact becomes an ear pose take in bone mode', () => {
     /expected 'animus_viseme_take'/,
   );
 });
+
+test('speech backend and tts opts pass through to the voice job', () => {
+  const raw = loadProfile();
+  raw.speech.backend = 'chatterbox';
+  raw.speech.tts = { exaggeration: 0.7, cfg_weight: 0.35, device: 'cuda' };
+  const checked = validateEmbodimentProfile(raw);
+  assert.equal(checked.ok, true, checked.errors.join('; '));
+  const plan = validatedFallbackPlan({
+    instruction: 'Say hello',
+    target: 'camera',
+    speech: 'Hello there',
+    capabilities: { body: true, gaze: true, face: true, speech: true },
+  });
+  const jobs = mapPlanToBridgeJobs(plan, checked.value);
+  const job = jobs.voice_jobs[0];
+  assert.equal(job.backend, 'chatterbox');
+  assert.deepEqual(job.tts_opts, { exaggeration: 0.7, cfg_weight: 0.35, device: 'cuda' });
+});
+
+test('an unknown speech backend is refused', () => {
+  const raw = loadProfile();
+  raw.speech.backend = 'cloud-voice';
+  const checked = validateEmbodimentProfile(raw);
+  assert.equal(checked.ok, false);
+  assert.ok(checked.errors.some((error) => error.includes('speech.backend')));
+});

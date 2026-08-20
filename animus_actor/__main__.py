@@ -39,7 +39,20 @@ from .voice import VOICE_MODES
 
 def build_parser():
     parser = argparse.ArgumentParser(prog="animus_actor", description=__doc__)
-    parser.add_argument("line", help="the line of dialogue to perform")
+    parser.add_argument(
+        "line",
+        nargs="?",
+        default=None,
+        help="the line of dialogue to perform (optional with --plan-file)",
+    )
+    parser.add_argument(
+        "--plan-file",
+        dest="plan_file",
+        default=None,
+        help="replay a saved plan or receipt JSON instead of asking a "
+        "brain; the plan is re-validated and its provenance is kept "
+        "with a replayed_from marker",
+    )
     parser.add_argument(
         "--instruction",
         default=None,
@@ -95,6 +108,13 @@ def build_parser():
         "(H.264, AAC voice when a live wav exists) plus four still PNGs. "
         "Stage runs only, ignored with --attach or an injected sender.",
     )
+    parser.add_argument(
+        "--render-size",
+        dest="render_size",
+        default=None,
+        help="render resolution WxH (stage default 960x540; use "
+        "1920x1080 for full HD)",
+    )
     return parser
 
 
@@ -103,6 +123,12 @@ def main(argv=None):
     if args.attach and args.port is None:
         print(
             json.dumps({"error": "--attach requires --port"}), file=sys.stderr
+        )
+        return 2
+    if not args.line and not args.plan_file:
+        print(
+            json.dumps({"error": "a line of dialogue or --plan-file is required"}),
+            file=sys.stderr,
         )
         return 2
     try:
@@ -124,6 +150,8 @@ def main(argv=None):
             blender=args.blender,
             stage_deadline=args.stage_deadline,
             render_dir=args.render_dir,
+            render_size=args.render_size,
+            plan_file=args.plan_file,
         )
     except (ActorLoopError, ValueError, RuntimeError) as error:
         print(

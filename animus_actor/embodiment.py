@@ -321,6 +321,15 @@ def validate_embodiment_profile(profile):
             errors.append("speech.name_hint must be a valid bridge name hint")
         if not isinstance(speech.get("voice"), str) or not speech.get("voice"):
             errors.append("speech.voice is required")
+        if "backend" in speech and speech.get("backend") not in (
+            "kokoro",
+            "chatterbox",
+        ):
+            errors.append(
+                "speech.backend must be 'kokoro' or 'chatterbox' when present"
+            )
+        if "tts" in speech and not _is_object(speech.get("tts")):
+            errors.append("speech.tts must be an object when present")
 
     if errors:
         return {"ok": False, "errors": errors, "value": None}
@@ -558,6 +567,8 @@ def map_plan_to_bridge_jobs(plan, profile):
                     "lang": speech.get("lang", "a"),
                     "speed": speech.get("speed", 1.0),
                     "seed": speech.get("seed", 0),
+                    "backend": speech.get("backend", "kokoro"),
+                    "tts_opts": dict(speech.get("tts") or {}),
                     "stem": sanitize_name_hint(f"{beat['id']}_speech", "speech"),
                 }
             )

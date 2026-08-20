@@ -67,6 +67,9 @@ def convert_only(
     return artifact, take_path
 
 
+TTS_BACKENDS = ("kokoro", "chatterbox")
+
+
 def run_pipeline(
     text,
     out_dir,
@@ -79,25 +82,51 @@ def run_pipeline(
     frame_start=1,
     obj="KVRC",
     name_hint="animus_speech",
+    backend="kokoro",
+    tts_opts=None,
 ):
-    """Full live pipeline. Requires Kokoro and Rhubarb to be installed.
+    """Full live pipeline. Requires a TTS backend and Rhubarb installed.
+
+    backend picks the TTS engine: 'kokoro' (default, deterministic,
+    CPU) or 'chatterbox' (expressive, built-in voice only, CUDA when
+    available). tts_opts carries backend-specific knobs; chatterbox
+    reads exaggeration, cfg_weight, temperature, and device from it.
 
     Writes <stem>.wav, <stem>.rhubarb.json, and <stem>.animus.json into
     out_dir and returns a receipt describing all three plus the artifact.
-    Deterministic given the same text, voice, speed, seed, fps, and
-    frame_start.
+    Deterministic given the same inputs on the kokoro backend.
     """
     from .rhubarb import run_rhubarb
-    from .tts_kokoro import render_to_wav
+
+    if backend not in TTS_BACKENDS:
+        raise RuntimeError(
+            f"unknown TTS backend '{backend}'; choose from {TTS_BACKENDS}"
+        )
 
     os.makedirs(out_dir, exist_ok=True)
     wav_path = os.path.join(out_dir, f"{stem}.wav")
     cue_path = os.path.join(out_dir, f"{stem}.rhubarb.json")
     take_path = os.path.join(out_dir, f"{stem}.animus.json")
 
-    tts_receipt = render_to_wav(
-        text, wav_path, voice=voice, lang=lang, speed=speed, seed=seed
-    )
+    opts = dict(tts_opts or {})
+    if backend == "chatterbox":
+        from .tts_chatterbox import render_to_wav
+
+        tts_receipt = render_to_wav(
+            text,
+            wav_path,
+            exaggeration=opts.get("exaggeration", 0.5),
+            cfg_weight=opts.get("cfg_weight", 0.5),
+            temperature=opts.get("temperature", 0.8),
+            seed=seed,
+            device=opts.get("device", "auto"),
+        )
+    else:
+        from .tts_kokoro import render_to_wav
+
+        tts_receipt = render_to_wav(
+            text, wav_path, voice=voice, lang=lang, speed=speed, seed=seed
+        )
     audio_sha = _sha256(wav_path)
 
     cue_data = run_rhubarb(wav_path, transcript=text, out_json=cue_path)

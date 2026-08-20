@@ -52,6 +52,28 @@ Useful flags:
                                loop otherwise checks PATH and the
                                ~/tools/blender-4.5 install)
     --receipt PATH             write the full receipt JSON
+    --plan-file PATH           replay a saved plan or receipt JSON
+                               instead of asking a brain; the plan is
+                               re-validated against the strict contract
+                               and its provenance is kept with a
+                               replayed_from marker (this is how the
+                               reel re-renders reuse model-authored
+                               takes without re-authoring)
+    --render-size WxH          render resolution (default 960x540;
+                               1920x1080 for full HD)
+
+Voice backends: the profile's speech block picks the TTS engine.
+Default is Kokoro (deterministic, CPU, .venv-voice). `"backend":
+"chatterbox"` selects Chatterbox (expressive, built-in voice only,
+.venv-voice2, CUDA when available) with per-take delivery knobs in
+`speech.tts` (exaggeration, cfg_weight, temperature, device). See
+voice/animus_voice/RUNBOOK.md. Rhubarb visemes are regenerated from
+whichever wav ships, so the mouth always matches the audio.
+
+The concept reel: video/reel/ is a Remotion project that assembles a
+rendered scene batch into the Project Animus reel (boot cold open,
+LED title card, ten scenes with crossfades and captions, end card).
+See video/reel/README.md.
 
 ## The real K-VRC character (src/animus/embodiment/kvrc.profile.json)
 

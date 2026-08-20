@@ -24,10 +24,12 @@ from .pipeline import convert_only, run_pipeline
 
 def _cmd_doctor(_args):
     from .rhubarb import find_rhubarb, rhubarb_available
+    from .tts_chatterbox import tts_available as chatterbox_available
     from .tts_kokoro import tts_available
 
     report = {
         "kokoro_tts": tts_available(),
+        "chatterbox_tts": chatterbox_available(),
         "rhubarb": rhubarb_available(),
         "rhubarb_path": find_rhubarb(),
     }
@@ -62,6 +64,12 @@ def _cmd_convert(args):
 
 
 def _cmd_speak(args):
+    tts_opts = {
+        "exaggeration": args.exaggeration,
+        "cfg_weight": args.cfg_weight,
+        "temperature": args.temperature,
+        "device": args.device,
+    }
     receipt = run_pipeline(
         args.text,
         args.out,
@@ -74,6 +82,8 @@ def _cmd_speak(args):
         frame_start=args.frame_start,
         obj=args.object,
         name_hint=args.name_hint,
+        backend=args.backend,
+        tts_opts=tts_opts,
     )
     receipt = dict(receipt)
     receipt.pop("artifact", None)
@@ -103,10 +113,41 @@ def build_parser():
         "speak", parents=[common], help="full live pipeline (needs Kokoro + Rhubarb)"
     )
     p_speak.add_argument("--text", required=True, help="line of speech to render")
-    p_speak.add_argument("--voice", default="af_heart")
+    p_speak.add_argument(
+        "--backend",
+        default="kokoro",
+        choices=("kokoro", "chatterbox"),
+        help="TTS engine: kokoro (deterministic CPU) or chatterbox "
+        "(expressive, built-in voice only)",
+    )
+    p_speak.add_argument("--voice", default="af_heart", help="kokoro voice id")
     p_speak.add_argument("--lang", default="a")
     p_speak.add_argument("--speed", type=float, default=1.0)
     p_speak.add_argument("--seed", type=int, default=0)
+    p_speak.add_argument(
+        "--exaggeration",
+        type=float,
+        default=0.5,
+        help="chatterbox emotion intensity (0.5 neutral)",
+    )
+    p_speak.add_argument(
+        "--cfg-weight",
+        dest="cfg_weight",
+        type=float,
+        default=0.5,
+        help="chatterbox pacing; lower is slower, more deliberate",
+    )
+    p_speak.add_argument(
+        "--temperature",
+        type=float,
+        default=0.8,
+        help="chatterbox sampling temperature",
+    )
+    p_speak.add_argument(
+        "--device",
+        default="auto",
+        help="chatterbox device: auto, cuda, or cpu",
+    )
     p_speak.set_defaults(func=_cmd_speak)
 
     p_doctor = sub.add_parser("doctor", help="report installed live tools")

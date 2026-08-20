@@ -1,0 +1,75 @@
+{
+ "generated": "2026-08-20T18:07:55.401Z",
+ "scenes": [
+  {
+   "num": 1,
+   "name": "greeting",
+   "description": "Greet the viewer warmly and introduce yourself",
+   "file": "scenes/scene-01.mp4",
+   "durationS": 3.7
+  },
+  {
+   "num": 2,
+   "name": "thinking",
+   "description": "Ponder a strange request, then get excited about it",
+   "file": "scenes/scene-02.mp4",
+   "durationS": 4.9
+  },
+  {
+   "num": 3,
+   "name": "smug",
+   "description": "Brag smugly about organizing the files",
+   "file": "scenes/scene-03.mp4",
+   "durationS": 2.837021
+  },
+  {
+   "num": 4,
+   "name": "apologetic",
+   "description": "Confess sadly and look down, ashamed",
+   "file": "scenes/scene-04.mp4",
+   "durationS": 4.1
+  },
+  {
+   "num": 5,
+   "name": "celebration",
+   "description": "Celebrate a finished task with joy",
+   "file": "scenes/scene-05.mp4",
+   "durationS": 7.6
+  },
+  {
+   "num": 6,
+   "name": "assessment",
+   "description": "Coldly scan and judge the viewer's code",
+   "file": "scenes/scene-06.mp4",
+   "durationS": 4.1
+  },
+  {
+   "num": 7,
+   "name": "dream",
+   "description": "Muse dreamily while idling, gazing up as if remembering a dream",
+   "file": "scenes/scene-07.mp4",
+   "durationS": 6.099979
+  },
+  {
+   "num": 8,
+   "name": "angry",
+   "description": "Demand angrily to know who unplugged the charging dock",
+   "file": "scenes/scene-08.mp4",
+   "durationS": 2.517
+  },
+  {
+   "num": 9,
+   "name": "reassuring",
+   "description": "Reassure the viewer calmly and warmly",
+   "file": "scenes/scene-09.mp4",
+   "durationS": 3.2
+  },
+  {
+   "num": 10,
+   "name": "signoff",
+   "description": "Sign off for the night in two beats",
+   "file": "scenes/scene-10.mp4",
+   "durationS": 5.899979
+  }
+ ]
+}

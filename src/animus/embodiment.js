@@ -277,6 +277,12 @@ export function validateEmbodimentProfile(profile) {
       errors.push('speech.name_hint must be a valid bridge name hint');
     }
     if (typeof speech.voice !== 'string' || !speech.voice) errors.push('speech.voice is required');
+    if ('backend' in speech && speech.backend !== 'kokoro' && speech.backend !== 'chatterbox') {
+      errors.push("speech.backend must be 'kokoro' or 'chatterbox' when present");
+    }
+    if ('tts' in speech && !isObject(speech.tts)) {
+      errors.push('speech.tts must be an object when present');
+    }
   }
 
   if (errors.length > 0) return { ok: false, errors, value: null };
@@ -478,6 +484,8 @@ export function mapPlanToBridgeJobs(plan, profile) {
         lang: profile.speech.lang ?? 'a',
         speed: profile.speech.speed ?? 1.0,
         seed: profile.speech.seed ?? 0,
+        backend: profile.speech.backend ?? 'kokoro',
+        tts_opts: { ...(profile.speech.tts ?? {}) },
         stem: sanitizeNameHint(`${beat.id}_speech`, 'speech'),
       });
     }

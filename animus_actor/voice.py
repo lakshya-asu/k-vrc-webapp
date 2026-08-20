@@ -26,11 +26,24 @@ FIXTURE_CUES = os.path.join(
 VOICE_MODES = ("live", "convert", "skip")
 
 
-def find_voice_python():
-    """The interpreter that has Kokoro installed. Same order as the JS runner."""
+def find_voice_python(backend="kokoro"):
+    """The interpreter that has the backend's TTS installed.
+
+    ANIMUS_VOICE_PYTHON always wins. Otherwise kokoro lives in
+    .venv-voice and chatterbox in .venv-voice2 (two envs because their
+    torch pins differ); ANIMUS_VOICE_PYTHON_CHATTERBOX overrides the
+    chatterbox env specifically.
+    """
     env = os.environ.get("ANIMUS_VOICE_PYTHON")
     if env:
         return env
+    if backend == "chatterbox":
+        env = os.environ.get("ANIMUS_VOICE_PYTHON_CHATTERBOX")
+        if env:
+            return env
+        venv = os.path.join(REPO, ".venv-voice2", "Scripts", "python.exe")
+        if os.path.exists(venv):
+            return venv
     venv = os.path.join(REPO, ".venv-voice", "Scripts", "python.exe")
     if os.path.exists(venv):
         return venv
@@ -64,13 +77,16 @@ def _run_convert(job, out_dir):
     }
 
 
-def _run_live(job, out_dir, timeout=300):
-    python = find_voice_python()
+def _run_live(job, out_dir, timeout=600):
+    backend = job.get("backend", "kokoro")
+    python = find_voice_python(backend)
     command = [
         python,
         "-m",
         "animus_voice",
         "speak",
+        "--backend",
+        backend,
         "--text",
         job["text"],
         "--voice",
@@ -94,6 +110,15 @@ def _run_live(job, out_dir, timeout=300):
         "--name-hint",
         job["name_hint"],
     ]
+    tts_opts = job.get("tts_opts") or {}
+    for key, flag in (
+        ("exaggeration", "--exaggeration"),
+        ("cfg_weight", "--cfg-weight"),
+        ("temperature", "--temperature"),
+        ("device", "--device"),
+    ):
+        if key in tts_opts:
+            command += [flag, str(tts_opts[key])]
     env = dict(os.environ)
     env["PYTHONPATH"] = VOICE_DIR + os.pathsep + env.get("PYTHONPATH", "")
     result = subprocess.run(
