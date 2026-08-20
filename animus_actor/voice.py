@@ -23,7 +23,7 @@ FIXTURE_CUES = os.path.join(
     REPO, "voice", "animus_voice", "fixtures", "hello.rhubarb.json"
 )
 
-VOICE_MODES = ("live", "convert", "skip")
+VOICE_MODES = ("live", "convert", "skip", "reuse")
 
 
 def find_voice_python(backend="kokoro"):
@@ -160,11 +160,43 @@ def _run_live(job, out_dir, timeout=600):
     }
 
 
+def _run_reuse(job, out_dir):
+    """Reuse the take artifacts a previous run left in out_dir.
+
+    A re-render must not re-voice: the approved wav and its viseme
+    artifact are the take. Both {stem}.animus.json and {stem}.wav must
+    already exist; a missing file fails loudly instead of quietly
+    re-synthesizing a different performance.
+    """
+    take_path = os.path.join(out_dir, f"{job['stem']}.animus.json")
+    wav_path = os.path.join(out_dir, f"{job['stem']}.wav")
+    missing = [path for path in (take_path, wav_path) if not os.path.exists(path)]
+    if missing:
+        raise RuntimeError(
+            "voice mode 'reuse' needs existing take artifacts; missing: "
+            + ", ".join(missing)
+        )
+    with open(take_path, "r", encoding="utf-8") as handle:
+        artifact = json.load(handle)
+    return {
+        "beat_id": job["beat_id"],
+        "voice_mode": "reuse",
+        "wav": wav_path,
+        "take_json": take_path,
+        "cue_count": artifact["cue_count"],
+        "sample_count": len(artifact["samples"]),
+        "duration_ms": artifact["duration_ms"],
+        "artifact": artifact,
+    }
+
+
 def run_voice_job(job, out_dir, mode):
     """One speech beat to one viseme take artifact. Never touches the GPU."""
-    if mode not in ("live", "convert"):
+    if mode not in ("live", "convert", "reuse"):
         raise ValueError(f"unknown voice mode '{mode}'")
     os.makedirs(out_dir, exist_ok=True)
     if mode == "convert":
         return _run_convert(job, out_dir)
+    if mode == "reuse":
+        return _run_reuse(job, out_dir)
     return _run_live(job, out_dir)

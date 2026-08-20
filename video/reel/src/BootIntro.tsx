@@ -1,5 +1,11 @@
 import React from 'react';
-import {AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
+import {
+  AbsoluteFill,
+  Easing,
+  interpolate,
+  useCurrentFrame,
+  useVideoConfig,
+} from 'remotion';
 import {FaceCanvas, FaceJob} from './FaceCanvas';
 
 // Cold open: the K-VRC visor boots full-frame, exactly the face the
@@ -23,15 +29,20 @@ const BOOT_JOB: FaceJob = {
 export const BootIntro: React.FC = () => {
   const frame = useCurrentFrame();
   const {height, durationInFrames} = useVideoConfig();
-  const fadeIn = interpolate(frame, [0, 8], [0, 1], {
+  const fadeIn = interpolate(frame, [0, 10], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
+    easing: Easing.inOut(Easing.quad),
   });
   const fadeOut = interpolate(
     frame,
-    [durationInFrames - 10, durationInFrames - 1],
+    [durationInFrames - 12, durationInFrames - 1],
     [1, 0],
-    {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'},
+    {
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+      easing: Easing.inOut(Easing.quad),
+    },
   );
   const size = height * interpolate(frame, [0, 74], [0.96, 1.04]);
   return (

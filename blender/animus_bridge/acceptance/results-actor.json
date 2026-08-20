@@ -296,12 +296,12 @@
     {
       "name": "kvrc_face_frames_rendered",
       "passed": true,
-      "detail": "{'dir': 'C:\\\\Users\\\\jainl\\\\AppData\\\\Local\\\\Temp\\\\animus-face-acc-f214ucui\\\\frames', 'job': 'C:\\\\Users\\\\jainl\\\\AppData\\\\Local\\\\Temp\\\\animus-face-acc-f214ucui\\\\frames\\\\face-job.json', 'manifest': 'C:\\\\Users\\\\jainl\\\\AppData\\\\Local\\\\Temp\\\\animus-face-acc-f214ucui\\\\frames\\\\face-frames-manifest.json', 'frame_count': 49, 'frame_start': 1, 'frame_end': 49, 'seed': 0, 'moods': ['cold']}"
+      "detail": "{'dir': 'C:\\\\Users\\\\jainl\\\\AppData\\\\Local\\\\Temp\\\\animus-face-acc-r6wup1af\\\\frames', 'job': 'C:\\\\Users\\\\jainl\\\\AppData\\\\Local\\\\Temp\\\\animus-face-acc-r6wup1af\\\\frames\\\\face-job.json', 'manifest': 'C:\\\\Users\\\\jainl\\\\AppData\\\\Local\\\\Temp\\\\animus-face-acc-r6wup1af\\\\frames\\\\face-frames-manifest.json', 'frame_count': 49, 'frame_start': 1, 'frame_end': 49, 'seed': 0, 'moods': ['cold']}"
     },
     {
       "name": "kvrc_face_material_bound",
       "passed": true,
-      "detail": "{'object': 'screen', 'material': 'AnimusFaceScreen', 'image': 'face_0001.png', 'frames_dir': 'C:\\\\Users\\\\jainl\\\\AppData\\\\Local\\\\Temp\\\\animus-face-acc-f214ucui\\\\frames', 'frame_count': 49, 'frame_start': 1, 'emission_strength': 3.5}"
+      "detail": "{'object': 'screen', 'material': 'AnimusFaceScreen', 'image': 'face_0001.png', 'frames_dir': 'C:\\\\Users\\\\jainl\\\\AppData\\\\Local\\\\Temp\\\\animus-face-acc-r6wup1af\\\\frames', 'frame_count': 49, 'frame_start': 1, 'emission_strength': 3.5}"
     }
   ],
   "environment": {
@@ -332,9 +332,9 @@
   },
   "kvrc_face": {
     "frames": {
-      "dir": "C:\\Users\\jainl\\AppData\\Local\\Temp\\animus-face-acc-f214ucui\\frames",
-      "job": "C:\\Users\\jainl\\AppData\\Local\\Temp\\animus-face-acc-f214ucui\\frames\\face-job.json",
-      "manifest": "C:\\Users\\jainl\\AppData\\Local\\Temp\\animus-face-acc-f214ucui\\frames\\face-frames-manifest.json",
+      "dir": "C:\\Users\\jainl\\AppData\\Local\\Temp\\animus-face-acc-r6wup1af\\frames",
+      "job": "C:\\Users\\jainl\\AppData\\Local\\Temp\\animus-face-acc-r6wup1af\\frames\\face-job.json",
+      "manifest": "C:\\Users\\jainl\\AppData\\Local\\Temp\\animus-face-acc-r6wup1af\\frames\\face-frames-manifest.json",
       "frame_count": 49,
       "frame_start": 1,
       "frame_end": 49,
@@ -347,7 +347,7 @@
       "object": "screen",
       "material": "AnimusFaceScreen",
       "image": "face_0001.png",
-      "frames_dir": "C:\\Users\\jainl\\AppData\\Local\\Temp\\animus-face-acc-f214ucui\\frames",
+      "frames_dir": "C:\\Users\\jainl\\AppData\\Local\\Temp\\animus-face-acc-r6wup1af\\frames",
       "frame_count": 49,
       "frame_start": 1,
       "emission_strength": 3.5

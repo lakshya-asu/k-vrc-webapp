@@ -48,6 +48,12 @@ Useful flags:
     --voice-mode convert       no TTS tools: rebuild visemes from the
                                committed fixture cues
     --voice-mode skip          no speech layer at all
+    --voice-mode reuse         re-render without re-voicing: the take's
+                               existing {stem}.wav and {stem}.animus.json
+                               in --out are reused as-is (missing files
+                               fail loudly; nothing is re-synthesized).
+                               This is how the reel re-renders keep the
+                               approved XTTS takes byte-identical.
     --blender PATH             stage binary (also ANIMUS_BLENDER; the
                                loop otherwise checks PATH and the
                                ~/tools/blender-4.5 install)
@@ -61,6 +67,41 @@ Useful flags:
                                takes without re-authoring)
     --render-size WxH          render resolution (default 960x540;
                                1920x1080 for full HD)
+    --render-engine NAME       BLENDER_WORKBENCH, BLENDER_EEVEE_NEXT, or
+                               CYCLES (GPU when available). Default:
+                               Workbench, or EEVEE Next when the profile
+                               has a visor face screen.
+
+## The stage look (docs/animus/reel-polish-brief.md)
+
+A profile whose stage.render carries "look": true (or a preset name,
+or a dict of overrides) renders with the reusable studio look from
+animus_actor/stage_look.py: warm three-point lighting (key, fill,
+rim), a backdrop plane with dark falloff plus a pooled spot behind
+the character, a ground plane catching the soft contact shadow,
+clearcoat glossy orange shells with subtle wear, metallic joints, the
+canon twin white helmet racing stripes (a shader decal in the Head
+mesh's Generated coordinates; the GLB ships no textures), compositor
+bloom (EEVEE Next has no legacy bloom toggle), and an AgX Punchy
+grade. Per-scene warmth still comes from key_color/fill_color in the
+same render config. Without "look" the stage renders exactly as
+before. The visor face material also honors stage.face_screen.coat
+and coat_roughness for glass reflections over the LED screen.
+
+## The visor face v2 and the face_glyph channel
+
+The face renderer draws a visible LED cell grid, phosphor bloom, and
+a slight chromatic fringe (all in src/animus/face/faceScreenDraw.js,
+so rendered takes and the Remotion reel cards share the look; pass
+{fx: false} for the flat v1 frame). On top of the preset expression
+library, the actor may now author its own face: the beat contract
+accepts a face_glyph channel, a composed face of parametric glyphs
+(eyes/brows/mouth from a bounded vocabulary in
+src/animus/face/glyphComposer.js) or short LED text (max 6 chars,
+LED charset). face_glyph is strictly validated on both sides of the
+contract (JS and animus_actor/contract.py), renders on the visor
+only, and maps to no bridge op by design; the preset library remains
+the fallback vocabulary.
 
 Voice backends: the profile's speech block picks the TTS engine.
 Default is Kokoro (deterministic, CPU, .venv-voice). `"backend":
@@ -149,7 +190,7 @@ fixture and compares ops and params exactly.
 
 ## Tests
 
-    python -m unittest discover -s tests/animus_actor -t .    # 77 tests
+    python -m unittest discover -s tests/animus_actor -t .    # 101 tests
     blender --background --factory-startup \
         --python blender/animus_bridge/acceptance/run_actor_acceptance.py
 

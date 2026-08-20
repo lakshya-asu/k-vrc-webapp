@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   AbsoluteFill,
+  Easing,
   OffthreadVideo,
   interpolate,
   staticFile,
@@ -24,18 +25,21 @@ const LowerThird: React.FC<{scene: SceneMeta; frames: number}> = ({
   frames,
 }) => {
   const frame = useCurrentFrame();
-  const slide = interpolate(frame, [10, 24], [40, 0], {
+  const slide = interpolate(frame, [10, 26], [40, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
+    easing: Easing.out(Easing.cubic),
   });
   const alpha =
-    interpolate(frame, [10, 24], [0, 1], {
+    interpolate(frame, [10, 26], [0, 1], {
       extrapolateLeft: 'clamp',
       extrapolateRight: 'clamp',
+      easing: Easing.inOut(Easing.quad),
     }) *
-    interpolate(frame, [frames - 22, frames - 10], [1, 0], {
+    interpolate(frame, [frames - 24, frames - 12], [1, 0], {
       extrapolateLeft: 'clamp',
       extrapolateRight: 'clamp',
+      easing: Easing.inOut(Easing.quad),
     });
   return (
     <div
@@ -64,28 +68,39 @@ const LowerThird: React.FC<{scene: SceneMeta; frames: number}> = ({
   );
 };
 
-// One scene: the rendered take full-frame with a short fade at both
-// ends (the fades overlap neighbors in the series, making crossfades)
-// plus its lower-third caption.
+// One scene: the rendered take full-frame plus its lower-third caption.
+//
+// Transitions (reel-polish brief, directive 4): the clip's first and
+// last `cross` frames overlap its neighbors in the series. Video
+// opacity eases in and out (cubic in-out, no linear pops); audio runs
+// an equal-power crossfade over exactly the same frames, so at every
+// point of a join sin^2 + cos^2 keeps the summed energy constant and
+// the waveform carries no hard edge.
 export const SceneClip: React.FC<{
   scene: SceneMeta;
   frames: number;
   cross: number;
 }> = ({scene, frames, cross}) => {
   const frame = useCurrentFrame();
-  const fadeIn = interpolate(frame, [0, cross], [0, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
-  const fadeOut = interpolate(frame, [frames - cross, frames - 1], [1, 0], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
+  const fadeProgress = (f: number) =>
+    interpolate(f, [0, cross], [0, 1], {
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+    });
+  const inP = fadeProgress(frame);
+  const outP = fadeProgress(frames - 1 - frame);
+  const easeInOut = (p: number) =>
+    interpolate(p, [0, 1], [0, 1], {easing: Easing.inOut(Easing.cubic)});
+  // Equal-power gains for the same windows the opacity uses.
+  const audioGain = (f: number) =>
+    Math.sin((fadeProgress(f) * Math.PI) / 2) *
+    Math.sin((fadeProgress(frames - 1 - f) * Math.PI) / 2);
   return (
     <AbsoluteFill style={{backgroundColor: '#000'}}>
-      <AbsoluteFill style={{opacity: fadeIn * fadeOut}}>
+      <AbsoluteFill style={{opacity: easeInOut(inP) * easeInOut(outP)}}>
         <OffthreadVideo
           src={staticFile(scene.file)}
+          volume={(f) => audioGain(f)}
           style={{width: '100%', height: '100%', objectFit: 'cover'}}
         />
         <LowerThird scene={scene} frames={frames} />

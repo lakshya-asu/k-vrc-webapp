@@ -57,14 +57,24 @@ function jobFromReceipt(receipt, receiptPath, fpsOverride) {
     throw new Error(`unsupported input kind '${receipt.kind}'`);
   }
   const beats = receipt.plan?.beats || [];
-  const faceBeats = beats
-    .filter((beat) => beat.face)
-    .map((beat) => ({
-      expression: beat.face.expression,
-      intensity: beat.face.intensity ?? 1,
-      at_ms: beat.at_ms,
-      duration_ms: beat.duration_ms,
-    }));
+  const faceBeats = [];
+  for (const beat of beats) {
+    if (beat.face) {
+      faceBeats.push({
+        expression: beat.face.expression,
+        intensity: beat.face.intensity ?? 1,
+        at_ms: beat.at_ms,
+        duration_ms: beat.duration_ms,
+      });
+    }
+    if (beat.face_glyph) {
+      faceBeats.push({
+        glyph: beat.face_glyph,
+        at_ms: beat.at_ms,
+        duration_ms: beat.duration_ms,
+      });
+    }
+  }
 
   const visemeSamples = [];
   let fps = fpsOverride;

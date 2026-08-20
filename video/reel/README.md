@@ -4,7 +4,9 @@ Standing video pipeline for Animus: assembles rendered K-VRC scene
 takes into the concept reel as a Remotion composition, 1920x1080 at
 30 fps. Structure: cold open (the visor face booting, drawn live by
 the same face renderer the takes use), a "PROJECT ANIMUS" LED title
-card, the ten scenes with short crossfades and lower-third captions,
+card, the ten scenes with eased video crossfades whose audio runs an
+equal-power crossfade over the same frames (no hard audio edges at
+any join) and lower-third captions,
 and an end card ("performed live by a local model").
 
 The title, boot, and end cards reuse the actual face-canvas code from

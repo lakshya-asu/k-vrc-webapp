@@ -10,6 +10,8 @@
 // object; all randomness comes from an injected rng so a take renders
 // byte-identically for a given seed.
 
+import { drawGlyphFace } from './glyphComposer.js';
+
 export const W = 512;
 export const H = 512;
 
@@ -61,6 +63,56 @@ function applyPixelGrid(ctx) {
     }
   }
   ctx.globalAlpha = 1;
+}
+
+// --- v2 screen structure (reel-polish brief, directive 3) ----------------
+
+// Visible LED cell structure: a much stronger grid than the v1 hint,
+// plus the vertical scanline texture reference 4's faces show.
+function applyLedGridV2(ctx) {
+  ctx.save();
+  ctx.fillStyle = '#000';
+  const sz = 8;
+  ctx.globalAlpha = 0.30;
+  for (let x = 0; x < W; x += sz) ctx.fillRect(x, 0, 2, H);
+  for (let y = 0; y < H; y += sz) ctx.fillRect(0, y, 2, W);
+  // Vertical sub-scanline inside each cell.
+  ctx.globalAlpha = 0.10;
+  for (let x = 4; x < W; x += sz) ctx.fillRect(x, 0, 1, H);
+  ctx.restore();
+}
+
+// Soft phosphor bloom: the canvas composited over itself, blurred and
+// lightened. Deterministic: pure function of the pixels already drawn.
+function applyBloom(ctx) {
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  ctx.globalAlpha = 0.4;
+  ctx.filter = 'blur(7px)';
+  ctx.drawImage(ctx.canvas, 0, 0);
+  ctx.filter = 'none';
+  ctx.restore();
+}
+
+// Slight chromatic fringe: the red channel sampled a step left, the
+// blue channel a step right, mixed into the base. Manual pixel walk so
+// Node and the browser produce the same bytes.
+function applyChromaticFringe(ctx, shift = 2, mix = 0.4) {
+  const image = ctx.getImageData(0, 0, W, H);
+  const src = image.data;
+  const out = new Uint8ClampedArray(src);
+  for (let y = 0; y < H; y++) {
+    const row = y * W * 4;
+    for (let x = 0; x < W; x++) {
+      const i = row + x * 4;
+      const xr = Math.min(W - 1, Math.max(0, x - shift));
+      const xb = Math.min(W - 1, Math.max(0, x + shift));
+      out[i] = src[i] * (1 - mix) + src[row + xr * 4] * mix;
+      out[i + 2] = src[i + 2] * (1 - mix) + src[row + xb * 4 + 2] * mix;
+    }
+  }
+  image.data.set(out);
+  ctx.putImageData(image, 0, 0);
 }
 
 // Port of drawWeighted: the six-weight expression face.
@@ -196,10 +248,18 @@ function drawBlink(ctx, p, c) {
 // frame from one timeline state.
 //
 // state: { t, weights, mood, amplitude, blinkProgress, glitchActive }
+//        plus optional glyph (a validated glyph spec: the face is a
+//        composed glyph instead of a weighted library expression)
 // rng: seeded 0..1 generator (replaces Math.random)
-export function drawFaceFrame(ctx, state, rng) {
+// opts: { fx } - the v2 screen pass (strong LED grid, bloom,
+//        chromatic fringe) defaults ON; pass fx: false for the flat
+//        v1 look.
+export function drawFaceFrame(ctx, state, rng, opts = {}) {
+  const fx = opts.fx !== false;
   const c = MOOD_COLORS[state.mood] ?? MOOD_COLORS.cold;
   const amplitude = state.amplitude;
+  const glyph = state.glyph ?? null;
+  const textMode = Boolean(glyph && glyph.text);
 
   // Background
   ctx.fillStyle = c.bg;
@@ -218,7 +278,11 @@ export function drawFaceFrame(ctx, state, rng) {
   ctx.fillStyle = c.primary;
   ctx.strokeStyle = c.primary;
   glow(ctx, c.primary, 24);
-  drawWeighted(ctx, state.weights, c, state.blinkProgress, amplitude, rng);
+  if (glyph) {
+    drawGlyphFace(ctx, glyph, c, textMode ? 0 : state.blinkProgress, amplitude);
+  } else {
+    drawWeighted(ctx, state.weights, c, state.blinkProgress, amplitude, rng);
+  }
   noGlow(ctx);
   ctx.restore();
 
@@ -228,10 +292,16 @@ export function drawFaceFrame(ctx, state, rng) {
   // Rare glitch
   if (state.glitchActive) drawGlitch(ctx, c, rng);
 
-  // CRT + pixel grid on top
+  // v2 screen structure: fringe and bloom act on the drawn content,
+  // then the CRT layers and LED grid sit on top of everything.
+  if (fx) {
+    applyChromaticFringe(ctx);
+    applyBloom(ctx);
+  }
   drawCRT(ctx);
   applyPixelGrid(ctx);
+  if (fx) applyLedGridV2(ctx);
 
-  // Blink overlay
-  if (state.blinkProgress > 0) drawBlink(ctx, state.blinkProgress, c);
+  // Blink overlay (a text face has no eyes to blink)
+  if (state.blinkProgress > 0 && !textMode) drawBlink(ctx, state.blinkProgress, c);
 }

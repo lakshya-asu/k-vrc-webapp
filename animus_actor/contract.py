@@ -28,11 +28,61 @@ BODY_STYLES = (
 )
 
 _TOP_LEVEL_KEYS = {"schema_version", "summary", "beats"}
-_BEAT_KEYS = {"id", "at_ms", "duration_ms", "body", "gaze", "face", "speech"}
+_BEAT_KEYS = {
+    "id",
+    "at_ms",
+    "duration_ms",
+    "body",
+    "gaze",
+    "face",
+    "face_glyph",
+    "speech",
+}
 _BODY_KEYS = {"action", "target", "gesture", "style", "intensity"}
 _GAZE_KEYS = {"target", "intensity"}
 _FACE_KEYS = {"expression", "intensity"}
 _SPEECH_KEYS = {"text", "delivery"}
+
+# The face_glyph channel (reel-polish brief, directive 3): a composed
+# visor face instead of a library expression. Mirrors the JS contract
+# and src/animus/face/glyphComposer.js exactly.
+FACE_GLYPH_EYES = (
+    "round",
+    "oval",
+    "bar",
+    "happy_arc",
+    "half_lidded",
+    "closed",
+    "wide",
+    "x_cross",
+)
+FACE_GLYPH_BROWS = ("none", "flat", "raised", "angry_in", "sad_out")
+FACE_GLYPH_MOUTHS = (
+    "none",
+    "flat",
+    "smile",
+    "frown",
+    "o_small",
+    "grin_rect",
+    "gritted",
+    "v_smile",
+    "wavy",
+)
+FACE_GLYPH_MOODS = (
+    "cold",
+    "warm",
+    "glitch",
+    "static",
+    "data",
+    "boot",
+    "angry",
+    "dream",
+)
+FACE_GLYPH_TEXT_MAX = 6
+_FACE_GLYPH_TEXT_ALLOWED = set(
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 !?%+-*#<>:=._"
+)
+_FACE_GLYPH_KEYS = {"eyes", "brows", "mouth", "text", "mood", "intensity"}
 _FORBIDDEN_KEYS = {
     "code",
     "python",
@@ -146,6 +196,48 @@ def _validate_face(face, path, errors):
         _validate_intensity(face["intensity"], f"{path}.intensity", errors)
 
 
+def _validate_face_glyph(glyph, path, errors):
+    if not _is_object(glyph):
+        errors.append(f"{path} must be an object or null")
+        return
+    _add_unknown_key_errors(glyph, _FACE_GLYPH_KEYS, path, errors)
+    has_text = glyph.get("text") is not None
+    if has_text:
+        for key in ("eyes", "brows", "mouth"):
+            if key in glyph:
+                errors.append(f"{path}.{key} is not allowed in text mode")
+        text = glyph["text"]
+        if not isinstance(text, str):
+            errors.append(f"{path}.text must be a string")
+        else:
+            normalized = text.strip().upper()
+            if not 1 <= len(normalized) <= FACE_GLYPH_TEXT_MAX:
+                errors.append(
+                    f"{path}.text must be 1 to {FACE_GLYPH_TEXT_MAX} characters"
+                )
+            elif not all(ch in _FACE_GLYPH_TEXT_ALLOWED for ch in normalized):
+                errors.append(
+                    f"{path}.text may use only A-Z 0-9 and ! ? % + - * # < > : = . _"
+                )
+    else:
+        if glyph.get("eyes") not in FACE_GLYPH_EYES:
+            errors.append(
+                f"{path}.eyes must be one of: {', '.join(FACE_GLYPH_EYES)}"
+            )
+        if "brows" in glyph and glyph["brows"] not in FACE_GLYPH_BROWS:
+            errors.append(
+                f"{path}.brows must be one of: {', '.join(FACE_GLYPH_BROWS)}"
+            )
+        if "mouth" in glyph and glyph["mouth"] not in FACE_GLYPH_MOUTHS:
+            errors.append(
+                f"{path}.mouth must be one of: {', '.join(FACE_GLYPH_MOUTHS)}"
+            )
+    if "mood" in glyph and glyph["mood"] not in FACE_GLYPH_MOODS:
+        errors.append(f"{path}.mood must be one of: {', '.join(FACE_GLYPH_MOODS)}")
+    if "intensity" in glyph:
+        _validate_intensity(glyph["intensity"], f"{path}.intensity", errors)
+
+
 def _validate_speech(speech, path, errors):
     if not _is_object(speech):
         errors.append(f"{path} must be an object or null")
@@ -217,17 +309,26 @@ def validate_actor_plan(candidate, authority=None):
 
             channels = [
                 key
-                for key in ("body", "gaze", "face", "speech")
+                for key in ("body", "gaze", "face", "face_glyph", "speech")
                 if beat.get(key) is not None
             ]
             if not channels:
                 errors.append(f"{path} must use at least one actor channel")
+            if (
+                beat.get("face") is not None
+                and beat.get("face_glyph") is not None
+            ):
+                errors.append(f"{path} may use face or face_glyph, not both")
             if beat.get("body") is not None:
                 _validate_body(beat["body"], f"{path}.body", errors)
             if beat.get("gaze") is not None:
                 _validate_gaze(beat["gaze"], f"{path}.gaze", errors)
             if beat.get("face") is not None:
                 _validate_face(beat["face"], f"{path}.face", errors)
+            if beat.get("face_glyph") is not None:
+                _validate_face_glyph(
+                    beat["face_glyph"], f"{path}.face_glyph", errors
+                )
             if beat.get("speech") is not None:
                 _validate_speech(beat["speech"], f"{path}.speech", errors)
 

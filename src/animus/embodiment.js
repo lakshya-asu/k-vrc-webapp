@@ -471,6 +471,8 @@ export function mapPlanToBridgeJobs(plan, profile) {
     if (beat.body != null) layers.push(mapBodyBeat(beat, profile));
     if (beat.gaze != null) layers.push(mapGazeBeat(beat, profile));
     if (beat.face != null) layers.push(mapFaceBeat(beat, profile));
+    // face_glyph is a visor-only channel: it renders on the LED screen
+    // (the face frame job) and maps to no bridge op by design.
     if (beat.speech != null) {
       voiceJobs.push({
         beat_id: beat.id,

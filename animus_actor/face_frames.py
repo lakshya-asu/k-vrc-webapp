@@ -67,16 +67,26 @@ def build_face_job(plan, profile, voice_receipts, layers, seed=None):
     face_beats = []
     for beat in plan["beats"]:
         face = beat.get("face")
-        if face is None:
-            continue
-        face_beats.append(
-            {
-                "expression": face["expression"],
-                "intensity": face.get("intensity", 1),
-                "at_ms": beat["at_ms"],
-                "duration_ms": beat["duration_ms"],
-            }
-        )
+        if face is not None:
+            face_beats.append(
+                {
+                    "expression": face["expression"],
+                    "intensity": face.get("intensity", 1),
+                    "at_ms": beat["at_ms"],
+                    "duration_ms": beat["duration_ms"],
+                }
+            )
+        glyph = beat.get("face_glyph")
+        if glyph is not None:
+            # The composed-glyph channel: passed through whole; the
+            # timeline runs the strict glyph validator again on render.
+            face_beats.append(
+                {
+                    "glyph": glyph,
+                    "at_ms": beat["at_ms"],
+                    "duration_ms": beat["duration_ms"],
+                }
+            )
 
     viseme_samples = []
     frame_end = 1

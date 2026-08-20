@@ -74,6 +74,14 @@ def bind_face_screen(bpy, profile, frames_dir, frame_start=1):
         config.get("emission_strength", DEFAULT_EMISSION_STRENGTH)
     )
     shader.inputs["Emission Strength"].default_value = strength
+    # Optional visor glass: a clearcoat over the LED face so the
+    # screen catches the studio lights (reel-polish brief, directive 1).
+    coat = float(config.get("coat", 0.0))
+    if coat > 0.0:
+        shader.inputs["Coat Weight"].default_value = coat
+        shader.inputs["Coat Roughness"].default_value = float(
+            config.get("coat_roughness", 0.06)
+        )
 
     texture = nodes.new("ShaderNodeTexImage")
     texture.location = (-260, 0)

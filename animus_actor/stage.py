@@ -42,6 +42,7 @@ import animus_bridge  # noqa: E402
 import biped  # noqa: E402
 
 from animus_actor.face_material import bind_face_screen  # noqa: E402
+from animus_actor.stage_look import apply_look, resolve_look  # noqa: E402
 
 
 def parse_args():
@@ -81,9 +82,10 @@ def parse_args():
         "--render-engine",
         dest="render_engine",
         default="BLENDER_WORKBENCH",
-        choices=("BLENDER_WORKBENCH", "BLENDER_EEVEE_NEXT"),
+        choices=("BLENDER_WORKBENCH", "BLENDER_EEVEE_NEXT", "CYCLES"),
         help="Workbench is the fast headless default; EEVEE renders "
-        "real materials (the emissive visor face needs it)",
+        "real materials (the emissive visor face needs it); Cycles is "
+        "the path-traced quality option (GPU when available)",
     )
     parser.add_argument(
         "--face-frames",
@@ -303,7 +305,7 @@ def _clear_startup_objects():
             bpy.data.objects.remove(obj, do_unlink=True)
 
 
-def _add_camera_and_lights(render_cfg):
+def _add_camera(render_cfg):
     scene = bpy.context.scene
     target = bpy.data.objects.new("RenderTarget", None)
     target.location = tuple(render_cfg.get("camera_target", (0.0, 0.0, 0.88)))
@@ -317,6 +319,9 @@ def _add_camera_and_lights(render_cfg):
     track.target = target
     scene.camera = camera
 
+
+def _add_legacy_lights(render_cfg):
+    scene = bpy.context.scene
     key = bpy.data.objects.new("KeyLight", bpy.data.lights.new("KeyLight", "AREA"))
     key.data.energy = float(render_cfg.get("key_energy", 400.0))
     key.data.size = 3.0
@@ -332,6 +337,30 @@ def _add_camera_and_lights(render_cfg):
     if render_cfg.get("fill_color"):
         fill.data.color = tuple(render_cfg["fill_color"])
     scene.collection.objects.link(fill)
+
+
+def _configure_cycles(scene):
+    """Cycles on the GPU when one exists; CPU otherwise, loudly."""
+    scene.cycles.samples = 128
+    scene.cycles.use_denoising = True
+    backend_used = "CPU"
+    prefs = bpy.context.preferences.addons.get("cycles")
+    if prefs is not None:
+        cycles_prefs = prefs.preferences
+        for backend in ("OPTIX", "CUDA"):
+            try:
+                cycles_prefs.compute_device_type = backend
+                cycles_prefs.get_devices()
+                gpus = [d for d in cycles_prefs.devices if d.type != "CPU"]
+                if gpus:
+                    for device in cycles_prefs.devices:
+                        device.use = device.type != "CPU"
+                    scene.cycles.device = "GPU"
+                    backend_used = backend
+                    break
+            except Exception:
+                continue
+    print(f"[animus_actor.stage] cycles device: {backend_used}")
 
 
 def render_take(args, profile):
@@ -354,7 +383,9 @@ def render_take(args, profile):
         hidden = bpy.data.objects.get(name)
         if hidden is not None:
             hidden.hide_render = True
-    _add_camera_and_lights(render_cfg)
+    _add_camera(render_cfg)
+    look = resolve_look(render_cfg)
+    look_report = None
 
     face_binding = None
     if args.face_frames:
@@ -365,6 +396,13 @@ def render_take(args, profile):
 
     width, height = (int(part) for part in args.render_size.lower().split("x"))
     scene.render.engine = args.render_engine
+    if args.render_engine == "CYCLES":
+        _configure_cycles(scene)
+    if look is not None:
+        look_report = apply_look(bpy, profile, render_cfg, look)
+        print(f"[animus_actor.stage] look applied: {look_report}")
+    else:
+        _add_legacy_lights(render_cfg)
     scene.render.resolution_x = width
     scene.render.resolution_y = height
     scene.render.resolution_percentage = 100
@@ -428,6 +466,7 @@ def render_take(args, profile):
         "audio": audio,
         "stills": still_paths,
         "face_screen": face_binding,
+        "look": look_report,
     }
 
 

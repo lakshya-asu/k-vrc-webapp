@@ -115,6 +115,15 @@ def build_parser():
         help="render resolution WxH (stage default 960x540; use "
         "1920x1080 for full HD)",
     )
+    parser.add_argument(
+        "--render-engine",
+        dest="render_engine",
+        default=None,
+        choices=("BLENDER_WORKBENCH", "BLENDER_EEVEE_NEXT", "CYCLES"),
+        help="stage render engine (default: Workbench, or EEVEE Next "
+        "when the profile has a visor face screen; CYCLES is the "
+        "path-traced quality option, GPU when available)",
+    )
     return parser
 
 
@@ -152,6 +161,7 @@ def main(argv=None):
             render_dir=args.render_dir,
             render_size=args.render_size,
             plan_file=args.plan_file,
+            render_engine=args.render_engine,
         )
     except (ActorLoopError, ValueError, RuntimeError) as error:
         print(

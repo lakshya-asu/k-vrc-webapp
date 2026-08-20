@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from 'react';
-import {interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
+import {Easing, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
 // @ts-ignore
 import {mulberry32} from '../../../src/animus/face/faceTimeline.js';
 import {LED_WARM, drawLedText, drawScanlines, drawVignette} from './led';
@@ -53,12 +53,17 @@ export const TitleCard: React.FC = () => {
     drawScanlines(ctx, width, height);
     drawVignette(ctx, width, height);
 
-    // Fade the whole card out over its last 12 frames.
+    // Fade the whole card gently out over its last 18 frames (eased,
+    // overlapping the first scene's eased fade-in).
     const fadeOut = interpolate(
       frame,
-      [durationInFrames - 12, durationInFrames - 1],
+      [durationInFrames - 18, durationInFrames - 1],
       [0, 1],
-      {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'},
+      {
+        extrapolateLeft: 'clamp',
+        extrapolateRight: 'clamp',
+        easing: Easing.inOut(Easing.quad),
+      },
     );
     if (fadeOut > 0) {
       ctx.fillStyle = `rgba(0, 0, 0, ${fadeOut})`;

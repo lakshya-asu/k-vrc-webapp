@@ -254,6 +254,7 @@ def run_actor_loop(
     render_dir=None,
     render_size=None,
     plan_file=None,
+    render_engine=None,
 ):
     """Run the whole chain. Returns the full receipt dict.
 
@@ -307,7 +308,6 @@ def run_actor_loop(
         stage_port = port or pick_free_port()
         render_audio = None
         render_audio_start = None
-        render_engine = None
         if render_dir:
             for item in voice_receipts:
                 if item.get("wav"):
@@ -334,7 +334,8 @@ def run_actor_loop(
                 face_report = render_face_frames(
                     face_job, os.path.join(render_dir, "face-frames")
                 )
-                render_engine = "BLENDER_EEVEE_NEXT"
+                if render_engine is None:
+                    render_engine = "BLENDER_EEVEE_NEXT"
         process, done_file, report_path, log_path, log_handle = _launch_stage(
             stage_port, profile_path, out_dir, blender_bin, stage_deadline,
             render_dir=render_dir, render_audio=render_audio,

@@ -1,5 +1,11 @@
 import React from 'react';
-import {AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
+import {
+  AbsoluteFill,
+  Easing,
+  interpolate,
+  useCurrentFrame,
+  useVideoConfig,
+} from 'remotion';
 import {FaceCanvas, FaceJob} from './FaceCanvas';
 import {LED_WARM} from './led';
 
@@ -17,19 +23,25 @@ const END_JOB: FaceJob = {
 export const EndCard: React.FC = () => {
   const frame = useCurrentFrame();
   const {height, durationInFrames} = useVideoConfig();
-  const fadeIn = interpolate(frame, [0, 12], [0, 1], {
+  const fadeIn = interpolate(frame, [0, 16], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
+    easing: Easing.inOut(Easing.cubic),
   });
-  const textIn = interpolate(frame, [18, 34], [0, 1], {
+  const textIn = interpolate(frame, [20, 38], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
+    easing: Easing.inOut(Easing.quad),
   });
   const fadeOut = interpolate(
     frame,
-    [durationInFrames - 14, durationInFrames - 1],
+    [durationInFrames - 18, durationInFrames - 1],
     [1, 0],
-    {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'},
+    {
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+      easing: Easing.inOut(Easing.quad),
+    },
   );
   const mono = '"Consolas", "Courier New", monospace';
   return (

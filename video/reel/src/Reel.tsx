@@ -10,7 +10,9 @@ export const FPS = 30;
 export const BOOT_FRAMES = 80;
 export const TITLE_FRAMES = 100;
 export const END_FRAMES = 110;
-export const CROSS = 10;
+// Crossfade length in frames. 16 at 30 fps is just over half a second:
+// long enough to read as a dissolve, short enough to keep the cut.
+export const CROSS = 16;
 
 export const scenes: SceneMeta[] = reelData.scenes;
 

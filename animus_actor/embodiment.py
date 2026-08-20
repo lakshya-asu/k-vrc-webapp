@@ -554,6 +554,8 @@ def map_plan_to_bridge_jobs(plan, profile):
             layers.append(_map_gaze_beat(beat, profile))
         if beat.get("face") is not None:
             layers.append(_map_face_beat(beat, profile))
+        # face_glyph is a visor-only channel: it renders on the LED
+        # screen (face_frames) and maps to no bridge op by design.
         if beat.get("speech") is not None:
             speech = profile["speech"]
             voice_jobs.append(

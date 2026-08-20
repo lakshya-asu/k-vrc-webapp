@@ -24,6 +24,8 @@
 //     [{at_ms, duration_ms}] windows that turn the glitch overlay on
 //     deterministically, on top of (never instead of) the seeded timer.
 
+import { validateFaceGlyph } from './glyphComposer.js';
+
 export const FACE_WEIGHT_KEYS = [
   'brow_raise',
   'brow_furrow',
@@ -175,7 +177,9 @@ function makeForcedGlitch(windows) {
 
 // job: {
 //   fps, frame_end,
-//   face_beats: [{expression, intensity, at_ms, duration_ms}],
+//   face_beats: [{expression, intensity, at_ms, duration_ms}] where an
+//     entry may carry {glyph: <validated composed-glyph spec>} instead
+//     of an expression name (the face_glyph beat channel),
 //   viseme_samples: [{frame, shape_key, weight}],
 //   seed,
 //   force_glitches: [{at_ms, duration_ms}]  (optional),
@@ -191,20 +195,45 @@ export function buildFaceTimeline(job, library) {
 
   const neutral = resolveExpression('neutral_idle', library);
   const segments = (job.face_beats || [])
-    .map((beat) => {
-      const entry = resolveExpression(beat.expression, library);
-      const intensity = beat.intensity ?? 1;
+    .map((beat, index) => {
       const base = msToFrame(beat.at_ms, fps);
       const durFrames = durationToFrames(beat.duration_ms, fps);
       const ramp = Math.max(1, Math.min(4, Math.floor(durFrames / 3)));
+      if (beat.glyph != null) {
+        // A composed glyph face (reel-polish brief, directive 3). The
+        // spec is strictly validated; invalid specs are refused loudly.
+        const checked = validateFaceGlyph(
+          beat.glyph, `face_beats[${index}].glyph`,
+        );
+        if (!checked.ok) {
+          throw new Error(checked.errors.join('; '));
+        }
+        return {
+          base,
+          ramp,
+          mood: checked.value.mood ?? null, // null: inherit, fixed below
+          weights: null,
+          glyph: checked.value,
+        };
+      }
+      const entry = resolveExpression(beat.expression, library);
+      const intensity = beat.intensity ?? 1;
       return {
         base,
         ramp,
         mood: entry.mood,
         weights: scaledWeights(entry, intensity),
+        glyph: null,
       };
     })
     .sort((a, b) => a.base - b.base);
+  // A glyph without an explicit mood keeps the palette of whatever
+  // face came before it.
+  let inheritMood = neutral.mood;
+  for (const segment of segments) {
+    if (segment.mood == null) segment.mood = inheritMood;
+    inheritMood = segment.mood;
+  }
 
   const tracks = visemeTracks(job.viseme_samples);
   const forcedGlitch = makeForcedGlitch(job.force_glitches);
@@ -222,9 +251,11 @@ export function buildFaceTimeline(job, library) {
     while (segIndex + 1 < segments.length && segments[segIndex + 1].base <= frame) {
       if (segIndex >= 0) {
         // The previous expression is fully held before it is replaced.
+        // A glyph segment holds no weights; the last weighted face
+        // stays the ease-from state.
         held = {
           mood: segments[segIndex].mood,
-          weights: segments[segIndex].weights,
+          weights: segments[segIndex].weights ?? held.weights,
         };
       }
       segIndex += 1;
@@ -232,11 +263,17 @@ export function buildFaceTimeline(job, library) {
 
     let mood = held.mood;
     let weights = held.weights;
+    let glyph = null;
     if (segIndex >= 0) {
       const seg = segments[segIndex];
-      const ease = Math.min(1, (frame - seg.base) / seg.ramp);
       mood = seg.mood;
-      weights = lerpWeights(held.weights, seg.weights, ease);
+      if (seg.glyph != null) {
+        // Glyph faces pop like an LED redraw; no weight easing.
+        glyph = seg.glyph;
+      } else {
+        const ease = Math.min(1, (frame - seg.base) / seg.ramp);
+        weights = lerpWeights(held.weights, seg.weights, ease);
+      }
     }
 
     const amplitude = Math.min(1, Math.max(0, tracks.loudest(frame)));
@@ -244,7 +281,7 @@ export function buildFaceTimeline(job, library) {
     finalWeights.mouth_open = Math.max(finalWeights.mouth_open, tracks.mouth(frame));
     finalWeights.smile_width = Math.max(finalWeights.smile_width, tracks.smile(frame));
 
-    frames.push({
+    const state = {
       frame,
       t: (frame - 1) / fps,
       mood,
@@ -252,7 +289,9 @@ export function buildFaceTimeline(job, library) {
       amplitude,
       blinkProgress: Math.min(1, Math.max(0, twitch.blinkProgress)),
       glitchActive: twitch.glitchLeft > 0 || forcedGlitch((frame - 1) / fps),
-    });
+    };
+    if (glyph != null) state.glyph = glyph;
+    frames.push(state);
   }
   return frames;
 }

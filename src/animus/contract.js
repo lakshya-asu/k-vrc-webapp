@@ -26,11 +26,75 @@ export const BODY_STYLES = Object.freeze([
 ]);
 
 const TOP_LEVEL_KEYS = new Set(['schema_version', 'summary', 'beats']);
-const BEAT_KEYS = new Set(['id', 'at_ms', 'duration_ms', 'body', 'gaze', 'face', 'speech']);
+const BEAT_KEYS = new Set([
+  'id', 'at_ms', 'duration_ms', 'body', 'gaze', 'face', 'face_glyph', 'speech',
+]);
 const BODY_KEYS = new Set(['action', 'target', 'gesture', 'style', 'intensity']);
 const GAZE_KEYS = new Set(['target', 'intensity']);
 const FACE_KEYS = new Set(['expression', 'intensity']);
 const SPEECH_KEYS = new Set(['text', 'delivery']);
+
+// The face_glyph channel: a composed visor face (eyes/brows/mouth
+// glyphs or short LED text) instead of a library expression. The
+// vocabulary lives with the glyph composer; the contract only names
+// the channel and defers to its strict validator.
+export const FACE_GLYPH_EYES = Object.freeze([
+  'round', 'oval', 'bar', 'happy_arc', 'half_lidded', 'closed', 'wide', 'x_cross',
+]);
+export const FACE_GLYPH_BROWS = Object.freeze([
+  'none', 'flat', 'raised', 'angry_in', 'sad_out',
+]);
+export const FACE_GLYPH_MOUTHS = Object.freeze([
+  'none', 'flat', 'smile', 'frown', 'o_small', 'grin_rect', 'gritted', 'v_smile', 'wavy',
+]);
+export const FACE_GLYPH_MOODS = Object.freeze([
+  'cold', 'warm', 'glitch', 'static', 'data', 'boot', 'angry', 'dream',
+]);
+export const FACE_GLYPH_TEXT_MAX = 6;
+const FACE_GLYPH_TEXT_PATTERN = /^[A-Z0-9 !?%+\-*#<>:=._]+$/;
+const FACE_GLYPH_KEYS = new Set(['eyes', 'brows', 'mouth', 'text', 'mood', 'intensity']);
+
+function validateFaceGlyphBeat(glyph, path, errors) {
+  if (!isObject(glyph)) {
+    errors.push(`${path} must be an object or null`);
+    return;
+  }
+  addUnknownKeyErrors(glyph, FACE_GLYPH_KEYS, path, errors);
+  const hasText = glyph.text !== undefined && glyph.text !== null;
+  if (hasText) {
+    for (const key of ['eyes', 'brows', 'mouth']) {
+      if (glyph[key] !== undefined) {
+        errors.push(`${path}.${key} is not allowed in text mode`);
+      }
+    }
+    if (typeof glyph.text !== 'string') {
+      errors.push(`${path}.text must be a string`);
+    } else {
+      const text = glyph.text.trim().toUpperCase();
+      if (text.length < 1 || text.length > FACE_GLYPH_TEXT_MAX) {
+        errors.push(`${path}.text must be 1 to ${FACE_GLYPH_TEXT_MAX} characters`);
+      } else if (!FACE_GLYPH_TEXT_PATTERN.test(text)) {
+        errors.push(`${path}.text may use only A-Z 0-9 and ! ? % + - * # < > : = . _`);
+      }
+    }
+  } else {
+    if (!FACE_GLYPH_EYES.includes(glyph.eyes)) {
+      errors.push(`${path}.eyes must be one of: ${FACE_GLYPH_EYES.join(', ')}`);
+    }
+    if (glyph.brows !== undefined && !FACE_GLYPH_BROWS.includes(glyph.brows)) {
+      errors.push(`${path}.brows must be one of: ${FACE_GLYPH_BROWS.join(', ')}`);
+    }
+    if (glyph.mouth !== undefined && !FACE_GLYPH_MOUTHS.includes(glyph.mouth)) {
+      errors.push(`${path}.mouth must be one of: ${FACE_GLYPH_MOUTHS.join(', ')}`);
+    }
+  }
+  if (glyph.mood !== undefined && !FACE_GLYPH_MOODS.includes(glyph.mood)) {
+    errors.push(`${path}.mood must be one of: ${FACE_GLYPH_MOODS.join(', ')}`);
+  }
+  if (glyph.intensity !== undefined) {
+    validateIntensity(glyph.intensity, `${path}.intensity`, errors);
+  }
+}
 const FORBIDDEN_KEYS = new Set([
   'code',
   'python',
@@ -175,11 +239,18 @@ export function validateActorPlan(candidate, authority = {}) {
         errors.push(`${path}.duration_ms must be an integer from 100 to 30000`);
       }
 
-      const channels = ['body', 'gaze', 'face', 'speech'].filter((key) => beat[key] != null);
+      const channels = ['body', 'gaze', 'face', 'face_glyph', 'speech']
+        .filter((key) => beat[key] != null);
       if (channels.length === 0) errors.push(`${path} must use at least one actor channel`);
+      if (beat.face != null && beat.face_glyph != null) {
+        errors.push(`${path} may use face or face_glyph, not both`);
+      }
       if (beat.body != null) validateBody(beat.body, `${path}.body`, errors);
       if (beat.gaze != null) validateGaze(beat.gaze, `${path}.gaze`, errors);
       if (beat.face != null) validateFace(beat.face, `${path}.face`, errors);
+      if (beat.face_glyph != null) {
+        validateFaceGlyphBeat(beat.face_glyph, `${path}.face_glyph`, errors);
+      }
       if (beat.speech != null) validateSpeech(beat.speech, `${path}.speech`, errors);
     });
   }
