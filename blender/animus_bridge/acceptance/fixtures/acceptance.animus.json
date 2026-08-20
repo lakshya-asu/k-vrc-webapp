@@ -1,0 +1,713 @@
+{
+  "schema_version": "0.1",
+  "kind": "animus_viseme_take",
+  "embodiment": {
+    "profile": "kvrc",
+    "profile_version": "0.1.0",
+    "target": "shape_keys",
+    "shape_keys": [
+      "mouth_open",
+      "smile_width",
+      "mouth_curl_left",
+      "mouth_curl_right"
+    ]
+  },
+  "object": "KVRC_face",
+  "name_hint": "animus_speech",
+  "fps": 24,
+  "frame_start": 1,
+  "frame_end": 74,
+  "duration_ms": 3050,
+  "cue_count": 17,
+  "cues": [
+    {
+      "at_ms": 0,
+      "frame": 1,
+      "viseme": "X",
+      "weights": {
+        "mouth_open": 0.0,
+        "smile_width": 0.1,
+        "mouth_curl_left": 0.05,
+        "mouth_curl_right": 0.05
+      }
+    },
+    {
+      "at_ms": 290,
+      "frame": 8,
+      "viseme": "C",
+      "weights": {
+        "mouth_open": 0.45,
+        "smile_width": 0.4,
+        "mouth_curl_left": 0.05,
+        "mouth_curl_right": 0.05
+      }
+    },
+    {
+      "at_ms": 370,
+      "frame": 10,
+      "viseme": "E",
+      "weights": {
+        "mouth_open": 0.5,
+        "smile_width": 0.15,
+        "mouth_curl_left": 0.0,
+        "mouth_curl_right": 0.0
+      }
+    },
+    {
+      "at_ms": 580,
+      "frame": 15,
+      "viseme": "F",
+      "weights": {
+        "mouth_open": 0.3,
+        "smile_width": 0.0,
+        "mouth_curl_left": 0.0,
+        "mouth_curl_right": 0.0
+      }
+    },
+    {
+      "at_ms": 650,
+      "frame": 17,
+      "viseme": "C",
+      "weights": {
+        "mouth_open": 0.45,
+        "smile_width": 0.4,
+        "mouth_curl_left": 0.05,
+        "mouth_curl_right": 0.05
+      }
+    },
+    {
+      "at_ms": 720,
+      "frame": 18,
+      "viseme": "B",
+      "weights": {
+        "mouth_open": 0.2,
+        "smile_width": 0.55,
+        "mouth_curl_left": 0.1,
+        "mouth_curl_right": 0.1
+      }
+    },
+    {
+      "at_ms": 790,
+      "frame": 20,
+      "viseme": "A",
+      "weights": {
+        "mouth_open": 0.0,
+        "smile_width": 0.15,
+        "mouth_curl_left": 0.05,
+        "mouth_curl_right": 0.05
+      }
+    },
+    {
+      "at_ms": 870,
+      "frame": 22,
+      "viseme": "C",
+      "weights": {
+        "mouth_open": 0.45,
+        "smile_width": 0.4,
+        "mouth_curl_left": 0.05,
+        "mouth_curl_right": 0.05
+      }
+    },
+    {
+      "at_ms": 1040,
+      "frame": 26,
+      "viseme": "B",
+      "weights": {
+        "mouth_open": 0.2,
+        "smile_width": 0.55,
+        "mouth_curl_left": 0.1,
+        "mouth_curl_right": 0.1
+      }
+    },
+    {
+      "at_ms": 1840,
+      "frame": 45,
+      "viseme": "F",
+      "weights": {
+        "mouth_open": 0.3,
+        "smile_width": 0.0,
+        "mouth_curl_left": 0.0,
+        "mouth_curl_right": 0.0
+      }
+    },
+    {
+      "at_ms": 1910,
+      "frame": 47,
+      "viseme": "D",
+      "weights": {
+        "mouth_open": 0.85,
+        "smile_width": 0.3,
+        "mouth_curl_left": 0.0,
+        "mouth_curl_right": 0.0
+      }
+    },
+    {
+      "at_ms": 1970,
+      "frame": 48,
+      "viseme": "B",
+      "weights": {
+        "mouth_open": 0.2,
+        "smile_width": 0.55,
+        "mouth_curl_left": 0.1,
+        "mouth_curl_right": 0.1
+      }
+    },
+    {
+      "at_ms": 2040,
+      "frame": 50,
+      "viseme": "A",
+      "weights": {
+        "mouth_open": 0.0,
+        "smile_width": 0.15,
+        "mouth_curl_left": 0.05,
+        "mouth_curl_right": 0.05
+      }
+    },
+    {
+      "at_ms": 2120,
+      "frame": 52,
+      "viseme": "B",
+      "weights": {
+        "mouth_open": 0.2,
+        "smile_width": 0.55,
+        "mouth_curl_left": 0.1,
+        "mouth_curl_right": 0.1
+      }
+    },
+    {
+      "at_ms": 2190,
+      "frame": 54,
+      "viseme": "C",
+      "weights": {
+        "mouth_open": 0.45,
+        "smile_width": 0.4,
+        "mouth_curl_left": 0.05,
+        "mouth_curl_right": 0.05
+      }
+    },
+    {
+      "at_ms": 2400,
+      "frame": 59,
+      "viseme": "B",
+      "weights": {
+        "mouth_open": 0.2,
+        "smile_width": 0.55,
+        "mouth_curl_left": 0.1,
+        "mouth_curl_right": 0.1
+      }
+    },
+    {
+      "at_ms": 2610,
+      "frame": 64,
+      "viseme": "X",
+      "weights": {
+        "mouth_open": 0.0,
+        "smile_width": 0.1,
+        "mouth_curl_left": 0.05,
+        "mouth_curl_right": 0.05
+      }
+    }
+  ],
+  "samples": [
+    {
+      "frame": 1,
+      "at_ms": 0,
+      "viseme": "X",
+      "shape_key": "mouth_open",
+      "weight": 0.0
+    },
+    {
+      "frame": 1,
+      "at_ms": 0,
+      "viseme": "X",
+      "shape_key": "smile_width",
+      "weight": 0.1
+    },
+    {
+      "frame": 1,
+      "at_ms": 0,
+      "viseme": "X",
+      "shape_key": "mouth_curl_left",
+      "weight": 0.05
+    },
+    {
+      "frame": 1,
+      "at_ms": 0,
+      "viseme": "X",
+      "shape_key": "mouth_curl_right",
+      "weight": 0.05
+    },
+    {
+      "frame": 8,
+      "at_ms": 290,
+      "viseme": "C",
+      "shape_key": "mouth_open",
+      "weight": 0.45
+    },
+    {
+      "frame": 8,
+      "at_ms": 290,
+      "viseme": "C",
+      "shape_key": "smile_width",
+      "weight": 0.4
+    },
+    {
+      "frame": 8,
+      "at_ms": 290,
+      "viseme": "C",
+      "shape_key": "mouth_curl_left",
+      "weight": 0.05
+    },
+    {
+      "frame": 8,
+      "at_ms": 290,
+      "viseme": "C",
+      "shape_key": "mouth_curl_right",
+      "weight": 0.05
+    },
+    {
+      "frame": 10,
+      "at_ms": 370,
+      "viseme": "E",
+      "shape_key": "mouth_open",
+      "weight": 0.5
+    },
+    {
+      "frame": 10,
+      "at_ms": 370,
+      "viseme": "E",
+      "shape_key": "smile_width",
+      "weight": 0.15
+    },
+    {
+      "frame": 10,
+      "at_ms": 370,
+      "viseme": "E",
+      "shape_key": "mouth_curl_left",
+      "weight": 0.0
+    },
+    {
+      "frame": 10,
+      "at_ms": 370,
+      "viseme": "E",
+      "shape_key": "mouth_curl_right",
+      "weight": 0.0
+    },
+    {
+      "frame": 15,
+      "at_ms": 580,
+      "viseme": "F",
+      "shape_key": "mouth_open",
+      "weight": 0.3
+    },
+    {
+      "frame": 15,
+      "at_ms": 580,
+      "viseme": "F",
+      "shape_key": "smile_width",
+      "weight": 0.0
+    },
+    {
+      "frame": 15,
+      "at_ms": 580,
+      "viseme": "F",
+      "shape_key": "mouth_curl_left",
+      "weight": 0.0
+    },
+    {
+      "frame": 15,
+      "at_ms": 580,
+      "viseme": "F",
+      "shape_key": "mouth_curl_right",
+      "weight": 0.0
+    },
+    {
+      "frame": 17,
+      "at_ms": 650,
+      "viseme": "C",
+      "shape_key": "mouth_open",
+      "weight": 0.45
+    },
+    {
+      "frame": 17,
+      "at_ms": 650,
+      "viseme": "C",
+      "shape_key": "smile_width",
+      "weight": 0.4
+    },
+    {
+      "frame": 17,
+      "at_ms": 650,
+      "viseme": "C",
+      "shape_key": "mouth_curl_left",
+      "weight": 0.05
+    },
+    {
+      "frame": 17,
+      "at_ms": 650,
+      "viseme": "C",
+      "shape_key": "mouth_curl_right",
+      "weight": 0.05
+    },
+    {
+      "frame": 18,
+      "at_ms": 720,
+      "viseme": "B",
+      "shape_key": "mouth_open",
+      "weight": 0.2
+    },
+    {
+      "frame": 18,
+      "at_ms": 720,
+      "viseme": "B",
+      "shape_key": "smile_width",
+      "weight": 0.55
+    },
+    {
+      "frame": 18,
+      "at_ms": 720,
+      "viseme": "B",
+      "shape_key": "mouth_curl_left",
+      "weight": 0.1
+    },
+    {
+      "frame": 18,
+      "at_ms": 720,
+      "viseme": "B",
+      "shape_key": "mouth_curl_right",
+      "weight": 0.1
+    },
+    {
+      "frame": 20,
+      "at_ms": 790,
+      "viseme": "A",
+      "shape_key": "mouth_open",
+      "weight": 0.0
+    },
+    {
+      "frame": 20,
+      "at_ms": 790,
+      "viseme": "A",
+      "shape_key": "smile_width",
+      "weight": 0.15
+    },
+    {
+      "frame": 20,
+      "at_ms": 790,
+      "viseme": "A",
+      "shape_key": "mouth_curl_left",
+      "weight": 0.05
+    },
+    {
+      "frame": 20,
+      "at_ms": 790,
+      "viseme": "A",
+      "shape_key": "mouth_curl_right",
+      "weight": 0.05
+    },
+    {
+      "frame": 22,
+      "at_ms": 870,
+      "viseme": "C",
+      "shape_key": "mouth_open",
+      "weight": 0.45
+    },
+    {
+      "frame": 22,
+      "at_ms": 870,
+      "viseme": "C",
+      "shape_key": "smile_width",
+      "weight": 0.4
+    },
+    {
+      "frame": 22,
+      "at_ms": 870,
+      "viseme": "C",
+      "shape_key": "mouth_curl_left",
+      "weight": 0.05
+    },
+    {
+      "frame": 22,
+      "at_ms": 870,
+      "viseme": "C",
+      "shape_key": "mouth_curl_right",
+      "weight": 0.05
+    },
+    {
+      "frame": 26,
+      "at_ms": 1040,
+      "viseme": "B",
+      "shape_key": "mouth_open",
+      "weight": 0.2
+    },
+    {
+      "frame": 26,
+      "at_ms": 1040,
+      "viseme": "B",
+      "shape_key": "smile_width",
+      "weight": 0.55
+    },
+    {
+      "frame": 26,
+      "at_ms": 1040,
+      "viseme": "B",
+      "shape_key": "mouth_curl_left",
+      "weight": 0.1
+    },
+    {
+      "frame": 26,
+      "at_ms": 1040,
+      "viseme": "B",
+      "shape_key": "mouth_curl_right",
+      "weight": 0.1
+    },
+    {
+      "frame": 45,
+      "at_ms": 1840,
+      "viseme": "F",
+      "shape_key": "mouth_open",
+      "weight": 0.3
+    },
+    {
+      "frame": 45,
+      "at_ms": 1840,
+      "viseme": "F",
+      "shape_key": "smile_width",
+      "weight": 0.0
+    },
+    {
+      "frame": 45,
+      "at_ms": 1840,
+      "viseme": "F",
+      "shape_key": "mouth_curl_left",
+      "weight": 0.0
+    },
+    {
+      "frame": 45,
+      "at_ms": 1840,
+      "viseme": "F",
+      "shape_key": "mouth_curl_right",
+      "weight": 0.0
+    },
+    {
+      "frame": 47,
+      "at_ms": 1910,
+      "viseme": "D",
+      "shape_key": "mouth_open",
+      "weight": 0.85
+    },
+    {
+      "frame": 47,
+      "at_ms": 1910,
+      "viseme": "D",
+      "shape_key": "smile_width",
+      "weight": 0.3
+    },
+    {
+      "frame": 47,
+      "at_ms": 1910,
+      "viseme": "D",
+      "shape_key": "mouth_curl_left",
+      "weight": 0.0
+    },
+    {
+      "frame": 47,
+      "at_ms": 1910,
+      "viseme": "D",
+      "shape_key": "mouth_curl_right",
+      "weight": 0.0
+    },
+    {
+      "frame": 48,
+      "at_ms": 1970,
+      "viseme": "B",
+      "shape_key": "mouth_open",
+      "weight": 0.2
+    },
+    {
+      "frame": 48,
+      "at_ms": 1970,
+      "viseme": "B",
+      "shape_key": "smile_width",
+      "weight": 0.55
+    },
+    {
+      "frame": 48,
+      "at_ms": 1970,
+      "viseme": "B",
+      "shape_key": "mouth_curl_left",
+      "weight": 0.1
+    },
+    {
+      "frame": 48,
+      "at_ms": 1970,
+      "viseme": "B",
+      "shape_key": "mouth_curl_right",
+      "weight": 0.1
+    },
+    {
+      "frame": 50,
+      "at_ms": 2040,
+      "viseme": "A",
+      "shape_key": "mouth_open",
+      "weight": 0.0
+    },
+    {
+      "frame": 50,
+      "at_ms": 2040,
+      "viseme": "A",
+      "shape_key": "smile_width",
+      "weight": 0.15
+    },
+    {
+      "frame": 50,
+      "at_ms": 2040,
+      "viseme": "A",
+      "shape_key": "mouth_curl_left",
+      "weight": 0.05
+    },
+    {
+      "frame": 50,
+      "at_ms": 2040,
+      "viseme": "A",
+      "shape_key": "mouth_curl_right",
+      "weight": 0.05
+    },
+    {
+      "frame": 52,
+      "at_ms": 2120,
+      "viseme": "B",
+      "shape_key": "mouth_open",
+      "weight": 0.2
+    },
+    {
+      "frame": 52,
+      "at_ms": 2120,
+      "viseme": "B",
+      "shape_key": "smile_width",
+      "weight": 0.55
+    },
+    {
+      "frame": 52,
+      "at_ms": 2120,
+      "viseme": "B",
+      "shape_key": "mouth_curl_left",
+      "weight": 0.1
+    },
+    {
+      "frame": 52,
+      "at_ms": 2120,
+      "viseme": "B",
+      "shape_key": "mouth_curl_right",
+      "weight": 0.1
+    },
+    {
+      "frame": 54,
+      "at_ms": 2190,
+      "viseme": "C",
+      "shape_key": "mouth_open",
+      "weight": 0.45
+    },
+    {
+      "frame": 54,
+      "at_ms": 2190,
+      "viseme": "C",
+      "shape_key": "smile_width",
+      "weight": 0.4
+    },
+    {
+      "frame": 54,
+      "at_ms": 2190,
+      "viseme": "C",
+      "shape_key": "mouth_curl_left",
+      "weight": 0.05
+    },
+    {
+      "frame": 54,
+      "at_ms": 2190,
+      "viseme": "C",
+      "shape_key": "mouth_curl_right",
+      "weight": 0.05
+    },
+    {
+      "frame": 59,
+      "at_ms": 2400,
+      "viseme": "B",
+      "shape_key": "mouth_open",
+      "weight": 0.2
+    },
+    {
+      "frame": 59,
+      "at_ms": 2400,
+      "viseme": "B",
+      "shape_key": "smile_width",
+      "weight": 0.55
+    },
+    {
+      "frame": 59,
+      "at_ms": 2400,
+      "viseme": "B",
+      "shape_key": "mouth_curl_left",
+      "weight": 0.1
+    },
+    {
+      "frame": 59,
+      "at_ms": 2400,
+      "viseme": "B",
+      "shape_key": "mouth_curl_right",
+      "weight": 0.1
+    },
+    {
+      "frame": 64,
+      "at_ms": 2610,
+      "viseme": "X",
+      "shape_key": "mouth_open",
+      "weight": 0.0
+    },
+    {
+      "frame": 64,
+      "at_ms": 2610,
+      "viseme": "X",
+      "shape_key": "smile_width",
+      "weight": 0.1
+    },
+    {
+      "frame": 64,
+      "at_ms": 2610,
+      "viseme": "X",
+      "shape_key": "mouth_curl_left",
+      "weight": 0.05
+    },
+    {
+      "frame": 64,
+      "at_ms": 2610,
+      "viseme": "X",
+      "shape_key": "mouth_curl_right",
+      "weight": 0.05
+    }
+  ],
+  "source": {
+    "text": "Hello, I am K-VRC. Watch me act.",
+    "tts": {
+      "engine": "kokoro",
+      "model": "hexgrad/Kokoro-82M",
+      "license": "Apache-2.0",
+      "voice": "af_heart",
+      "lang": "a",
+      "speed": 1.0,
+      "seed": 0,
+      "sample_rate": 24000,
+      "duration_s": 3.05,
+      "wav": "animus_voice/out\\acceptance.wav"
+    },
+    "audio_wav": "acceptance.wav",
+    "audio_sha256": "09860a55c9d69a770b8ce634661b15820e014496e5d26e84ff0b45ce4f75e67e",
+    "rhubarb": {
+      "engine": "rhubarb-lip-sync",
+      "license": "MIT",
+      "cue_file": "acceptance.rhubarb.json"
+    },
+    "profile": "kvrc",
+    "profile_version": "0.1.0"
+  }
+}

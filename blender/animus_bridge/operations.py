@@ -16,12 +16,14 @@ import bpy
 
 from .protocol import (
     INTERNAL_ERROR,
+    NO_SHAPE_KEYS,
     NOT_AN_ARMATURE,
     PROTECTED_ACTION,
     Refusal,
     UNKNOWN_ACTION,
     UNKNOWN_BONE,
     UNKNOWN_OBJECT,
+    UNKNOWN_SHAPE_KEY,
 )
 
 MARKER = "animus_bridge"
@@ -48,6 +50,32 @@ def _require_bones(obj, samples):
             raise Refusal(
                 UNKNOWN_BONE,
                 f"armature '{obj.name}' has no bone '{sample['bone']}'",
+            )
+
+
+def _get_shape_keyed_object(name):
+    """Resolve an object whose data carries shape keys.
+
+    Returns (object, key datablock). Shape-key FCurves and their NLA
+    takes live on the Key datablock (object.data.shape_keys), not on
+    the object itself, so the Key is what the caller animates.
+    """
+    obj = bpy.data.objects.get(name)
+    if obj is None:
+        raise Refusal(UNKNOWN_OBJECT, f"no object named '{name}' in the scene data")
+    key = getattr(getattr(obj, "data", None), "shape_keys", None)
+    if key is None:
+        raise Refusal(NO_SHAPE_KEYS, f"object '{name}' has no shape keys")
+    return obj, key
+
+
+def _require_shape_keys(obj, key, samples):
+    known = set(key.key_blocks.keys())
+    for sample in samples:
+        if sample["shape_key"] not in known:
+            raise Refusal(
+                UNKNOWN_SHAPE_KEY,
+                f"object '{obj.name}' has no shape key '{sample['shape_key']}'",
             )
 
 
@@ -123,6 +151,8 @@ def _write_pose_keys(action, samples):
 
 
 def _new_strip(obj, action, hint, frame_start):
+    # 'obj' is any animatable ID datablock: an armature object for pose
+    # takes, or the shape-key Key datablock for face takes.
     animation_data = getattr(obj, "animation_data", None)
     if animation_data is None:
         animation_data = obj.animation_data_create()
@@ -238,10 +268,72 @@ def perform_take(params):
     }
 
 
+def _write_shape_keys(action, samples):
+    """Write validated shape-key samples into the action's FCurves.
+
+    One FCurve per shape key, data path key_blocks["name"].value, the
+    same legacy action.fcurves API apply_pose_keys uses for bones.
+    """
+    key_count = 0
+    shape_keys = set()
+    for sample in samples:
+        name = sample["shape_key"]
+        shape_keys.add(name)
+        data_path = f'key_blocks["{name}"].value'
+        fcurve = action.fcurves.find(data_path, index=0)
+        if fcurve is None:
+            fcurve = action.fcurves.new(data_path, index=0)
+        fcurve.keyframe_points.insert(sample["frame"], sample["weight"])
+        key_count += 1
+    return key_count, sorted(shape_keys)
+
+
+def apply_shape_keys(params):
+    """One atomic shape-key take: new Action, weight keys, new NLA strip.
+
+    The voice pipeline's viseme take maps onto this directly: object,
+    name_hint, frame_start, frame_end, and the artifact's samples list
+    (extra at_ms/viseme fields are accepted and dropped by validation).
+    All scene checks run before the first mutation. The Action and the
+    NLA strip land on the Key datablock of the named object. A repeated
+    identical request produces new names; nothing is overwritten.
+    """
+    obj, key = _get_shape_keyed_object(params["object"])
+    _require_shape_keys(obj, key, params["samples"])
+
+    action = None
+    try:
+        action = _new_marked_action(params["name_hint"])
+        key_count, shape_keys = _write_shape_keys(action, params["samples"])
+        track, strip = _new_strip(
+            key, action, params["name_hint"], params["frame_start"]
+        )
+    except Refusal:
+        if action is not None:
+            bpy.data.actions.remove(action)
+        raise
+    except Exception as error:
+        if action is not None:
+            bpy.data.actions.remove(action)
+        raise Refusal(INTERNAL_ERROR, f"take failed and was rolled back: {error}")
+
+    return {
+        "action": action.name,
+        "track": track.name,
+        "strip": strip.name,
+        "shape_keys": shape_keys,
+        "sample_count": len(params["samples"]),
+        "key_count": key_count,
+        "frame_start": params["frame_start"],
+        "frame_end": params["frame_end"],
+    }
+
+
 HANDLERS = {
     "inspect_rig": inspect_rig,
     "create_action": create_action,
     "apply_pose_keys": apply_pose_keys,
+    "apply_shape_keys": apply_shape_keys,
     "push_to_nla": push_to_nla,
     "perform_take": perform_take,
 }

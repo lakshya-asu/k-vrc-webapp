@@ -35,6 +35,8 @@ INVALID_PARAMS = "invalid_params"
 UNKNOWN_OBJECT = "unknown_object"
 NOT_AN_ARMATURE = "not_an_armature"
 UNKNOWN_BONE = "unknown_bone"
+NO_SHAPE_KEYS = "no_shape_keys"
+UNKNOWN_SHAPE_KEY = "unknown_shape_key"
 UNKNOWN_ACTION = "unknown_action"
 PROTECTED_ACTION = "protected_action"
 FRAME_OUT_OF_RANGE = "frame_out_of_range"
@@ -43,6 +45,13 @@ INTERNAL_ERROR = "internal_error"
 _NAME_HINT_RE = re.compile(r"^[A-Za-z0-9_][A-Za-z0-9_.\-]{0,59}$")
 
 _SAMPLE_KEYS = frozenset({"bone", "frame", "location", "rotation_quaternion"})
+
+# Shape-key samples use the voice pipeline's take vocabulary directly.
+# 'at_ms' and 'viseme' are provenance fields the animus_voice converter
+# writes next to every sample; the bridge accepts them and drops them,
+# so a viseme take's samples list can be sent as a request payload
+# without any client-side rewriting.
+_SHAPE_SAMPLE_KEYS = frozenset({"shape_key", "frame", "weight", "at_ms", "viseme"})
 
 
 class Refusal(Exception):
@@ -176,6 +185,49 @@ def _require_samples(params, frame_start, frame_end, op):
     return normalized
 
 
+def _require_shape_samples(params, frame_start, frame_end, op):
+    samples = params.get("samples")
+    if not isinstance(samples, list) or not samples:
+        raise Refusal(INVALID_PARAMS, f"{op}: 'samples' must be a non-empty list")
+    if len(samples) > MAX_SAMPLES:
+        raise Refusal(
+            INVALID_PARAMS, f"{op}: 'samples' may contain at most {MAX_SAMPLES} items"
+        )
+    normalized = []
+    for index, sample in enumerate(samples):
+        label = f"samples[{index}]"
+        if not isinstance(sample, dict):
+            raise Refusal(INVALID_PARAMS, f"{op}: {label} must be an object")
+        for key in sample:
+            if key not in _SHAPE_SAMPLE_KEYS:
+                raise Refusal(INVALID_PARAMS, f"{op}: {label} has unknown key '{key}'")
+        shape_key = sample.get("shape_key")
+        if not isinstance(shape_key, str) or not shape_key.strip() or len(shape_key) > 120:
+            raise Refusal(
+                INVALID_PARAMS, f"{op}: {label}.shape_key must be a shape key name"
+            )
+        frame = sample.get("frame")
+        if not isinstance(frame, int) or isinstance(frame, bool):
+            raise Refusal(INVALID_PARAMS, f"{op}: {label}.frame must be an integer")
+        if frame < frame_start or frame > frame_end:
+            raise Refusal(
+                FRAME_OUT_OF_RANGE,
+                f"{op}: {label}.frame {frame} is outside the declared range "
+                f"{frame_start} to {frame_end}",
+            )
+        weight = sample.get("weight")
+        if isinstance(weight, bool) or not isinstance(weight, (int, float)):
+            raise Refusal(INVALID_PARAMS, f"{op}: {label}.weight must be a number")
+        if not math.isfinite(weight):
+            raise Refusal(INVALID_PARAMS, f"{op}: {label}.weight must be finite")
+        # 'at_ms' and 'viseme' are accepted voice-artifact provenance and
+        # intentionally dropped here; the scene write needs only these three.
+        normalized.append(
+            {"shape_key": shape_key, "frame": frame, "weight": float(weight)}
+        )
+    return normalized
+
+
 def _validate_inspect_rig(params):
     _require_keys(params, ["object"], [], "inspect_rig")
     return {"object": _require_name(params, "object", "inspect_rig")}
@@ -236,10 +288,29 @@ def _validate_perform_take(params):
     }
 
 
+def _validate_apply_shape_keys(params):
+    op = "apply_shape_keys"
+    _require_keys(
+        params, ["object", "name_hint", "frame_start", "frame_end", "samples"], [], op
+    )
+    obj = _require_name(params, "object", op)
+    hint = _require_name_hint(params, op)
+    start, end = _require_frame_range(params, op)
+    samples = _require_shape_samples(params, start, end, op)
+    return {
+        "object": obj,
+        "name_hint": hint,
+        "frame_start": start,
+        "frame_end": end,
+        "samples": samples,
+    }
+
+
 VALIDATORS = {
     "inspect_rig": _validate_inspect_rig,
     "create_action": _validate_create_action,
     "apply_pose_keys": _validate_apply_pose_keys,
+    "apply_shape_keys": _validate_apply_shape_keys,
     "push_to_nla": _validate_push_to_nla,
     "perform_take": _validate_perform_take,
 }
@@ -247,7 +318,7 @@ VALIDATORS = {
 OPERATIONS = frozenset(VALIDATORS)
 
 MUTATING_OPERATIONS = frozenset(
-    {"create_action", "apply_pose_keys", "push_to_nla", "perform_take"}
+    {"create_action", "apply_pose_keys", "apply_shape_keys", "push_to_nla", "perform_take"}
 )
 
 

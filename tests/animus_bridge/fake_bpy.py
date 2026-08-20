@@ -245,6 +245,54 @@ class FakeObject:
         return self.animation_data
 
 
+class FakeShapeKeyBlock:
+    def __init__(self, name):
+        self.name = name
+        self.value = 0.0
+
+
+class FakeKeyBlocks:
+    def __init__(self, names):
+        self._blocks = {name: FakeShapeKeyBlock(name) for name in names}
+
+    def keys(self):
+        _touch()
+        return list(self._blocks.keys())
+
+    def get(self, name):
+        _touch()
+        return self._blocks.get(name)
+
+    def __iter__(self):
+        return iter(self._blocks.values())
+
+
+class FakeKey:
+    """The shape-key Key datablock: mesh.data.shape_keys in real bpy.
+
+    Shape-key FCurves and NLA takes attach here, not to the object, so
+    the fake models animation_data on the Key the same way FakeObject
+    models it for armatures.
+    """
+
+    def __init__(self, name, shape_key_names):
+        self.name = name
+        self.key_blocks = FakeKeyBlocks(shape_key_names)
+        self.animation_data = None
+
+    def animation_data_create(self):
+        _touch()
+        if self.animation_data is None:
+            self.animation_data = FakeAnimData()
+        return self.animation_data
+
+
+class FakeMesh:
+    def __init__(self, name, shape_keys=None):
+        self.name = name
+        self.shape_keys = shape_keys
+
+
 class FakeData:
     def __init__(self):
         self.actions = FakeActions()
@@ -302,3 +350,15 @@ def add_armature_object(name, bone_names):
 def add_plain_object(name):
     """Test helper: a non-armature object for refusal tests."""
     return data.objects.add(FakeObject(name, "MESH", None))
+
+
+def add_shape_keyed_object(name, shape_key_names):
+    """Test helper: a mesh object whose data carries shape keys."""
+    key = FakeKey(f"{name}_key", shape_key_names)
+    mesh = FakeMesh(f"{name}_mesh", shape_keys=key)
+    return data.objects.add(FakeObject(name, "MESH", mesh))
+
+
+def add_mesh_without_shape_keys(name):
+    """Test helper: a mesh object with data but no shape keys."""
+    return data.objects.add(FakeObject(name, "MESH", FakeMesh(f"{name}_mesh")))
