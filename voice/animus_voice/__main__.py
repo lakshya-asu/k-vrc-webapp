@@ -69,6 +69,7 @@ def _cmd_speak(args):
         "cfg_weight": args.cfg_weight,
         "temperature": args.temperature,
         "device": args.device,
+        "pitch_semitones": args.pitch_semitones,
     }
     receipt = run_pipeline(
         args.text,
@@ -147,6 +148,14 @@ def build_parser():
         "--device",
         default="auto",
         help="chatterbox device: auto, cuda, or cpu",
+    )
+    p_speak.add_argument(
+        "--pitch-semitones",
+        dest="pitch_semitones",
+        type=float,
+        default=0.0,
+        help="chatterbox: formant-preserving pitch shift applied to the "
+        "rendered wav (negative = deeper; ffmpeg rubberband)",
     )
     p_speak.set_defaults(func=_cmd_speak)
 

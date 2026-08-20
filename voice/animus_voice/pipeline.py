@@ -120,6 +120,7 @@ def run_pipeline(
             temperature=opts.get("temperature", 0.8),
             seed=seed,
             device=opts.get("device", "auto"),
+            pitch_semitones=opts.get("pitch_semitones", 0.0),
         )
     else:
         from .tts_kokoro import render_to_wav

@@ -17,6 +17,10 @@ tts_kokoro.render_to_wav. Chatterbox watermarks its audio (Perth); that
 is upstream behavior and is left on.
 """
 
+import os
+import shutil
+import subprocess
+import tempfile
 import wave
 
 DEFAULT_EXAGGERATION = 0.5
@@ -69,6 +73,49 @@ def _write_wav(path, samples, sample_rate):
         handle.writeframes(pcm.tobytes())
 
 
+def pitch_shift_wav(path, semitones):
+    """Formant-preserving pitch shift in place (ffmpeg rubberband).
+
+    Duration is unchanged: this is a real pitch shift, not a resample
+    slowdown. Raises RuntimeError when ffmpeg or its rubberband filter
+    is unavailable.
+    """
+    if not semitones:
+        return
+    ffmpeg = shutil.which("ffmpeg")
+    if ffmpeg is None:
+        raise RuntimeError(
+            "pitch_semitones needs ffmpeg (with the rubberband filter) on PATH"
+        )
+    ratio = 2.0 ** (float(semitones) / 12.0)
+    handle = tempfile.NamedTemporaryFile(suffix=".wav", delete=False)
+    handle.close()
+    try:
+        result = subprocess.run(
+            [
+                ffmpeg,
+                "-y",
+                "-hide_banner",
+                "-loglevel",
+                "error",
+                "-i",
+                path,
+                "-af",
+                f"rubberband=pitch={ratio:.6f}:formant=preserved",
+                handle.name,
+            ],
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode != 0:
+            raise RuntimeError(
+                f"ffmpeg rubberband pitch shift failed: {result.stderr[-300:]}"
+            )
+        shutil.copyfile(handle.name, path)
+    finally:
+        os.unlink(handle.name)
+
+
 def render_to_wav(
     text,
     out_wav,
@@ -77,6 +124,7 @@ def render_to_wav(
     temperature=DEFAULT_TEMPERATURE,
     seed=0,
     device="auto",
+    pitch_semitones=0.0,
 ):
     """Render text to out_wav with the built-in voice. Returns a receipt.
 
@@ -106,6 +154,7 @@ def render_to_wav(
     )
     samples = audio.squeeze(0).detach().cpu().numpy()
     _write_wav(out_wav, samples, model.sr)
+    pitch_shift_wav(out_wav, pitch_semitones)
 
     duration_s = float(samples.shape[-1]) / model.sr
     return {
@@ -118,6 +167,7 @@ def render_to_wav(
         "temperature": float(temperature),
         "seed": seed,
         "device": resolved_device,
+        "pitch_semitones": float(pitch_semitones),
         "sample_rate": model.sr,
         "duration_s": round(duration_s, 3),
         "wav": out_wav,

@@ -116,6 +116,7 @@ def _run_live(job, out_dir, timeout=600):
         ("cfg_weight", "--cfg-weight"),
         ("temperature", "--temperature"),
         ("device", "--device"),
+        ("pitch_semitones", "--pitch-semitones"),
     ):
         if key in tts_opts:
             command += [flag, str(tts_opts[key])]
