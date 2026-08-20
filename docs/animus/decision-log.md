@@ -77,3 +77,32 @@ Decision: invalid JSON, timeout, endpoint failure, and schema failure fall back
 to deterministic behavior.
 
 Reason: the character should remain usable when every model path is down.
+
+## A-008: the embodiment profile owns every number
+
+Date: 2026-08-19.
+
+Decision: all numeric motion data (pose quaternions, gesture timing, gaze
+targets, expression weights) lives in a validated embodiment profile JSON
+committed to the repo. The actor model only names gestures, targets, and
+expressions. Unknown names degrade deterministically to profile defaults.
+
+Reason: this is the enforcement mechanism for A-005 and A-006. The trust
+boundary stays in our validators; the profile is curated data, reviewable
+in diff, with version and license metadata. Voice viseme tracks are the
+one other numeric source and they come from the deterministic voice
+pipeline, never from the actor model.
+
+## A-009: only `perform` opens a socket
+
+Date: 2026-08-19.
+
+Decision: the director runner maps plans at every control level, but only
+`perform` connects to the Blender bridge. `suggest` and `preview` write
+the receipt and mapped requests without touching the scene. Gesture
+templates own their internal timing; plan beats own placement (`at_ms`
+positions a take, it does not retime it).
+
+Reason: caller-owned authority (A-003) must hold through the executor,
+not just the planner. Retiming curated motion would distort it, so a beat
+places a take rather than stretching it.

@@ -32,6 +32,13 @@ test('accepts fenced JSON without accepting surrounding prose', () => {
   assert.equal(parsed.summary, 'Idle');
 });
 
+test('takes the first balanced object when the model appends trailing output', () => {
+  const parsed = extractJson('{"summary":"Plan","beats":[{"id":"b-1"}]}\n{"summary":"Echo"}');
+  assert.equal(parsed.summary, 'Plan');
+  const withProse = extractJson('{"summary":"A {brace} in \\"text\\""} and then some prose}');
+  assert.equal(withProse.summary, 'A {brace} in "text"');
+});
+
 test('uses the first valid provider', async () => {
   const director = new ActorDirector({
     providers: [{

@@ -1,0 +1,147 @@
+{
+  "kind": "animus_embodiment_profile",
+  "schema_version": "0.1",
+  "profile": "kvrc-testrig",
+  "profile_version": "0.1.0",
+  "source": {
+    "authored_by": "hand-authored for the Animus acceptance test rig",
+    "license": "MIT (repository license)",
+    "rig": "plain bpy armature and shape-keyed mesh built by the acceptance harness",
+    "note": "every numeric value in this file is curated repo data; no model output is ever stored here"
+  },
+  "fps": 24,
+  "rig": {
+    "object": "KVRC",
+    "bones": ["root", "spine", "head", "arm.L", "arm.R", "hand.L", "hand.R"],
+    "face_object": "KVRC_face",
+    "shape_keys": ["mouth_open", "smile_width", "mouth_curl_left", "mouth_curl_right"]
+  },
+  "default_gesture": "idle",
+  "body_action_gestures": {
+    "idle": "idle",
+    "wait": "idle",
+    "walk_to": "idle",
+    "turn_to": "nod",
+    "interact": "point"
+  },
+  "gestures": {
+    "wave": {
+      "name_hint": "wave",
+      "frames": 48,
+      "samples": [
+        {"bone": "arm.R", "frame": 1, "rotation_quaternion": [1.0, 0.0, 0.0, 0.0]},
+        {"bone": "arm.R", "frame": 12, "rotation_quaternion": [0.92, 0.0, 0.0, 0.38]},
+        {"bone": "arm.R", "frame": 24, "rotation_quaternion": [0.98, 0.0, 0.0, -0.2]},
+        {"bone": "arm.R", "frame": 36, "rotation_quaternion": [0.92, 0.0, 0.0, 0.38]},
+        {"bone": "arm.R", "frame": 48, "rotation_quaternion": [1.0, 0.0, 0.0, 0.0]},
+        {"bone": "hand.R", "frame": 8, "rotation_quaternion": [1.0, 0.0, 0.0, 0.0]},
+        {"bone": "hand.R", "frame": 16, "rotation_quaternion": [0.966, 0.0, 0.259, 0.0]},
+        {"bone": "hand.R", "frame": 24, "rotation_quaternion": [0.966, 0.0, -0.259, 0.0]},
+        {"bone": "hand.R", "frame": 32, "rotation_quaternion": [0.966, 0.0, 0.259, 0.0]},
+        {"bone": "hand.R", "frame": 40, "rotation_quaternion": [1.0, 0.0, 0.0, 0.0]}
+      ]
+    },
+    "nod": {
+      "name_hint": "nod",
+      "frames": 24,
+      "samples": [
+        {"bone": "head", "frame": 1, "rotation_quaternion": [1.0, 0.0, 0.0, 0.0]},
+        {"bone": "head", "frame": 6, "rotation_quaternion": [0.991, 0.131, 0.0, 0.0]},
+        {"bone": "head", "frame": 12, "rotation_quaternion": [1.0, 0.0, 0.0, 0.0]},
+        {"bone": "head", "frame": 18, "rotation_quaternion": [0.991, 0.131, 0.0, 0.0]},
+        {"bone": "head", "frame": 24, "rotation_quaternion": [1.0, 0.0, 0.0, 0.0]}
+      ]
+    },
+    "point": {
+      "name_hint": "point",
+      "frames": 36,
+      "samples": [
+        {"bone": "arm.R", "frame": 1, "rotation_quaternion": [1.0, 0.0, 0.0, 0.0]},
+        {"bone": "arm.R", "frame": 10, "rotation_quaternion": [0.924, 0.383, 0.0, 0.0]},
+        {"bone": "arm.R", "frame": 28, "rotation_quaternion": [0.924, 0.383, 0.0, 0.0]},
+        {"bone": "arm.R", "frame": 36, "rotation_quaternion": [1.0, 0.0, 0.0, 0.0]},
+        {"bone": "hand.R", "frame": 1, "rotation_quaternion": [1.0, 0.0, 0.0, 0.0]},
+        {"bone": "hand.R", "frame": 12, "rotation_quaternion": [0.981, 0.195, 0.0, 0.0]},
+        {"bone": "hand.R", "frame": 28, "rotation_quaternion": [0.981, 0.195, 0.0, 0.0]},
+        {"bone": "hand.R", "frame": 36, "rotation_quaternion": [1.0, 0.0, 0.0, 0.0]}
+      ]
+    },
+    "idle": {
+      "name_hint": "idle",
+      "frames": 48,
+      "samples": [
+        {"bone": "spine", "frame": 1, "rotation_quaternion": [1.0, 0.0, 0.0, 0.0]},
+        {"bone": "spine", "frame": 24, "rotation_quaternion": [0.999, 0.0, 0.0, 0.044]},
+        {"bone": "spine", "frame": 48, "rotation_quaternion": [1.0, 0.0, 0.0, 0.0]},
+        {"bone": "head", "frame": 1, "rotation_quaternion": [1.0, 0.0, 0.0, 0.0]},
+        {"bone": "head", "frame": 12, "rotation_quaternion": [0.998, 0.058, 0.0, 0.0]},
+        {"bone": "head", "frame": 36, "rotation_quaternion": [0.998, -0.058, 0.0, 0.0]},
+        {"bone": "head", "frame": 48, "rotation_quaternion": [1.0, 0.0, 0.0, 0.0]}
+      ]
+    },
+    "talk": {
+      "name_hint": "talk",
+      "frames": 36,
+      "samples": [
+        {"bone": "spine", "frame": 1, "rotation_quaternion": [1.0, 0.0, 0.0, 0.0]},
+        {"bone": "spine", "frame": 18, "rotation_quaternion": [0.999, 0.044, 0.0, 0.0]},
+        {"bone": "spine", "frame": 36, "rotation_quaternion": [1.0, 0.0, 0.0, 0.0]},
+        {"bone": "head", "frame": 9, "rotation_quaternion": [0.997, 0.0, 0.0, 0.076]},
+        {"bone": "head", "frame": 27, "rotation_quaternion": [0.997, 0.0, 0.0, -0.076]}
+      ]
+    }
+  },
+  "gaze": {
+    "bone": "head",
+    "name_hint": "gaze",
+    "neutral": [1.0, 0.0, 0.0, 0.0],
+    "ease_frames": 6,
+    "default_target": "camera",
+    "targets": {
+      "camera": [0.997, 0.076, 0.0, 0.0],
+      "viewer": [0.997, 0.076, 0.0, 0.0],
+      "left": [0.976, 0.0, 0.0, 0.216],
+      "right": [0.976, 0.0, 0.0, -0.216],
+      "up": [0.991, -0.131, 0.0, 0.0],
+      "down": [0.991, 0.131, 0.0, 0.0]
+    }
+  },
+  "expressions": {
+    "name_hint": "face",
+    "default_expression": "neutral_idle",
+    "presets": {
+      "neutral_idle": {
+        "mouth_open": 0.0,
+        "smile_width": 0.1,
+        "mouth_curl_left": 0.05,
+        "mouth_curl_right": 0.05
+      },
+      "warm_amused": {
+        "mouth_open": 0.1,
+        "smile_width": 0.6,
+        "mouth_curl_left": 0.25,
+        "mouth_curl_right": 0.25
+      },
+      "concerned": {
+        "mouth_open": 0.15,
+        "smile_width": 0.0,
+        "mouth_curl_left": 0.0,
+        "mouth_curl_right": 0.0
+      },
+      "surprised": {
+        "mouth_open": 0.7,
+        "smile_width": 0.2,
+        "mouth_curl_left": 0.1,
+        "mouth_curl_right": 0.1
+      }
+    }
+  },
+  "speech": {
+    "object": "KVRC_face",
+    "name_hint": "animus_speech",
+    "voice": "af_heart",
+    "lang": "a",
+    "speed": 1.0,
+    "seed": 0
+  }
+}

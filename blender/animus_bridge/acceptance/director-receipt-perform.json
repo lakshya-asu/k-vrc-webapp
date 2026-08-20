@@ -1,0 +1,702 @@
+{
+  "kind": "animus_director_receipt",
+  "line": "Wave to the viewer and say hello.",
+  "requested_speech": "Hello, I am K-VRC.",
+  "control_level": "perform",
+  "performed": true,
+  "voice_mode": "live",
+  "plan": {
+    "schema_version": "0.1",
+    "actor_id": "kvrc",
+    "control_level": "perform",
+    "summary": "Wave to the viewer and say hello",
+    "beats": [
+      {
+        "id": "greet-1",
+        "at_ms": 0,
+        "duration_ms": 1800,
+        "body": {
+          "action": "gesture",
+          "gesture": "wave",
+          "style": "warm",
+          "intensity": 0.7
+        },
+        "gaze": {
+          "target": "camera",
+          "intensity": 0.7
+        },
+        "face": {
+          "expression": "warm_amused",
+          "intensity": 0.5
+        },
+        "speech": {
+          "text": "Hello, I am K-VRC.",
+          "delivery": "neutral"
+        }
+      }
+    ],
+    "provenance": {
+      "operator": "local-small-retry1",
+      "model": "Qwen3-4B-Q4_K_M",
+      "fallback": false
+    }
+  },
+  "profile": {
+    "name": "kvrc-testrig",
+    "version": "0.1.0"
+  },
+  "layers": [
+    {
+      "beat_id": "greet-1",
+      "channel": "body",
+      "gesture": "wave",
+      "request": {
+        "id": "dir-greet-1-body",
+        "op": "perform_take",
+        "params": {
+          "object": "KVRC",
+          "name_hint": "wave",
+          "frame_start": 1,
+          "frame_end": 48,
+          "samples": [
+            {
+              "bone": "arm.R",
+              "frame": 1,
+              "rotation_quaternion": [
+                1,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "bone": "arm.R",
+              "frame": 12,
+              "rotation_quaternion": [
+                0.92,
+                0,
+                0,
+                0.38
+              ]
+            },
+            {
+              "bone": "arm.R",
+              "frame": 24,
+              "rotation_quaternion": [
+                0.98,
+                0,
+                0,
+                -0.2
+              ]
+            },
+            {
+              "bone": "arm.R",
+              "frame": 36,
+              "rotation_quaternion": [
+                0.92,
+                0,
+                0,
+                0.38
+              ]
+            },
+            {
+              "bone": "arm.R",
+              "frame": 48,
+              "rotation_quaternion": [
+                1,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "bone": "hand.R",
+              "frame": 8,
+              "rotation_quaternion": [
+                1,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "bone": "hand.R",
+              "frame": 16,
+              "rotation_quaternion": [
+                0.966,
+                0,
+                0.259,
+                0
+              ]
+            },
+            {
+              "bone": "hand.R",
+              "frame": 24,
+              "rotation_quaternion": [
+                0.966,
+                0,
+                -0.259,
+                0
+              ]
+            },
+            {
+              "bone": "hand.R",
+              "frame": 32,
+              "rotation_quaternion": [
+                0.966,
+                0,
+                0.259,
+                0
+              ]
+            },
+            {
+              "bone": "hand.R",
+              "frame": 40,
+              "rotation_quaternion": [
+                1,
+                0,
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      },
+      "response": {
+        "id": "dir-greet-1-body",
+        "ok": true,
+        "op": "perform_take",
+        "result": {
+          "action": "ANIMUS_wave_take001",
+          "track": "ANIMUS_wave_take001_track",
+          "strip": "ANIMUS_wave_take001",
+          "bones": [
+            "arm.R",
+            "hand.R"
+          ],
+          "sample_count": 10,
+          "key_count": 40,
+          "frame_start": 1,
+          "frame_end": 48
+        }
+      }
+    },
+    {
+      "beat_id": "greet-1",
+      "channel": "gaze",
+      "target": "camera",
+      "request": {
+        "id": "dir-greet-1-gaze",
+        "op": "perform_take",
+        "params": {
+          "object": "KVRC",
+          "name_hint": "gaze_camera",
+          "frame_start": 1,
+          "frame_end": 43,
+          "samples": [
+            {
+              "bone": "head",
+              "frame": 1,
+              "rotation_quaternion": [
+                1,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "bone": "head",
+              "frame": 7,
+              "rotation_quaternion": [
+                0.998582,
+                0.053236,
+                0,
+                0
+              ]
+            },
+            {
+              "bone": "head",
+              "frame": 43,
+              "rotation_quaternion": [
+                0.998582,
+                0.053236,
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      },
+      "response": {
+        "id": "dir-greet-1-gaze",
+        "ok": true,
+        "op": "perform_take",
+        "result": {
+          "action": "ANIMUS_gaze_camera_take001",
+          "track": "ANIMUS_gaze_camera_take001_track",
+          "strip": "ANIMUS_gaze_camera_take001",
+          "bones": [
+            "head"
+          ],
+          "sample_count": 3,
+          "key_count": 12,
+          "frame_start": 1,
+          "frame_end": 43
+        }
+      }
+    },
+    {
+      "beat_id": "greet-1",
+      "channel": "face",
+      "expression": "warm_amused",
+      "request": {
+        "id": "dir-greet-1-face",
+        "op": "apply_shape_keys",
+        "params": {
+          "object": "KVRC_face",
+          "name_hint": "face_warm_amused",
+          "frame_start": 1,
+          "frame_end": 43,
+          "samples": [
+            {
+              "shape_key": "mouth_open",
+              "frame": 1,
+              "weight": 0
+            },
+            {
+              "shape_key": "smile_width",
+              "frame": 1,
+              "weight": 0
+            },
+            {
+              "shape_key": "mouth_curl_left",
+              "frame": 1,
+              "weight": 0
+            },
+            {
+              "shape_key": "mouth_curl_right",
+              "frame": 1,
+              "weight": 0
+            },
+            {
+              "shape_key": "mouth_open",
+              "frame": 5,
+              "weight": 0.05
+            },
+            {
+              "shape_key": "smile_width",
+              "frame": 5,
+              "weight": 0.3
+            },
+            {
+              "shape_key": "mouth_curl_left",
+              "frame": 5,
+              "weight": 0.125
+            },
+            {
+              "shape_key": "mouth_curl_right",
+              "frame": 5,
+              "weight": 0.125
+            },
+            {
+              "shape_key": "mouth_open",
+              "frame": 39,
+              "weight": 0.05
+            },
+            {
+              "shape_key": "smile_width",
+              "frame": 39,
+              "weight": 0.3
+            },
+            {
+              "shape_key": "mouth_curl_left",
+              "frame": 39,
+              "weight": 0.125
+            },
+            {
+              "shape_key": "mouth_curl_right",
+              "frame": 39,
+              "weight": 0.125
+            },
+            {
+              "shape_key": "mouth_open",
+              "frame": 43,
+              "weight": 0
+            },
+            {
+              "shape_key": "smile_width",
+              "frame": 43,
+              "weight": 0
+            },
+            {
+              "shape_key": "mouth_curl_left",
+              "frame": 43,
+              "weight": 0
+            },
+            {
+              "shape_key": "mouth_curl_right",
+              "frame": 43,
+              "weight": 0
+            }
+          ]
+        }
+      },
+      "response": {
+        "id": "dir-greet-1-face",
+        "ok": true,
+        "op": "apply_shape_keys",
+        "result": {
+          "action": "ANIMUS_face_warm_amused_take001",
+          "track": "ANIMUS_face_warm_amused_take001_track",
+          "strip": "ANIMUS_face_warm_amused_take001",
+          "shape_keys": [
+            "mouth_curl_left",
+            "mouth_curl_right",
+            "mouth_open",
+            "smile_width"
+          ],
+          "sample_count": 16,
+          "key_count": 16,
+          "frame_start": 1,
+          "frame_end": 43
+        }
+      }
+    },
+    {
+      "beat_id": "greet-1",
+      "channel": "speech",
+      "request": {
+        "id": "dir-greet-1_speech",
+        "op": "apply_shape_keys",
+        "params": {
+          "object": "KVRC_face",
+          "name_hint": "animus_speech",
+          "frame_start": 1,
+          "frame_end": 51,
+          "samples": [
+            {
+              "frame": 1,
+              "at_ms": 0,
+              "viseme": "X",
+              "shape_key": "mouth_open",
+              "weight": 0
+            },
+            {
+              "frame": 1,
+              "at_ms": 0,
+              "viseme": "X",
+              "shape_key": "smile_width",
+              "weight": 0.1
+            },
+            {
+              "frame": 1,
+              "at_ms": 0,
+              "viseme": "X",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.05
+            },
+            {
+              "frame": 1,
+              "at_ms": 0,
+              "viseme": "X",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.05
+            },
+            {
+              "frame": 8,
+              "at_ms": 280,
+              "viseme": "C",
+              "shape_key": "mouth_open",
+              "weight": 0.45
+            },
+            {
+              "frame": 8,
+              "at_ms": 280,
+              "viseme": "C",
+              "shape_key": "smile_width",
+              "weight": 0.4
+            },
+            {
+              "frame": 8,
+              "at_ms": 280,
+              "viseme": "C",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.05
+            },
+            {
+              "frame": 8,
+              "at_ms": 280,
+              "viseme": "C",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.05
+            },
+            {
+              "frame": 11,
+              "at_ms": 410,
+              "viseme": "E",
+              "shape_key": "mouth_open",
+              "weight": 0.5
+            },
+            {
+              "frame": 11,
+              "at_ms": 410,
+              "viseme": "E",
+              "shape_key": "smile_width",
+              "weight": 0.15
+            },
+            {
+              "frame": 11,
+              "at_ms": 410,
+              "viseme": "E",
+              "shape_key": "mouth_curl_left",
+              "weight": 0
+            },
+            {
+              "frame": 11,
+              "at_ms": 410,
+              "viseme": "E",
+              "shape_key": "mouth_curl_right",
+              "weight": 0
+            },
+            {
+              "frame": 16,
+              "at_ms": 620,
+              "viseme": "F",
+              "shape_key": "mouth_open",
+              "weight": 0.3
+            },
+            {
+              "frame": 16,
+              "at_ms": 620,
+              "viseme": "F",
+              "shape_key": "smile_width",
+              "weight": 0
+            },
+            {
+              "frame": 16,
+              "at_ms": 620,
+              "viseme": "F",
+              "shape_key": "mouth_curl_left",
+              "weight": 0
+            },
+            {
+              "frame": 16,
+              "at_ms": 620,
+              "viseme": "F",
+              "shape_key": "mouth_curl_right",
+              "weight": 0
+            },
+            {
+              "frame": 18,
+              "at_ms": 720,
+              "viseme": "C",
+              "shape_key": "mouth_open",
+              "weight": 0.45
+            },
+            {
+              "frame": 18,
+              "at_ms": 720,
+              "viseme": "C",
+              "shape_key": "smile_width",
+              "weight": 0.4
+            },
+            {
+              "frame": 18,
+              "at_ms": 720,
+              "viseme": "C",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.05
+            },
+            {
+              "frame": 18,
+              "at_ms": 720,
+              "viseme": "C",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.05
+            },
+            {
+              "frame": 20,
+              "at_ms": 780,
+              "viseme": "B",
+              "shape_key": "mouth_open",
+              "weight": 0.2
+            },
+            {
+              "frame": 20,
+              "at_ms": 780,
+              "viseme": "B",
+              "shape_key": "smile_width",
+              "weight": 0.55
+            },
+            {
+              "frame": 20,
+              "at_ms": 780,
+              "viseme": "B",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.1
+            },
+            {
+              "frame": 20,
+              "at_ms": 780,
+              "viseme": "B",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.1
+            },
+            {
+              "frame": 21,
+              "at_ms": 840,
+              "viseme": "A",
+              "shape_key": "mouth_open",
+              "weight": 0
+            },
+            {
+              "frame": 21,
+              "at_ms": 840,
+              "viseme": "A",
+              "shape_key": "smile_width",
+              "weight": 0.15
+            },
+            {
+              "frame": 21,
+              "at_ms": 840,
+              "viseme": "A",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.05
+            },
+            {
+              "frame": 21,
+              "at_ms": 840,
+              "viseme": "A",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.05
+            },
+            {
+              "frame": 23,
+              "at_ms": 920,
+              "viseme": "C",
+              "shape_key": "mouth_open",
+              "weight": 0.45
+            },
+            {
+              "frame": 23,
+              "at_ms": 920,
+              "viseme": "C",
+              "shape_key": "smile_width",
+              "weight": 0.4
+            },
+            {
+              "frame": 23,
+              "at_ms": 920,
+              "viseme": "C",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.05
+            },
+            {
+              "frame": 23,
+              "at_ms": 920,
+              "viseme": "C",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.05
+            },
+            {
+              "frame": 27,
+              "at_ms": 1090,
+              "viseme": "B",
+              "shape_key": "mouth_open",
+              "weight": 0.2
+            },
+            {
+              "frame": 27,
+              "at_ms": 1090,
+              "viseme": "B",
+              "shape_key": "smile_width",
+              "weight": 0.55
+            },
+            {
+              "frame": 27,
+              "at_ms": 1090,
+              "viseme": "B",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.1
+            },
+            {
+              "frame": 27,
+              "at_ms": 1090,
+              "viseme": "B",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.1
+            },
+            {
+              "frame": 41,
+              "at_ms": 1650,
+              "viseme": "X",
+              "shape_key": "mouth_open",
+              "weight": 0
+            },
+            {
+              "frame": 41,
+              "at_ms": 1650,
+              "viseme": "X",
+              "shape_key": "smile_width",
+              "weight": 0.1
+            },
+            {
+              "frame": 41,
+              "at_ms": 1650,
+              "viseme": "X",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.05
+            },
+            {
+              "frame": 41,
+              "at_ms": 1650,
+              "viseme": "X",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.05
+            }
+          ]
+        }
+      },
+      "response": {
+        "id": "dir-greet-1_speech",
+        "ok": true,
+        "op": "apply_shape_keys",
+        "result": {
+          "action": "ANIMUS_animus_speech_take001",
+          "track": "ANIMUS_animus_speech_take001_track",
+          "strip": "ANIMUS_animus_speech_take001",
+          "shape_keys": [
+            "mouth_curl_left",
+            "mouth_curl_right",
+            "mouth_open",
+            "smile_width"
+          ],
+          "sample_count": 40,
+          "key_count": 40,
+          "frame_start": 1,
+          "frame_end": 51
+        }
+      }
+    }
+  ],
+  "voice": [
+    {
+      "beat_id": "greet-1",
+      "take_json": "C:\\Users\\jainl\\resume-projects\\k-vrc-animus-poc\\voice\\animus_voice\\out\\director\\greet-1_speech.animus.json",
+      "voice_mode": "live",
+      "tool_report": {
+        "wav": "C:\\Users\\jainl\\resume-projects\\k-vrc-animus-poc\\voice\\animus_voice\\out\\director\\greet-1_speech.wav",
+        "cue_json": "C:\\Users\\jainl\\resume-projects\\k-vrc-animus-poc\\voice\\animus_voice\\out\\director\\greet-1_speech.rhubarb.json",
+        "take_json": "C:\\Users\\jainl\\resume-projects\\k-vrc-animus-poc\\voice\\animus_voice\\out\\director\\greet-1_speech.animus.json",
+        "audio_sha256": "cd0d9578f07fd3b8ed173a0433e0934e55c54334b3962f0b0c36b5b4d76c2756",
+        "duration_ms": 2100,
+        "cue_count": 10,
+        "sample_count": 40
+      }
+    }
+  ],
+  "bridge": {
+    "host": "127.0.0.1",
+    "port": 8793
+  }
+}

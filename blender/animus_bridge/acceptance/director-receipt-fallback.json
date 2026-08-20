@@ -1,0 +1,377 @@
+{
+  "kind": "animus_director_receipt",
+  "line": "Wave to the viewer and say hello.",
+  "requested_speech": "Hello, I am K-VRC.",
+  "control_level": "perform",
+  "performed": true,
+  "voice_mode": "skip",
+  "plan": {
+    "schema_version": "0.1",
+    "actor_id": "kvrc",
+    "control_level": "perform",
+    "summary": "Wave to the viewer and say hello.",
+    "beats": [
+      {
+        "id": "fallback-1",
+        "at_ms": 0,
+        "duration_ms": 1800,
+        "body": {
+          "action": "gesture",
+          "gesture": "wave",
+          "style": "warm",
+          "intensity": 0.65
+        },
+        "gaze": {
+          "target": "camera",
+          "intensity": 0.5
+        },
+        "face": {
+          "expression": "neutral_idle",
+          "intensity": 0.4
+        },
+        "speech": {
+          "text": "Hello, I am K-VRC.",
+          "delivery": "neutral"
+        }
+      }
+    ],
+    "provenance": {
+      "operator": "deterministic",
+      "model": null,
+      "fallback": true,
+      "prior_failures": [
+        {
+          "provider": "stub-invalid",
+          "reason": "plan.keyframes is forbidden; plan.keyframes is not allowed; plan.beats must contain at least one beat"
+        }
+      ]
+    }
+  },
+  "profile": {
+    "name": "kvrc-testrig",
+    "version": "0.1.0"
+  },
+  "layers": [
+    {
+      "beat_id": "fallback-1",
+      "channel": "body",
+      "gesture": "wave",
+      "request": {
+        "id": "dir-fallback-1-body",
+        "op": "perform_take",
+        "params": {
+          "object": "KVRC",
+          "name_hint": "wave",
+          "frame_start": 1,
+          "frame_end": 48,
+          "samples": [
+            {
+              "bone": "arm.R",
+              "frame": 1,
+              "rotation_quaternion": [
+                1,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "bone": "arm.R",
+              "frame": 12,
+              "rotation_quaternion": [
+                0.92,
+                0,
+                0,
+                0.38
+              ]
+            },
+            {
+              "bone": "arm.R",
+              "frame": 24,
+              "rotation_quaternion": [
+                0.98,
+                0,
+                0,
+                -0.2
+              ]
+            },
+            {
+              "bone": "arm.R",
+              "frame": 36,
+              "rotation_quaternion": [
+                0.92,
+                0,
+                0,
+                0.38
+              ]
+            },
+            {
+              "bone": "arm.R",
+              "frame": 48,
+              "rotation_quaternion": [
+                1,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "bone": "hand.R",
+              "frame": 8,
+              "rotation_quaternion": [
+                1,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "bone": "hand.R",
+              "frame": 16,
+              "rotation_quaternion": [
+                0.966,
+                0,
+                0.259,
+                0
+              ]
+            },
+            {
+              "bone": "hand.R",
+              "frame": 24,
+              "rotation_quaternion": [
+                0.966,
+                0,
+                -0.259,
+                0
+              ]
+            },
+            {
+              "bone": "hand.R",
+              "frame": 32,
+              "rotation_quaternion": [
+                0.966,
+                0,
+                0.259,
+                0
+              ]
+            },
+            {
+              "bone": "hand.R",
+              "frame": 40,
+              "rotation_quaternion": [
+                1,
+                0,
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      },
+      "response": {
+        "id": "dir-fallback-1-body",
+        "ok": true,
+        "op": "perform_take",
+        "result": {
+          "action": "ANIMUS_wave_take002",
+          "track": "ANIMUS_wave_take002_track",
+          "strip": "ANIMUS_wave_take002",
+          "bones": [
+            "arm.R",
+            "hand.R"
+          ],
+          "sample_count": 10,
+          "key_count": 40,
+          "frame_start": 1,
+          "frame_end": 48
+        }
+      }
+    },
+    {
+      "beat_id": "fallback-1",
+      "channel": "gaze",
+      "target": "camera",
+      "request": {
+        "id": "dir-fallback-1-gaze",
+        "op": "perform_take",
+        "params": {
+          "object": "KVRC",
+          "name_hint": "gaze_camera",
+          "frame_start": 1,
+          "frame_end": 43,
+          "samples": [
+            {
+              "bone": "head",
+              "frame": 1,
+              "rotation_quaternion": [
+                1,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "bone": "head",
+              "frame": 7,
+              "rotation_quaternion": [
+                0.999277,
+                0.03803,
+                0,
+                0
+              ]
+            },
+            {
+              "bone": "head",
+              "frame": 43,
+              "rotation_quaternion": [
+                0.999277,
+                0.03803,
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      },
+      "response": {
+        "id": "dir-fallback-1-gaze",
+        "ok": true,
+        "op": "perform_take",
+        "result": {
+          "action": "ANIMUS_gaze_camera_take002",
+          "track": "ANIMUS_gaze_camera_take002_track",
+          "strip": "ANIMUS_gaze_camera_take002",
+          "bones": [
+            "head"
+          ],
+          "sample_count": 3,
+          "key_count": 12,
+          "frame_start": 1,
+          "frame_end": 43
+        }
+      }
+    },
+    {
+      "beat_id": "fallback-1",
+      "channel": "face",
+      "expression": "neutral_idle",
+      "request": {
+        "id": "dir-fallback-1-face",
+        "op": "apply_shape_keys",
+        "params": {
+          "object": "KVRC_face",
+          "name_hint": "face_neutral_idle",
+          "frame_start": 1,
+          "frame_end": 43,
+          "samples": [
+            {
+              "shape_key": "mouth_open",
+              "frame": 1,
+              "weight": 0
+            },
+            {
+              "shape_key": "smile_width",
+              "frame": 1,
+              "weight": 0
+            },
+            {
+              "shape_key": "mouth_curl_left",
+              "frame": 1,
+              "weight": 0
+            },
+            {
+              "shape_key": "mouth_curl_right",
+              "frame": 1,
+              "weight": 0
+            },
+            {
+              "shape_key": "mouth_open",
+              "frame": 5,
+              "weight": 0
+            },
+            {
+              "shape_key": "smile_width",
+              "frame": 5,
+              "weight": 0.04
+            },
+            {
+              "shape_key": "mouth_curl_left",
+              "frame": 5,
+              "weight": 0.02
+            },
+            {
+              "shape_key": "mouth_curl_right",
+              "frame": 5,
+              "weight": 0.02
+            },
+            {
+              "shape_key": "mouth_open",
+              "frame": 39,
+              "weight": 0
+            },
+            {
+              "shape_key": "smile_width",
+              "frame": 39,
+              "weight": 0.04
+            },
+            {
+              "shape_key": "mouth_curl_left",
+              "frame": 39,
+              "weight": 0.02
+            },
+            {
+              "shape_key": "mouth_curl_right",
+              "frame": 39,
+              "weight": 0.02
+            },
+            {
+              "shape_key": "mouth_open",
+              "frame": 43,
+              "weight": 0
+            },
+            {
+              "shape_key": "smile_width",
+              "frame": 43,
+              "weight": 0
+            },
+            {
+              "shape_key": "mouth_curl_left",
+              "frame": 43,
+              "weight": 0
+            },
+            {
+              "shape_key": "mouth_curl_right",
+              "frame": 43,
+              "weight": 0
+            }
+          ]
+        }
+      },
+      "response": {
+        "id": "dir-fallback-1-face",
+        "ok": true,
+        "op": "apply_shape_keys",
+        "result": {
+          "action": "ANIMUS_face_neutral_idle_take001",
+          "track": "ANIMUS_face_neutral_idle_take001_track",
+          "strip": "ANIMUS_face_neutral_idle_take001",
+          "shape_keys": [
+            "mouth_curl_left",
+            "mouth_curl_right",
+            "mouth_open",
+            "smile_width"
+          ],
+          "sample_count": 16,
+          "key_count": 16,
+          "frame_start": 1,
+          "frame_end": 43
+        }
+      }
+    }
+  ],
+  "voice": [],
+  "bridge": {
+    "host": "127.0.0.1",
+    "port": 8793
+  }
+}
