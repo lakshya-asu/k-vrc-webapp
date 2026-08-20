@@ -14,11 +14,20 @@
             "bones": [
               "arm.L",
               "arm.R",
+              "chest",
+              "clavicle.L",
+              "clavicle.R",
+              "foot.L",
+              "foot.R",
               "hand.L",
               "hand.R",
               "head",
+              "lowerleg.L",
+              "lowerleg.R",
               "root",
-              "spine"
+              "spine",
+              "upperleg.L",
+              "upperleg.R"
             ],
             "actions": [],
             "nla_tracks": []
@@ -114,9 +123,30 @@
     },
     {
       "step": "shape_keys",
-      "exit_code": 1,
-      "responses": [],
-      "stderr": " File \"C:\\Users\\jainl\\resume-projects\\k-vrc-animus-poc\\blender\\animus_bridge\\acceptance\\client_steps.py\", line 122, in main\n    return STEPS[args.step](args)\n           ^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\jainl\\resume-projects\\k-vrc-animus-poc\\blender\\animus_bridge\\acceptance\\client_steps.py\", line 95, in step_shape_keys\n    with open(args.artifact, \"r\", encoding=\"utf-8\") as handle:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: ''"
+      "exit_code": 0,
+      "responses": [
+        {
+          "id": "acc-speech",
+          "ok": true,
+          "op": "apply_shape_keys",
+          "result": {
+            "action": "ANIMUS_animus_speech_take001",
+            "track": "ANIMUS_animus_speech_take001_track",
+            "strip": "ANIMUS_animus_speech_take001",
+            "shape_keys": [
+              "mouth_curl_left",
+              "mouth_curl_right",
+              "mouth_open",
+              "smile_width"
+            ],
+            "sample_count": 40,
+            "key_count": 40,
+            "frame_start": 1,
+            "frame_end": 49
+          }
+        }
+      ],
+      "stderr": ""
     }
   ],
   "checks": [
@@ -148,7 +178,7 @@
     {
       "name": "inspect_bones_match",
       "passed": true,
-      "detail": "['arm.L', 'arm.R', 'hand.L', 'hand.R', 'head', 'root', 'spine']"
+      "detail": "['arm.L', 'arm.R', 'chest', 'clavicle.L', 'clavicle.R', 'foot.L', 'foot.R', 'hand.L', 'hand.R', 'head', 'lowerleg.L', 'lowerleg.R', 'root', 'spine', 'upperleg.L', 'upperleg.R']"
     },
     {
       "name": "inspect_mutated_nothing",
@@ -222,28 +252,28 @@
     },
     {
       "name": "artifact_present",
-      "passed": false,
-      "detail": ""
+      "passed": true,
+      "detail": "C:/Users/jainl/resume-projects/k-vrc-animus-poc/voice/animus_voice/out/acceptance-embody/bridge-check.animus.json"
     },
     {
       "name": "shape_keys_ok",
-      "passed": false,
+      "passed": true,
       "detail": "None"
     },
     {
       "name": "shape_keys_one_new_action",
-      "passed": false,
-      "detail": "[]"
+      "passed": true,
+      "detail": "['ANIMUS_animus_speech_take001']"
     },
     {
       "name": "shape_keys_one_new_face_strip",
-      "passed": false,
-      "detail": "[]"
+      "passed": true,
+      "detail": "['ANIMUS_animus_speech_take001']"
     },
     {
       "name": "shape_keys_receipt_names_action",
-      "passed": false,
-      "detail": "{}"
+      "passed": true,
+      "detail": "{'action': 'ANIMUS_animus_speech_take001', 'track': 'ANIMUS_animus_speech_take001_track', 'strip': 'ANIMUS_animus_speech_take001', 'shape_keys': ['mouth_curl_left', 'mouth_curl_right', 'mouth_open', 'smile_width'], 'sample_count': 40, 'key_count': 40, 'frame_start': 1, 'frame_end': 49}"
     },
     {
       "name": "shape_keys_kvrc_untouched",
@@ -252,8 +282,8 @@
     },
     {
       "name": "shape_keys_fcurves_have_keyframes",
-      "passed": false,
-      "detail": "no fcurves found"
+      "passed": true,
+      "detail": "key_blocks[\"mouth_open\"].value has 10 keys"
     }
   ],
   "environment": {
@@ -261,7 +291,7 @@
     "background": true,
     "python": "3.11.11",
     "port": 8791,
-    "artifact": "",
+    "artifact": "C:/Users/jainl/resume-projects/k-vrc-animus-poc/voice/animus_voice/out/acceptance-embody/bridge-check.animus.json",
     "rig_note": "plain bpy armature with named bones; Rigify not used headless"
   },
   "wave_action_api": {
@@ -279,10 +309,25 @@
     ]
   },
   "face_action_api": {
-    "found": false
+    "found": true,
+    "fcurve_count": 4,
+    "fcurve_paths": [
+      "key_blocks[\"mouth_curl_left\"].value",
+      "key_blocks[\"mouth_curl_right\"].value",
+      "key_blocks[\"mouth_open\"].value",
+      "key_blocks[\"smile_width\"].value"
+    ],
+    "slot_count": 1,
+    "slots": [
+      {
+        "identifier": "KELegacy Slot",
+        "target_id_type": "KEY"
+      }
+    ]
   },
   "final_scene": {
     "actions": [
+      "ANIMUS_animus_speech_take001",
       "ANIMUS_wave_take001",
       "ANIMUS_wave_take002"
     ],
@@ -290,7 +335,9 @@
       "ANIMUS_wave_take001",
       "ANIMUS_wave_take002"
     ],
-    "face_strips": []
+    "face_strips": [
+      "ANIMUS_animus_speech_take001"
+    ]
   },
-  "passed": false
+  "passed": true
 }

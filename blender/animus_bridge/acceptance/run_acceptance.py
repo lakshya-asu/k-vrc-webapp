@@ -47,8 +47,9 @@ import bpy
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 BLENDER_DIR = os.path.dirname(os.path.dirname(HERE))
-if BLENDER_DIR not in sys.path:
-    sys.path.insert(0, BLENDER_DIR)
+for entry in (BLENDER_DIR, HERE):
+    if entry not in sys.path:
+        sys.path.insert(0, entry)
 
 import animus_bridge  # noqa: E402
 
@@ -59,7 +60,9 @@ OUT_PATH = os.environ.get(
 )
 CLIENT = os.path.join(HERE, "client_steps.py")
 
-BONES = ["root", "spine", "head", "arm.L", "arm.R", "hand.L", "hand.R"]
+from biped import BIPED_BONE_NAMES, build_biped_armature  # noqa: E402
+
+BONES = list(BIPED_BONE_NAMES)
 SHAPE_KEYS = ["mouth_open", "smile_width", "mouth_curl_left", "mouth_curl_right"]
 
 RESULTS = {"steps": [], "checks": [], "environment": {}}
@@ -75,16 +78,7 @@ def check(name, passed, detail=""):
 
 
 def build_scene():
-    armature = bpy.data.armatures.new("KVRC_rig")
-    obj = bpy.data.objects.new("KVRC", armature)
-    bpy.context.scene.collection.objects.link(obj)
-    bpy.context.view_layer.objects.active = obj
-    bpy.ops.object.mode_set(mode="EDIT")
-    for index, name in enumerate(BONES):
-        bone = armature.edit_bones.new(name)
-        bone.head = (0.0, 0.0, 0.2 * index)
-        bone.tail = (0.0, 0.2, 0.2 * index)
-    bpy.ops.object.mode_set(mode="OBJECT")
+    obj = build_biped_armature("KVRC")
 
     mesh = bpy.data.meshes.new("KVRC_face_mesh")
     mesh.from_pydata(

@@ -7,8 +7,9 @@ Launched by the actor loop (or by hand):
         --port 8794 --profile src/animus/embodiment/kvrc-testrig.profile.json \
         --done-file <path> --report <path> [--deadline 300]
 
-Builds the profile's test rig (plain armature with the profile's bones
-plus a shape-keyed face mesh), starts the bridge on the given port, and
+Builds the profile's stage (the humanoid test biped from
+acceptance/biped.py plus a shape-keyed face mesh, or the profile's own
+imported character), starts the bridge on the given port, and
 drains the executor queue on the main thread until the done-file
 appears, exactly the drain contract the acceptance harness uses. Then
 it writes a report JSON (scene snapshot plus keyframe counts for every
@@ -29,10 +30,13 @@ import bpy
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
 BLENDER_DIR = os.path.join(REPO, "blender")
-if BLENDER_DIR not in sys.path:
-    sys.path.insert(0, BLENDER_DIR)
+ACCEPTANCE_DIR = os.path.join(BLENDER_DIR, "animus_bridge", "acceptance")
+for _entry in (BLENDER_DIR, ACCEPTANCE_DIR):
+    if _entry not in sys.path:
+        sys.path.insert(0, _entry)
 
 import animus_bridge  # noqa: E402
+import biped  # noqa: E402
 
 
 def parse_args():
@@ -120,16 +124,22 @@ def build_scene(profile):
     if (profile.get("stage") or {}).get("import"):
         return _import_scene(profile)
     rig = profile["rig"]
-    armature = bpy.data.armatures.new(f"{rig['object']}_rig")
-    obj = bpy.data.objects.new(rig["object"], armature)
-    bpy.context.scene.collection.objects.link(obj)
-    bpy.context.view_layer.objects.active = obj
-    bpy.ops.object.mode_set(mode="EDIT")
-    for index, name in enumerate(rig["bones"]):
-        bone = armature.edit_bones.new(name)
-        bone.head = (0.0, 0.0, 0.2 * index)
-        bone.tail = (0.0, 0.2, 0.2 * index)
-    bpy.ops.object.mode_set(mode="OBJECT")
+    if biped.covers(rig["bones"]):
+        # The developer test rig is a small humanoid figure; the
+        # profile's bones are a subset of its skeleton.
+        obj = biped.build_biped_armature(rig["object"])
+    else:
+        # Unknown bone names: fall back to a plain line-of-bones rig.
+        armature = bpy.data.armatures.new(f"{rig['object']}_rig")
+        obj = bpy.data.objects.new(rig["object"], armature)
+        bpy.context.scene.collection.objects.link(obj)
+        bpy.context.view_layer.objects.active = obj
+        bpy.ops.object.mode_set(mode="EDIT")
+        for index, name in enumerate(rig["bones"]):
+            bone = armature.edit_bones.new(name)
+            bone.head = (0.0, 0.0, 0.2 * index)
+            bone.tail = (0.0, 0.2, 0.2 * index)
+        bpy.ops.object.mode_set(mode="OBJECT")
 
     face = None
     if rig.get("face_object"):
@@ -226,7 +236,11 @@ def _cuboid(name, size_x, size_y, size_z, center_y):
 
 
 def _dress_rig(profile):
-    """One visible cuboid per bone, following the animated pose."""
+    """One slim bone-shaped cuboid per armature bone, following the pose.
+
+    Every bone of the rig is dressed (not only the profile's subset), so
+    the test biped renders as a complete humanoid figure.
+    """
     rig = profile["rig"]
     arm_obj = bpy.data.objects[rig["object"]]
     palette = [
@@ -235,10 +249,21 @@ def _dress_rig(profile):
         (0.80, 0.40, 0.80, 1.0), (0.95, 0.95, 0.95, 1.0),
         (0.55, 0.55, 0.95, 1.0),
     ]
-    for index, name in enumerate(rig["bones"]):
-        bone = arm_obj.data.bones[name]
+    for index, bone in enumerate(arm_obj.data.bones):
+        name = bone.name
         length = bone.length
-        mesh = _cuboid(f"VIZ_{name}", 0.09, length * 0.9, 0.09, -length * 0.55)
+        girth = max(0.03, min(0.09, length * 0.35))
+        # A few bones get wider boxes so the figure reads at a glance:
+        # the head as a head, the torso as a torso.
+        girth = {
+            "head": length * 0.7,
+            "chest": 0.16,
+            "spine": 0.13,
+            "root": 0.17,
+        }.get(name, girth)
+        mesh = _cuboid(
+            f"VIZ_{name}", girth, length * 0.9, girth, -length * 0.55
+        )
         viz = bpy.data.objects.new(f"VIZ_{name}", mesh)
         bpy.context.scene.collection.objects.link(viz)
         viz.parent = arm_obj
@@ -258,12 +283,12 @@ def _clear_startup_objects():
 def _add_camera_and_lights(render_cfg):
     scene = bpy.context.scene
     target = bpy.data.objects.new("RenderTarget", None)
-    target.location = tuple(render_cfg.get("camera_target", (0.0, 0.1, 0.65)))
+    target.location = tuple(render_cfg.get("camera_target", (0.0, 0.0, 0.88)))
     scene.collection.objects.link(target)
 
     camera = bpy.data.objects.new("RenderCamera", bpy.data.cameras.new("RenderCamera"))
-    camera.location = tuple(render_cfg.get("camera_location", (1.8, -1.9, 1.05)))
-    camera.data.lens = float(render_cfg.get("lens", 35.0))
+    camera.location = tuple(render_cfg.get("camera_location", (1.2, -3.2, 1.15)))
+    camera.data.lens = float(render_cfg.get("lens", 40.0))
     scene.collection.objects.link(camera)
     track = camera.constraints.new(type="TRACK_TO")
     track.target = target
@@ -291,6 +316,11 @@ def render_take(args, profile):
     imported = bool((profile.get("stage") or {}).get("import"))
     if render_cfg.get("dress_bones", not imported):
         _dress_rig(profile)
+    if not imported and profile["rig"].get("face_object"):
+        # The synthetic shape-key proxy is dev scaffolding, not anatomy.
+        proxy = bpy.data.objects.get(profile["rig"]["face_object"])
+        if proxy is not None:
+            proxy.hide_render = True
     for name in render_cfg.get("hide_objects", []):
         hidden = bpy.data.objects.get(name)
         if hidden is not None:
