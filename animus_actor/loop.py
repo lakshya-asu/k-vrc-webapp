@@ -1,0 +1,315 @@
+"""The actor loop: one line of dialogue to one performed take.
+
+    line -> deterministic plan -> contract validation -> embodiment
+    mapping -> voice synthesis + visemes -> typed bridge requests ->
+    receipts
+
+Authority stays caller-owned: only control level 'perform' opens a
+socket (decision A-009). The plan source here is the deterministic
+fallback only; no model, no GPU. Providers stay a director concern
+(scripts/animus-director.mjs); this loop proves the performance path.
+
+By default a perform run launches its own headless Blender with
+animus_actor/stage.py and tears it down afterward. --attach targets a
+bridge that is already listening (the acceptance harness does this).
+"""
+
+import glob
+import json
+import os
+import shutil
+import subprocess
+
+from .bridge_client import pick_free_port, send_request, wait_for_bridge
+from .contract import validate_actor_plan
+from .embodiment import (
+    load_profile,
+    map_plan_to_bridge_jobs,
+    viseme_artifact_to_request,
+)
+from .fallback import deterministic_actor_plan
+from .voice import run_voice_job
+
+REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DEFAULT_PROFILE = os.path.join(
+    REPO, "src", "animus", "embodiment", "kvrc-testrig.profile.json"
+)
+DEFAULT_OUT_DIR = os.path.join(REPO, "voice", "animus_voice", "out", "actor")
+STAGE_SCRIPT = os.path.join(REPO, "animus_actor", "stage.py")
+KNOWN_BLENDER = os.path.join(
+    os.path.expanduser("~"), "tools", "blender-4.5", "blender.exe"
+)
+
+
+class ActorLoopError(RuntimeError):
+    pass
+
+
+def find_blender(explicit=None):
+    """Blender binary: explicit arg, ANIMUS_BLENDER, PATH, known install."""
+    known = sorted(
+        glob.glob(os.path.join(os.path.dirname(KNOWN_BLENDER), "*", "blender.exe"))
+    )
+    candidates = [
+        explicit,
+        os.environ.get("ANIMUS_BLENDER"),
+        shutil.which("blender"),
+        KNOWN_BLENDER if os.path.exists(KNOWN_BLENDER) else None,
+    ] + known
+    for candidate in candidates:
+        if candidate and os.path.exists(candidate):
+            return candidate
+        if candidate and shutil.which(candidate):
+            return candidate
+    raise ActorLoopError(
+        "Blender not found. Pass --blender, set ANIMUS_BLENDER, or put "
+        "blender on PATH."
+    )
+
+
+def build_plan(line, instruction=None, speech=None, target="camera",
+               actor_id="kvrc", control_level="perform"):
+    """Deterministic plan plus contract validation plus provenance."""
+    request = {
+        "instruction": instruction if instruction is not None else line,
+        "target": target,
+        "speech": speech if speech is not None else line,
+    }
+    candidate = deterministic_actor_plan(request)
+    checked = validate_actor_plan(
+        candidate, {"actor_id": actor_id, "control_level": control_level}
+    )
+    if not checked["ok"]:
+        raise ActorLoopError(
+            "deterministic plan violated the actor contract:\n"
+            + "\n".join(checked["errors"])
+        )
+    plan = dict(checked["value"])
+    plan["provenance"] = {"operator": "deterministic", "model": None, "fallback": True}
+    return plan
+
+
+def _voice_layers(jobs, voice_mode, out_dir):
+    """Run every speech beat through the voice pipeline; return receipts."""
+    voice_receipts = []
+    if voice_mode == "skip":
+        return voice_receipts
+    for job in jobs["voice_jobs"]:
+        receipt = run_voice_job(job, out_dir, voice_mode)
+        jobs["layers"].append(
+            {
+                "beat_id": job["beat_id"],
+                "channel": "speech",
+                "request": viseme_artifact_to_request(
+                    receipt["artifact"],
+                    request_id=f"act-{job['stem']}",
+                    obj=job["object"],
+                ),
+            }
+        )
+        slim = dict(receipt)
+        slim.pop("artifact", None)
+        voice_receipts.append(slim)
+    return voice_receipts
+
+
+def _launch_stage(port, profile_path, run_dir, blender, deadline):
+    done_file = os.path.join(run_dir, "stage.done")
+    report_path = os.path.join(run_dir, "stage-report.json")
+    log_path = os.path.join(run_dir, "stage.log")
+    for path in (done_file, report_path):
+        if os.path.exists(path):
+            os.remove(path)
+    command = [
+        blender,
+        "--background",
+        "--factory-startup",
+        "--python",
+        STAGE_SCRIPT,
+        "--",
+        "--port",
+        str(port),
+        "--profile",
+        profile_path,
+        "--done-file",
+        done_file,
+        "--report",
+        report_path,
+        "--deadline",
+        str(deadline),
+    ]
+    log_handle = open(log_path, "w", encoding="utf-8")
+    process = subprocess.Popen(
+        command, cwd=REPO, stdout=log_handle, stderr=subprocess.STDOUT
+    )
+    return process, done_file, report_path, log_path, log_handle
+
+
+def _stage_log_tail(log_path, limit=800):
+    try:
+        with open(log_path, "r", encoding="utf-8", errors="replace") as handle:
+            return handle.read()[-limit:]
+    except OSError:
+        return ""
+
+
+def run_actor_loop(
+    line,
+    instruction=None,
+    speech=None,
+    target="camera",
+    actor_id="kvrc",
+    control_level="perform",
+    profile_path=DEFAULT_PROFILE,
+    voice_mode="live",
+    out_dir=DEFAULT_OUT_DIR,
+    receipt_path=None,
+    attach=False,
+    host="127.0.0.1",
+    port=None,
+    blender=None,
+    stage_deadline=300.0,
+    sender=None,
+):
+    """Run the whole chain. Returns the full receipt dict.
+
+    sender: optional callable(request) -> response used instead of any
+    socket or Blender process; tests route it through fake bpy.
+    """
+    profile = load_profile(profile_path)
+    plan = build_plan(
+        line,
+        instruction=instruction,
+        speech=speech,
+        target=target,
+        actor_id=actor_id,
+        control_level=control_level,
+    )
+    jobs = map_plan_to_bridge_jobs(plan, profile)
+
+    os.makedirs(out_dir, exist_ok=True)
+    voice_receipts = _voice_layers(jobs, voice_mode, out_dir)
+
+    performed = plan["control_level"] == "perform"
+    stage_report = None
+    bridge_info = None
+
+    if performed and sender is not None:
+        for layer in jobs["layers"]:
+            layer["response"] = sender(layer["request"])
+        bridge_info = {"mode": "injected-sender"}
+    elif performed and attach:
+        if not wait_for_bridge(host, port, deadline_s=10.0):
+            raise ActorLoopError(f"no bridge listening on {host}:{port}")
+        for layer in jobs["layers"]:
+            layer["response"] = send_request(layer["request"], host=host, port=port)
+        bridge_info = {"mode": "attach", "host": host, "port": port}
+    elif performed:
+        blender_bin = find_blender(blender)
+        stage_port = port or pick_free_port()
+        process, done_file, report_path, log_path, log_handle = _launch_stage(
+            stage_port, profile_path, out_dir, blender_bin, stage_deadline
+        )
+        try:
+            if not wait_for_bridge("127.0.0.1", stage_port, deadline_s=120.0):
+                raise ActorLoopError(
+                    "the stage bridge never came up on port "
+                    f"{stage_port}. Stage log tail:\n{_stage_log_tail(log_path)}"
+                )
+            for layer in jobs["layers"]:
+                layer["response"] = send_request(
+                    layer["request"], host="127.0.0.1", port=stage_port
+                )
+        finally:
+            # Always release the stage so Blender exits, even on error.
+            with open(done_file, "w", encoding="utf-8") as handle:
+                handle.write("done\n")
+            try:
+                process.wait(timeout=60)
+            except subprocess.TimeoutExpired:
+                process.kill()
+            log_handle.close()
+        if os.path.exists(report_path):
+            with open(report_path, "r", encoding="utf-8") as handle:
+                stage_report = json.load(handle)
+        bridge_info = {
+            "mode": "stage",
+            "host": "127.0.0.1",
+            "port": stage_port,
+            "blender": blender_bin,
+            "stage_exit_code": process.returncode,
+            "stage_log": log_path,
+        }
+
+    receipt = {
+        "kind": "animus_actor_receipt",
+        "line": line,
+        "instruction": instruction if instruction is not None else line,
+        "requested_speech": speech if speech is not None else line,
+        "control_level": plan["control_level"],
+        "performed": performed,
+        "voice_mode": voice_mode,
+        "plan": plan,
+        "profile": jobs["profile"],
+        "layers": jobs["layers"],
+        "voice": voice_receipts,
+        "bridge": bridge_info,
+        "stage": stage_report,
+    }
+    if receipt_path:
+        os.makedirs(os.path.dirname(os.path.abspath(receipt_path)), exist_ok=True)
+        with open(receipt_path, "w", encoding="utf-8") as handle:
+            json.dump(receipt, handle, indent=2)
+            handle.write("\n")
+        receipt["receipt_path"] = receipt_path
+    return receipt
+
+
+def summarize(receipt):
+    """The compact report the CLI prints: voice track, visemes, beats, ops."""
+    performed = receipt["performed"]
+    layers = []
+    for layer in receipt["layers"]:
+        response = layer.get("response") or {}
+        result = response.get("result") or {}
+        layers.append(
+            {
+                "beat_id": layer["beat_id"],
+                "channel": layer["channel"],
+                "request_id": layer["request"]["id"],
+                "ok": (response.get("ok") is True) if performed else None,
+                "action": result.get("action"),
+                "strip": result.get("strip"),
+                "key_count": result.get("key_count"),
+                "error": response.get("error"),
+            }
+        )
+    voice = receipt["voice"]
+    return {
+        "line": receipt["line"],
+        "control_level": receipt["control_level"],
+        "performed": performed,
+        "operator": receipt["plan"]["provenance"]["operator"],
+        "fallback": receipt["plan"]["provenance"]["fallback"],
+        "beats": len(receipt["plan"]["beats"]),
+        "beats_executed": len(receipt["plan"]["beats"]) if performed else 0,
+        "layers": layers,
+        "voice_track": (voice[0].get("wav") or voice[0].get("take_json"))
+        if voice
+        else None,
+        "viseme_count": sum(item.get("sample_count", 0) for item in voice),
+        "stage_timed_out": (receipt.get("stage") or {}).get("timed_out"),
+        "receipt_path": receipt.get("receipt_path"),
+    }
+
+
+def loop_succeeded(receipt):
+    if not receipt["performed"]:
+        return True
+    stage = receipt.get("stage")
+    if stage is not None and stage.get("timed_out"):
+        return False
+    return all(
+        (layer.get("response") or {}).get("ok") is True
+        for layer in receipt["layers"]
+    )
