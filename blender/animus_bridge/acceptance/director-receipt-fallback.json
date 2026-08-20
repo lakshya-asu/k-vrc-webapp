@@ -352,9 +352,9 @@
         "ok": true,
         "op": "apply_shape_keys",
         "result": {
-          "action": "ANIMUS_face_neutral_idle_take001",
-          "track": "ANIMUS_face_neutral_idle_take001_track",
-          "strip": "ANIMUS_face_neutral_idle_take001",
+          "action": "ANIMUS_face_neutral_idle_take002",
+          "track": "ANIMUS_face_neutral_idle_take002_track",
+          "strip": "ANIMUS_face_neutral_idle_take002",
           "shape_keys": [
             "mouth_curl_left",
             "mouth_curl_right",
@@ -372,6 +372,6 @@
   "voice": [],
   "bridge": {
     "host": "127.0.0.1",
-    "port": 8793
+    "port": 8792
   }
 }

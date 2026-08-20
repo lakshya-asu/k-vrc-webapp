@@ -1,0 +1,238 @@
+{
+  "runs": [
+    {
+      "run": "suggest",
+      "exit_code": 0,
+      "summary": {
+        "line": "Hello, I am K-VRC",
+        "control_level": "suggest",
+        "performed": false,
+        "operator": "deterministic",
+        "fallback": true,
+        "beats": 1,
+        "beats_executed": 0,
+        "layers": [
+          {
+            "beat_id": "fallback-1",
+            "channel": "body",
+            "request_id": "act-fallback-1-body",
+            "ok": null,
+            "action": null,
+            "strip": null,
+            "key_count": null,
+            "error": null
+          },
+          {
+            "beat_id": "fallback-1",
+            "channel": "gaze",
+            "request_id": "act-fallback-1-gaze",
+            "ok": null,
+            "action": null,
+            "strip": null,
+            "key_count": null,
+            "error": null
+          },
+          {
+            "beat_id": "fallback-1",
+            "channel": "face",
+            "request_id": "act-fallback-1-face",
+            "ok": null,
+            "action": null,
+            "strip": null,
+            "key_count": null,
+            "error": null
+          }
+        ],
+        "voice_track": null,
+        "viseme_count": 0,
+        "stage_timed_out": null,
+        "receipt_path": null
+      },
+      "stderr": ""
+    },
+    {
+      "run": "perform",
+      "exit_code": 0,
+      "summary": {
+        "line": "Hello, I am K-VRC",
+        "control_level": "perform",
+        "performed": true,
+        "operator": "deterministic",
+        "fallback": true,
+        "beats": 1,
+        "beats_executed": 1,
+        "layers": [
+          {
+            "beat_id": "fallback-1",
+            "channel": "body",
+            "request_id": "act-fallback-1-body",
+            "ok": true,
+            "action": "ANIMUS_wave_take001",
+            "strip": "ANIMUS_wave_take001",
+            "key_count": 40,
+            "error": null
+          },
+          {
+            "beat_id": "fallback-1",
+            "channel": "gaze",
+            "request_id": "act-fallback-1-gaze",
+            "ok": true,
+            "action": "ANIMUS_gaze_camera_take001",
+            "strip": "ANIMUS_gaze_camera_take001",
+            "key_count": 12,
+            "error": null
+          },
+          {
+            "beat_id": "fallback-1",
+            "channel": "face",
+            "request_id": "act-fallback-1-face",
+            "ok": true,
+            "action": "ANIMUS_face_neutral_idle_take001",
+            "strip": "ANIMUS_face_neutral_idle_take001",
+            "key_count": 16,
+            "error": null
+          },
+          {
+            "beat_id": "fallback-1",
+            "channel": "speech",
+            "request_id": "act-fallback-1_speech",
+            "ok": true,
+            "action": "ANIMUS_animus_speech_take001",
+            "strip": "ANIMUS_animus_speech_take001",
+            "key_count": 40,
+            "error": null
+          }
+        ],
+        "voice_track": "C:\\Users\\jainl\\resume-projects\\k-vrc-animus-poc\\voice\\animus_voice\\out\\actor\\fallback-1_speech.wav",
+        "viseme_count": 40,
+        "stage_timed_out": null,
+        "receipt_path": "C:\\Users\\jainl\\resume-projects\\k-vrc-animus-poc\\blender\\animus_bridge\\acceptance\\actor-receipt-perform.json"
+      },
+      "stderr": ""
+    }
+  ],
+  "checks": [
+    {
+      "name": "actor_scene_built",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "actor_server_started",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "actor_suggest_exit_0",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "actor_suggest_mutated_nothing",
+      "passed": true,
+      "detail": "{'actions': [], 'kvrc_strips': [], 'face_strips': []}"
+    },
+    {
+      "name": "actor_suggest_not_performed",
+      "passed": true,
+      "detail": "{'line': 'Hello, I am K-VRC', 'control_level': 'suggest', 'performed': False, 'operator': 'deterministic', 'fallback': True, 'beats': 1, 'beats_executed': 0, 'layers': [{'beat_id': 'fallback-1', 'channel': 'body', 'request_id': 'act-fallback-1-body', 'ok': None, 'action': None, 'strip': None, 'key_count': None, 'error': None}, {'beat_id': 'fallback-1', 'channel': 'gaze', 'request_id': 'act-fallback-1-gaze', 'ok': None, 'action': None, 'strip': None, 'key_count': None, 'error': None}, {'beat_id': 'fallback-1', 'channel': 'face', 'request_id': 'act-fallback-1-face', 'ok': None, 'action': None, 'strip': None, 'key_count': None, 'error': None}], 'voice_track': None, 'viseme_count': 0, 'stage_timed_out': None, 'receipt_path': None}"
+    },
+    {
+      "name": "actor_perform_exit_0",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "actor_receipt_written",
+      "passed": true,
+      "detail": "C:\\Users\\jainl\\resume-projects\\k-vrc-animus-poc\\blender\\animus_bridge\\acceptance\\actor-receipt-perform.json"
+    },
+    {
+      "name": "actor_used_deterministic_brain",
+      "passed": true,
+      "detail": "{'operator': 'deterministic', 'model': None, 'fallback': True}"
+    },
+    {
+      "name": "actor_channels_complete",
+      "passed": true,
+      "detail": "['body', 'gaze', 'face', 'speech']"
+    },
+    {
+      "name": "actor_every_layer_ok",
+      "passed": true,
+      "detail": "[{'id': 'act-fallback-1-body', 'ok': True, 'op': 'perform_take', 'result': {'action': 'ANIMUS_wave_take001', 'track': 'ANIMUS_wave_take001_track', 'strip': 'ANIMUS_wave_take001', 'bones': ['arm.R', 'hand.R'], 'sample_count': 10, 'key_count': 40, 'frame_start': 1, 'frame_end': 48}}, {'id': 'act-fallback-1-gaze', 'ok': True, 'op': 'perform_take', 'result': {'action': 'ANIMUS_gaze_camera_take001', 'track': 'ANIMUS_gaze_camera_take001_track', 'strip': 'ANIMUS_gaze_camera_take001', 'bones': ['head'], 'sample_count': 3, 'key_count': 12, 'frame_start': 1, 'frame_end': 43}}, {'id': 'act-fallback-1-face', 'ok': True, 'op': 'apply_shape_keys', 'result': {'action': 'ANIMUS_face_neutral_idle_take001', 'track': 'ANIMUS_face_neutral_idle_take001_track', 'strip': 'ANIMUS_face_neutral_idle_take001', 'shape_keys': ['mouth_curl_left', 'mouth_curl_right', 'mouth_open', 'smile_width'], 'sample_count': 16, 'key_count': 16, 'frame_start': 1, 'frame_end': 43}}, {'id': 'act-fallback-1_speech', 'ok': True, 'op': 'apply_shape_keys', 'result': {'action': 'ANIMUS_animus_speech_take001', 'track': 'ANIMUS_animus_speech_take001_track', 'strip': 'ANIMUS_animus_speech_take001', 'shape_keys': ['mouth_curl_left', 'mouth_curl_right', 'mouth_open', 'smile_width'], 'sample_count': 40, 'key_count': 40, 'frame_start': 1, 'frame_end': 49}}]"
+    },
+    {
+      "name": "actor_one_action_per_layer",
+      "passed": true,
+      "detail": "{'layers': 4, 'new_actions': ['ANIMUS_animus_speech_take001', 'ANIMUS_face_neutral_idle_take001', 'ANIMUS_gaze_camera_take001', 'ANIMUS_wave_take001']}"
+    },
+    {
+      "name": "actor_pose_strip_counts",
+      "passed": true,
+      "detail": "['ANIMUS_gaze_camera_take001', 'ANIMUS_wave_take001']"
+    },
+    {
+      "name": "actor_face_strip_counts",
+      "passed": true,
+      "detail": "['ANIMUS_animus_speech_take001', 'ANIMUS_face_neutral_idle_take001']"
+    },
+    {
+      "name": "actor_receipts_name_real_actions",
+      "passed": true,
+      "detail": "['ANIMUS_wave_take001', 'ANIMUS_gaze_camera_take001', 'ANIMUS_face_neutral_idle_take001', 'ANIMUS_animus_speech_take001']"
+    },
+    {
+      "name": "actor_actions_have_keyframes",
+      "passed": true,
+      "detail": "{'ANIMUS_wave_take001': 40, 'ANIMUS_gaze_camera_take001': 12, 'ANIMUS_face_neutral_idle_take001': 16, 'ANIMUS_animus_speech_take001': 40}"
+    },
+    {
+      "name": "actor_voice_track_exists",
+      "passed": true,
+      "detail": "{'wav': 'C:\\\\Users\\\\jainl\\\\resume-projects\\\\k-vrc-animus-poc\\\\voice\\\\animus_voice\\\\out\\\\actor\\\\fallback-1_speech.wav', 'take': 'C:\\\\Users\\\\jainl\\\\resume-projects\\\\k-vrc-animus-poc\\\\voice\\\\animus_voice\\\\out\\\\actor\\\\fallback-1_speech.animus.json'}"
+    },
+    {
+      "name": "actor_viseme_count_positive",
+      "passed": true,
+      "detail": "{'beat_id': 'fallback-1', 'voice_mode': 'live', 'wav': 'C:\\\\Users\\\\jainl\\\\resume-projects\\\\k-vrc-animus-poc\\\\voice\\\\animus_voice\\\\out\\\\actor\\\\fallback-1_speech.wav', 'take_json': 'C:\\\\Users\\\\jainl\\\\resume-projects\\\\k-vrc-animus-poc\\\\voice\\\\animus_voice\\\\out\\\\actor\\\\fallback-1_speech.animus.json', 'cue_count': 10, 'sample_count': 40, 'duration_ms': 2000}"
+    }
+  ],
+  "environment": {
+    "blender_version": "4.5.12 LTS",
+    "background": true,
+    "python": "3.11.11",
+    "port": 8793,
+    "voice_mode": "live",
+    "line": "Hello, I am K-VRC"
+  },
+  "perform_actions": {
+    "ANIMUS_wave_take001": 40,
+    "ANIMUS_gaze_camera_take001": 12,
+    "ANIMUS_face_neutral_idle_take001": 16,
+    "ANIMUS_animus_speech_take001": 40
+  },
+  "perform_voice": {
+    "wav": "C:\\Users\\jainl\\resume-projects\\k-vrc-animus-poc\\voice\\animus_voice\\out\\actor\\fallback-1_speech.wav",
+    "take_json": "C:\\Users\\jainl\\resume-projects\\k-vrc-animus-poc\\voice\\animus_voice\\out\\actor\\fallback-1_speech.animus.json",
+    "sample_count": 40,
+    "cue_count": 10
+  },
+  "final_scene": {
+    "actions": [
+      "ANIMUS_animus_speech_take001",
+      "ANIMUS_face_neutral_idle_take001",
+      "ANIMUS_gaze_camera_take001",
+      "ANIMUS_wave_take001"
+    ],
+    "kvrc_strips": [
+      "ANIMUS_gaze_camera_take001",
+      "ANIMUS_wave_take001"
+    ],
+    "face_strips": [
+      "ANIMUS_animus_speech_take001",
+      "ANIMUS_face_neutral_idle_take001"
+    ]
+  },
+  "passed": true
+}

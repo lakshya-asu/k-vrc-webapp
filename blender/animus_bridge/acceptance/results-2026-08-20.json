@@ -1,0 +1,334 @@
+{
+  "steps": [
+    {
+      "step": "inspect",
+      "exit_code": 0,
+      "responses": [
+        {
+          "id": "acc-inspect",
+          "ok": true,
+          "op": "inspect_rig",
+          "result": {
+            "object": "KVRC",
+            "armature": "KVRC_rig",
+            "bones": [
+              "arm.L",
+              "arm.R",
+              "hand.L",
+              "hand.R",
+              "head",
+              "root",
+              "spine"
+            ],
+            "actions": [],
+            "nla_tracks": []
+          }
+        }
+      ],
+      "stderr": ""
+    },
+    {
+      "step": "wave",
+      "exit_code": 0,
+      "responses": [
+        {
+          "id": "acc-wave-1",
+          "ok": true,
+          "op": "perform_take",
+          "result": {
+            "action": "ANIMUS_wave_take001",
+            "track": "ANIMUS_wave_take001_track",
+            "strip": "ANIMUS_wave_take001",
+            "bones": [
+              "arm.R"
+            ],
+            "sample_count": 5,
+            "key_count": 20,
+            "frame_start": 1,
+            "frame_end": 48
+          }
+        }
+      ],
+      "stderr": ""
+    },
+    {
+      "step": "wave",
+      "exit_code": 0,
+      "responses": [
+        {
+          "id": "acc-wave-2",
+          "ok": true,
+          "op": "perform_take",
+          "result": {
+            "action": "ANIMUS_wave_take002",
+            "track": "ANIMUS_wave_take002_track",
+            "strip": "ANIMUS_wave_take002",
+            "bones": [
+              "arm.R"
+            ],
+            "sample_count": 5,
+            "key_count": 20,
+            "frame_start": 1,
+            "frame_end": 48
+          }
+        }
+      ],
+      "stderr": ""
+    },
+    {
+      "step": "invalid",
+      "exit_code": 0,
+      "responses": [
+        {
+          "id": "acc-bad-frame",
+          "ok": false,
+          "op": "perform_take",
+          "error": {
+            "code": "frame_out_of_range",
+            "message": "perform_take: samples[2].frame 9000 is outside the declared range 1 to 48"
+          }
+        },
+        {
+          "id": "acc-bad-bone",
+          "ok": false,
+          "op": "perform_take",
+          "error": {
+            "code": "unknown_bone",
+            "message": "armature 'KVRC' has no bone 'tentacle.R'"
+          }
+        }
+      ],
+      "stderr": ""
+    },
+    {
+      "step": "disconnect",
+      "exit_code": 0,
+      "responses": [
+        {
+          "id": "acc-cut",
+          "sent_bytes": 264,
+          "closed": true
+        }
+      ],
+      "stderr": ""
+    },
+    {
+      "step": "shape_keys",
+      "exit_code": 0,
+      "responses": [
+        {
+          "id": "acc-speech",
+          "ok": true,
+          "op": "apply_shape_keys",
+          "result": {
+            "action": "ANIMUS_animus_speech_take001",
+            "track": "ANIMUS_animus_speech_take001_track",
+            "strip": "ANIMUS_animus_speech_take001",
+            "shape_keys": [
+              "mouth_curl_left",
+              "mouth_curl_right",
+              "mouth_open",
+              "smile_width"
+            ],
+            "sample_count": 68,
+            "key_count": 68,
+            "frame_start": 1,
+            "frame_end": 74
+          }
+        }
+      ],
+      "stderr": ""
+    }
+  ],
+  "checks": [
+    {
+      "name": "scene_built",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "register_guard_in_background",
+      "passed": true,
+      "detail": "register() started no server under --background, as designed"
+    },
+    {
+      "name": "server_started",
+      "passed": true,
+      "detail": "port 8791"
+    },
+    {
+      "name": "scene_starts_clean",
+      "passed": true,
+      "detail": "{'actions': [], 'kvrc_strips': [], 'face_strips': []}"
+    },
+    {
+      "name": "inspect_ok",
+      "passed": true,
+      "detail": "None"
+    },
+    {
+      "name": "inspect_bones_match",
+      "passed": true,
+      "detail": "['arm.L', 'arm.R', 'hand.L', 'hand.R', 'head', 'root', 'spine']"
+    },
+    {
+      "name": "inspect_mutated_nothing",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "wave_ok",
+      "passed": true,
+      "detail": "None"
+    },
+    {
+      "name": "wave_one_new_action",
+      "passed": true,
+      "detail": "['ANIMUS_wave_take001']"
+    },
+    {
+      "name": "wave_one_new_strip",
+      "passed": true,
+      "detail": "['ANIMUS_wave_take001']"
+    },
+    {
+      "name": "wave_receipt_names_action",
+      "passed": true,
+      "detail": "{'action': 'ANIMUS_wave_take001', 'track': 'ANIMUS_wave_take001_track', 'strip': 'ANIMUS_wave_take001', 'bones': ['arm.R'], 'sample_count': 5, 'key_count': 20, 'frame_start': 1, 'frame_end': 48}"
+    },
+    {
+      "name": "wave_face_untouched",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "repeat_ok",
+      "passed": true,
+      "detail": "None"
+    },
+    {
+      "name": "repeat_new_names",
+      "passed": true,
+      "detail": "{'first': 'ANIMUS_wave_take001', 'second': 'ANIMUS_wave_take002'}"
+    },
+    {
+      "name": "repeat_added_exactly_one_of_each",
+      "passed": true,
+      "detail": "{'actions': ['ANIMUS_wave_take001', 'ANIMUS_wave_take002'], 'kvrc_strips': ['ANIMUS_wave_take001', 'ANIMUS_wave_take002'], 'face_strips': []}"
+    },
+    {
+      "name": "repeat_kept_first_take",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "invalid_refused",
+      "passed": true,
+      "detail": "[{'id': 'acc-bad-frame', 'ok': False, 'op': 'perform_take', 'error': {'code': 'frame_out_of_range', 'message': 'perform_take: samples[2].frame 9000 is outside the declared range 1 to 48'}}, {'id': 'acc-bad-bone', 'ok': False, 'op': 'perform_take', 'error': {'code': 'unknown_bone', 'message': \"armature 'KVRC' has no bone 'tentacle.R'\"}}]"
+    },
+    {
+      "name": "invalid_mutated_nothing",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "disconnect_client_ran",
+      "passed": true,
+      "detail": "[{'id': 'acc-cut', 'sent_bytes': 264, 'closed': True}]"
+    },
+    {
+      "name": "disconnect_mutated_nothing",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "artifact_present",
+      "passed": true,
+      "detail": "C:/Users/jainl/resume-projects/k-vrc-animus-poc/blender/animus_bridge/acceptance/fixtures/acceptance.animus.json"
+    },
+    {
+      "name": "shape_keys_ok",
+      "passed": true,
+      "detail": "None"
+    },
+    {
+      "name": "shape_keys_one_new_action",
+      "passed": true,
+      "detail": "['ANIMUS_animus_speech_take001']"
+    },
+    {
+      "name": "shape_keys_one_new_face_strip",
+      "passed": true,
+      "detail": "['ANIMUS_animus_speech_take001']"
+    },
+    {
+      "name": "shape_keys_receipt_names_action",
+      "passed": true,
+      "detail": "{'action': 'ANIMUS_animus_speech_take001', 'track': 'ANIMUS_animus_speech_take001_track', 'strip': 'ANIMUS_animus_speech_take001', 'shape_keys': ['mouth_curl_left', 'mouth_curl_right', 'mouth_open', 'smile_width'], 'sample_count': 68, 'key_count': 68, 'frame_start': 1, 'frame_end': 74}"
+    },
+    {
+      "name": "shape_keys_kvrc_untouched",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "shape_keys_fcurves_have_keyframes",
+      "passed": true,
+      "detail": "key_blocks[\"mouth_open\"].value has 17 keys"
+    }
+  ],
+  "environment": {
+    "blender_version": "4.5.12 LTS",
+    "background": true,
+    "python": "3.11.11",
+    "port": 8791,
+    "artifact": "C:/Users/jainl/resume-projects/k-vrc-animus-poc/blender/animus_bridge/acceptance/fixtures/acceptance.animus.json",
+    "rig_note": "plain bpy armature with named bones; Rigify not used headless"
+  },
+  "wave_action_api": {
+    "found": true,
+    "fcurve_count": 4,
+    "fcurve_paths": [
+      "pose.bones[\"arm.R\"].rotation_quaternion"
+    ],
+    "slot_count": 1,
+    "slots": [
+      {
+        "identifier": "OBLegacy Slot",
+        "target_id_type": "OBJECT"
+      }
+    ]
+  },
+  "face_action_api": {
+    "found": true,
+    "fcurve_count": 4,
+    "fcurve_paths": [
+      "key_blocks[\"mouth_curl_left\"].value",
+      "key_blocks[\"mouth_curl_right\"].value",
+      "key_blocks[\"mouth_open\"].value",
+      "key_blocks[\"smile_width\"].value"
+    ],
+    "slot_count": 1,
+    "slots": [
+      {
+        "identifier": "KELegacy Slot",
+        "target_id_type": "KEY"
+      }
+    ]
+  },
+  "final_scene": {
+    "actions": [
+      "ANIMUS_animus_speech_take001",
+      "ANIMUS_wave_take001",
+      "ANIMUS_wave_take002"
+    ],
+    "kvrc_strips": [
+      "ANIMUS_wave_take001",
+      "ANIMUS_wave_take002"
+    ],
+    "face_strips": [
+      "ANIMUS_animus_speech_take001"
+    ]
+  },
+  "passed": true
+}

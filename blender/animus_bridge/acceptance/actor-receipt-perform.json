@@ -1,7 +1,8 @@
 {
-  "kind": "animus_director_receipt",
-  "line": "Wave to the viewer and say hello.",
-  "requested_speech": "Hello, I am K-VRC.",
+  "kind": "animus_actor_receipt",
+  "line": "Hello, I am K-VRC",
+  "instruction": "Hello, I am K-VRC",
+  "requested_speech": "Hello, I am K-VRC",
   "control_level": "perform",
   "performed": true,
   "voice_mode": "live",
@@ -9,7 +10,7 @@
     "schema_version": "0.1",
     "actor_id": "kvrc",
     "control_level": "perform",
-    "summary": "Wave to the viewer and say hello.",
+    "summary": "Hello, I am K-VRC",
     "beats": [
       {
         "id": "fallback-1",
@@ -30,7 +31,7 @@
           "intensity": 0.4
         },
         "speech": {
-          "text": "Hello, I am K-VRC.",
+          "text": "Hello, I am K-VRC",
           "delivery": "neutral"
         }
       }
@@ -38,8 +39,7 @@
     "provenance": {
       "operator": "deterministic",
       "model": null,
-      "fallback": true,
-      "prior_failures": []
+      "fallback": true
     }
   },
   "profile": {
@@ -52,7 +52,7 @@
       "channel": "body",
       "gesture": "wave",
       "request": {
-        "id": "dir-fallback-1-body",
+        "id": "act-fallback-1-body",
         "op": "perform_take",
         "params": {
           "object": "KVRC",
@@ -64,10 +64,10 @@
               "bone": "arm.R",
               "frame": 1,
               "rotation_quaternion": [
-                1,
-                0,
-                0,
-                0
+                1.0,
+                0.0,
+                0.0,
+                0.0
               ]
             },
             {
@@ -75,8 +75,8 @@
               "frame": 12,
               "rotation_quaternion": [
                 0.92,
-                0,
-                0,
+                0.0,
+                0.0,
                 0.38
               ]
             },
@@ -85,8 +85,8 @@
               "frame": 24,
               "rotation_quaternion": [
                 0.98,
-                0,
-                0,
+                0.0,
+                0.0,
                 -0.2
               ]
             },
@@ -95,8 +95,8 @@
               "frame": 36,
               "rotation_quaternion": [
                 0.92,
-                0,
-                0,
+                0.0,
+                0.0,
                 0.38
               ]
             },
@@ -104,20 +104,20 @@
               "bone": "arm.R",
               "frame": 48,
               "rotation_quaternion": [
-                1,
-                0,
-                0,
-                0
+                1.0,
+                0.0,
+                0.0,
+                0.0
               ]
             },
             {
               "bone": "hand.R",
               "frame": 8,
               "rotation_quaternion": [
-                1,
-                0,
-                0,
-                0
+                1.0,
+                0.0,
+                0.0,
+                0.0
               ]
             },
             {
@@ -125,9 +125,9 @@
               "frame": 16,
               "rotation_quaternion": [
                 0.966,
-                0,
+                0.0,
                 0.259,
-                0
+                0.0
               ]
             },
             {
@@ -135,9 +135,9 @@
               "frame": 24,
               "rotation_quaternion": [
                 0.966,
-                0,
+                0.0,
                 -0.259,
-                0
+                0.0
               ]
             },
             {
@@ -145,26 +145,26 @@
               "frame": 32,
               "rotation_quaternion": [
                 0.966,
-                0,
+                0.0,
                 0.259,
-                0
+                0.0
               ]
             },
             {
               "bone": "hand.R",
               "frame": 40,
               "rotation_quaternion": [
-                1,
-                0,
-                0,
-                0
+                1.0,
+                0.0,
+                0.0,
+                0.0
               ]
             }
           ]
         }
       },
       "response": {
-        "id": "dir-fallback-1-body",
+        "id": "act-fallback-1-body",
         "ok": true,
         "op": "perform_take",
         "result": {
@@ -187,7 +187,7 @@
       "channel": "gaze",
       "target": "camera",
       "request": {
-        "id": "dir-fallback-1-gaze",
+        "id": "act-fallback-1-gaze",
         "op": "perform_take",
         "params": {
           "object": "KVRC",
@@ -199,10 +199,10 @@
               "bone": "head",
               "frame": 1,
               "rotation_quaternion": [
-                1,
-                0,
-                0,
-                0
+                1.0,
+                0.0,
+                0.0,
+                0.0
               ]
             },
             {
@@ -211,8 +211,8 @@
               "rotation_quaternion": [
                 0.999277,
                 0.03803,
-                0,
-                0
+                0.0,
+                0.0
               ]
             },
             {
@@ -221,15 +221,15 @@
               "rotation_quaternion": [
                 0.999277,
                 0.03803,
-                0,
-                0
+                0.0,
+                0.0
               ]
             }
           ]
         }
       },
       "response": {
-        "id": "dir-fallback-1-gaze",
+        "id": "act-fallback-1-gaze",
         "ok": true,
         "op": "perform_take",
         "result": {
@@ -251,7 +251,7 @@
       "channel": "face",
       "expression": "neutral_idle",
       "request": {
-        "id": "dir-fallback-1-face",
+        "id": "act-fallback-1-face",
         "op": "apply_shape_keys",
         "params": {
           "object": "KVRC_face",
@@ -262,27 +262,27 @@
             {
               "shape_key": "mouth_open",
               "frame": 1,
-              "weight": 0
+              "weight": 0.0
             },
             {
               "shape_key": "smile_width",
               "frame": 1,
-              "weight": 0
+              "weight": 0.0
             },
             {
               "shape_key": "mouth_curl_left",
               "frame": 1,
-              "weight": 0
+              "weight": 0.0
             },
             {
               "shape_key": "mouth_curl_right",
               "frame": 1,
-              "weight": 0
+              "weight": 0.0
             },
             {
               "shape_key": "mouth_open",
               "frame": 5,
-              "weight": 0
+              "weight": 0.0
             },
             {
               "shape_key": "smile_width",
@@ -302,7 +302,7 @@
             {
               "shape_key": "mouth_open",
               "frame": 39,
-              "weight": 0
+              "weight": 0.0
             },
             {
               "shape_key": "smile_width",
@@ -322,28 +322,28 @@
             {
               "shape_key": "mouth_open",
               "frame": 43,
-              "weight": 0
+              "weight": 0.0
             },
             {
               "shape_key": "smile_width",
               "frame": 43,
-              "weight": 0
+              "weight": 0.0
             },
             {
               "shape_key": "mouth_curl_left",
               "frame": 43,
-              "weight": 0
+              "weight": 0.0
             },
             {
               "shape_key": "mouth_curl_right",
               "frame": 43,
-              "weight": 0
+              "weight": 0.0
             }
           ]
         }
       },
       "response": {
-        "id": "dir-fallback-1-face",
+        "id": "act-fallback-1-face",
         "ok": true,
         "op": "apply_shape_keys",
         "result": {
@@ -367,20 +367,20 @@
       "beat_id": "fallback-1",
       "channel": "speech",
       "request": {
-        "id": "dir-fallback-1_speech",
+        "id": "act-fallback-1_speech",
         "op": "apply_shape_keys",
         "params": {
           "object": "KVRC_face",
           "name_hint": "animus_speech",
           "frame_start": 1,
-          "frame_end": 51,
+          "frame_end": 49,
           "samples": [
             {
               "frame": 1,
               "at_ms": 0,
               "viseme": "X",
               "shape_key": "mouth_open",
-              "weight": 0
+              "weight": 0.0
             },
             {
               "frame": 1,
@@ -433,224 +433,224 @@
             },
             {
               "frame": 11,
-              "at_ms": 410,
+              "at_ms": 400,
               "viseme": "E",
               "shape_key": "mouth_open",
               "weight": 0.5
             },
             {
               "frame": 11,
-              "at_ms": 410,
+              "at_ms": 400,
               "viseme": "E",
               "shape_key": "smile_width",
               "weight": 0.15
             },
             {
               "frame": 11,
-              "at_ms": 410,
+              "at_ms": 400,
               "viseme": "E",
               "shape_key": "mouth_curl_left",
-              "weight": 0
+              "weight": 0.0
             },
             {
               "frame": 11,
-              "at_ms": 410,
+              "at_ms": 400,
               "viseme": "E",
               "shape_key": "mouth_curl_right",
-              "weight": 0
+              "weight": 0.0
             },
             {
               "frame": 16,
-              "at_ms": 620,
+              "at_ms": 610,
               "viseme": "F",
               "shape_key": "mouth_open",
               "weight": 0.3
             },
             {
               "frame": 16,
-              "at_ms": 620,
+              "at_ms": 610,
               "viseme": "F",
               "shape_key": "smile_width",
-              "weight": 0
+              "weight": 0.0
             },
             {
               "frame": 16,
-              "at_ms": 620,
+              "at_ms": 610,
               "viseme": "F",
               "shape_key": "mouth_curl_left",
-              "weight": 0
+              "weight": 0.0
             },
             {
               "frame": 16,
-              "at_ms": 620,
+              "at_ms": 610,
               "viseme": "F",
               "shape_key": "mouth_curl_right",
-              "weight": 0
+              "weight": 0.0
             },
             {
               "frame": 18,
-              "at_ms": 720,
+              "at_ms": 710,
               "viseme": "C",
               "shape_key": "mouth_open",
               "weight": 0.45
             },
             {
               "frame": 18,
-              "at_ms": 720,
+              "at_ms": 710,
               "viseme": "C",
               "shape_key": "smile_width",
               "weight": 0.4
             },
             {
               "frame": 18,
-              "at_ms": 720,
+              "at_ms": 710,
               "viseme": "C",
               "shape_key": "mouth_curl_left",
               "weight": 0.05
             },
             {
               "frame": 18,
-              "at_ms": 720,
+              "at_ms": 710,
               "viseme": "C",
               "shape_key": "mouth_curl_right",
               "weight": 0.05
             },
             {
-              "frame": 20,
-              "at_ms": 780,
-              "viseme": "B",
-              "shape_key": "mouth_open",
-              "weight": 0.2
-            },
-            {
-              "frame": 20,
-              "at_ms": 780,
-              "viseme": "B",
-              "shape_key": "smile_width",
-              "weight": 0.55
-            },
-            {
-              "frame": 20,
-              "at_ms": 780,
-              "viseme": "B",
-              "shape_key": "mouth_curl_left",
-              "weight": 0.1
-            },
-            {
-              "frame": 20,
-              "at_ms": 780,
-              "viseme": "B",
-              "shape_key": "mouth_curl_right",
-              "weight": 0.1
-            },
-            {
               "frame": 21,
-              "at_ms": 840,
+              "at_ms": 830,
               "viseme": "A",
               "shape_key": "mouth_open",
-              "weight": 0
+              "weight": 0.0
             },
             {
               "frame": 21,
-              "at_ms": 840,
+              "at_ms": 830,
               "viseme": "A",
               "shape_key": "smile_width",
               "weight": 0.15
             },
             {
               "frame": 21,
-              "at_ms": 840,
+              "at_ms": 830,
               "viseme": "A",
               "shape_key": "mouth_curl_left",
               "weight": 0.05
             },
             {
               "frame": 21,
-              "at_ms": 840,
+              "at_ms": 830,
               "viseme": "A",
               "shape_key": "mouth_curl_right",
               "weight": 0.05
             },
             {
               "frame": 23,
-              "at_ms": 920,
+              "at_ms": 900,
               "viseme": "C",
               "shape_key": "mouth_open",
               "weight": 0.45
             },
             {
               "frame": 23,
-              "at_ms": 920,
+              "at_ms": 900,
               "viseme": "C",
               "shape_key": "smile_width",
               "weight": 0.4
             },
             {
               "frame": 23,
-              "at_ms": 920,
+              "at_ms": 900,
               "viseme": "C",
               "shape_key": "mouth_curl_left",
               "weight": 0.05
             },
             {
               "frame": 23,
-              "at_ms": 920,
+              "at_ms": 900,
               "viseme": "C",
               "shape_key": "mouth_curl_right",
               "weight": 0.05
             },
             {
-              "frame": 27,
-              "at_ms": 1090,
+              "frame": 28,
+              "at_ms": 1120,
+              "viseme": "G",
+              "shape_key": "mouth_open",
+              "weight": 0.15
+            },
+            {
+              "frame": 28,
+              "at_ms": 1120,
+              "viseme": "G",
+              "shape_key": "smile_width",
+              "weight": 0.35
+            },
+            {
+              "frame": 28,
+              "at_ms": 1120,
+              "viseme": "G",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.05
+            },
+            {
+              "frame": 28,
+              "at_ms": 1120,
+              "viseme": "G",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.05
+            },
+            {
+              "frame": 30,
+              "at_ms": 1190,
               "viseme": "B",
               "shape_key": "mouth_open",
               "weight": 0.2
             },
             {
-              "frame": 27,
-              "at_ms": 1090,
+              "frame": 30,
+              "at_ms": 1190,
               "viseme": "B",
               "shape_key": "smile_width",
               "weight": 0.55
             },
             {
-              "frame": 27,
-              "at_ms": 1090,
+              "frame": 30,
+              "at_ms": 1190,
               "viseme": "B",
               "shape_key": "mouth_curl_left",
               "weight": 0.1
             },
             {
-              "frame": 27,
-              "at_ms": 1090,
+              "frame": 30,
+              "at_ms": 1190,
               "viseme": "B",
               "shape_key": "mouth_curl_right",
               "weight": 0.1
             },
             {
-              "frame": 41,
-              "at_ms": 1650,
+              "frame": 40,
+              "at_ms": 1610,
               "viseme": "X",
               "shape_key": "mouth_open",
-              "weight": 0
+              "weight": 0.0
             },
             {
-              "frame": 41,
-              "at_ms": 1650,
+              "frame": 40,
+              "at_ms": 1610,
               "viseme": "X",
               "shape_key": "smile_width",
               "weight": 0.1
             },
             {
-              "frame": 41,
-              "at_ms": 1650,
+              "frame": 40,
+              "at_ms": 1610,
               "viseme": "X",
               "shape_key": "mouth_curl_left",
               "weight": 0.05
             },
             {
-              "frame": 41,
-              "at_ms": 1650,
+              "frame": 40,
+              "at_ms": 1610,
               "viseme": "X",
               "shape_key": "mouth_curl_right",
               "weight": 0.05
@@ -659,7 +659,7 @@
         }
       },
       "response": {
-        "id": "dir-fallback-1_speech",
+        "id": "act-fallback-1_speech",
         "ok": true,
         "op": "apply_shape_keys",
         "result": {
@@ -675,7 +675,7 @@
           "sample_count": 40,
           "key_count": 40,
           "frame_start": 1,
-          "frame_end": 51
+          "frame_end": 49
         }
       }
     }
@@ -683,21 +683,18 @@
   "voice": [
     {
       "beat_id": "fallback-1",
-      "take_json": "C:\\Users\\jainl\\resume-projects\\k-vrc-animus-poc\\voice\\animus_voice\\out\\director\\fallback-1_speech.animus.json",
       "voice_mode": "live",
-      "tool_report": {
-        "wav": "C:\\Users\\jainl\\resume-projects\\k-vrc-animus-poc\\voice\\animus_voice\\out\\director\\fallback-1_speech.wav",
-        "cue_json": "C:\\Users\\jainl\\resume-projects\\k-vrc-animus-poc\\voice\\animus_voice\\out\\director\\fallback-1_speech.rhubarb.json",
-        "take_json": "C:\\Users\\jainl\\resume-projects\\k-vrc-animus-poc\\voice\\animus_voice\\out\\director\\fallback-1_speech.animus.json",
-        "audio_sha256": "cd0d9578f07fd3b8ed173a0433e0934e55c54334b3962f0b0c36b5b4d76c2756",
-        "duration_ms": 2100,
-        "cue_count": 10,
-        "sample_count": 40
-      }
+      "wav": "C:\\Users\\jainl\\resume-projects\\k-vrc-animus-poc\\voice\\animus_voice\\out\\actor\\fallback-1_speech.wav",
+      "take_json": "C:\\Users\\jainl\\resume-projects\\k-vrc-animus-poc\\voice\\animus_voice\\out\\actor\\fallback-1_speech.animus.json",
+      "cue_count": 10,
+      "sample_count": 40,
+      "duration_ms": 2000
     }
   ],
   "bridge": {
+    "mode": "attach",
     "host": "127.0.0.1",
-    "port": 8792
-  }
+    "port": 8793
+  },
+  "stage": null
 }
