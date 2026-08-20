@@ -66,6 +66,15 @@ def parse_args():
         help="wav file muxed into the rendered video (AAC in the MP4)",
     )
     parser.add_argument(
+        "--render-audio-start",
+        dest="render_audio_start",
+        type=int,
+        default=None,
+        help="frame the voice starts on (the speech beat's frame_start); "
+        "without it the wav lands on the take's first frame, which is "
+        "wrong for any plan whose speech beat starts after 0 ms",
+    )
+    parser.add_argument(
         "--render-size", dest="render_size", default="960x540", help="WxH"
     )
     parser.add_argument(
@@ -312,10 +321,16 @@ def _add_camera_and_lights(render_cfg):
     key.data.energy = float(render_cfg.get("key_energy", 400.0))
     key.data.size = 3.0
     key.location = tuple(render_cfg.get("key_location", (2.0, -2.0, 2.5)))
+    # Optional light colors (RGB, 0..1 each) so a profile can set the
+    # scene's warmth per take; the default stays plain white.
+    if render_cfg.get("key_color"):
+        key.data.color = tuple(render_cfg["key_color"])
     scene.collection.objects.link(key)
     fill = bpy.data.objects.new("FillLight", bpy.data.lights.new("FillLight", "POINT"))
     fill.data.energy = float(render_cfg.get("fill_energy", 120.0))
     fill.location = tuple(render_cfg.get("fill_location", (-2.0, -1.0, 1.0)))
+    if render_cfg.get("fill_color"):
+        fill.data.color = tuple(render_cfg["fill_color"])
     scene.collection.objects.link(fill)
 
 
@@ -381,8 +396,13 @@ def render_take(args, profile):
     if args.render_audio and os.path.exists(args.render_audio):
         editor = scene.sequence_editor_create()
         strips = getattr(editor, "sequences", None) or editor.strips
+        audio_start = (
+            args.render_audio_start
+            if args.render_audio_start is not None
+            else frame_start
+        )
         strips.new_sound(
-            "voice", filepath=args.render_audio, channel=1, frame_start=frame_start
+            "voice", filepath=args.render_audio, channel=1, frame_start=audio_start
         )
         audio = args.render_audio
 

@@ -93,7 +93,7 @@ def build_face_job(plan, profile, voice_receipts, layers, seed=None):
         if isinstance(end, int):
             frame_end = max(frame_end, end)
 
-    return {
+    job = {
         "kind": FACE_JOB_KIND,
         "fps": fps,
         "frame_end": frame_end,
@@ -101,6 +101,15 @@ def build_face_job(plan, profile, voice_receipts, layers, seed=None):
         "viseme_samples": viseme_samples,
         "seed": seed,
     }
+    # Optional deterministic glitch windows: the library's 8-20 s glitch
+    # timer can never fire inside a short take, so a profile may force
+    # bursts at fixed times (stage.face_screen.force_glitches:
+    # [{at_ms, duration_ms}]). The timeline validates the entries.
+    screen = face_screen_config(profile) or {}
+    forced = screen.get("force_glitches")
+    if isinstance(forced, list) and forced:
+        job["force_glitches"] = forced
+    return job
 
 
 def render_face_frames(job, out_dir, node=None, timeout=300):

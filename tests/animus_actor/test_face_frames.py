@@ -110,6 +110,22 @@ class FaceJobTests(unittest.TestCase):
         job = build_face_job(PLAN, self.profile, [{"take_json": take_json}], [])
         self.assertEqual(job["frame_end"], 60)
 
+    def test_build_face_job_passes_forced_glitch_windows_through(self):
+        # Default profile: no forced windows, and no key in the job.
+        job = build_face_job(PLAN, self.profile, [], [])
+        self.assertNotIn("force_glitches", job)
+
+        forced = [{"at_ms": 1000, "duration_ms": 250}]
+        profile = json.loads(json.dumps(self.profile))
+        profile["stage"]["face_screen"]["force_glitches"] = forced
+        job = build_face_job(PLAN, profile, [], [])
+        self.assertEqual(job["force_glitches"], forced)
+
+        # An empty list means the seeded timer alone owns the glitch.
+        profile["stage"]["face_screen"]["force_glitches"] = []
+        job = build_face_job(PLAN, profile, [], [])
+        self.assertNotIn("force_glitches", job)
+
 
 @unittest.skipUnless(node_available(), "node is required for the face renderer")
 class FaceRenderTests(unittest.TestCase):

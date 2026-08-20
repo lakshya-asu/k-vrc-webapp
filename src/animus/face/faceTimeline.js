@@ -19,7 +19,10 @@
 //     seconds, later blinks between 3.5 and 7 seconds, eyelid moving
 //     at 14 units/second closed then open.
 //   - the rare full-screen glitch uses the library's 8 to 20 second
-//     timer with 80 to 200 ms bursts.
+//     timer with 80 to 200 ms bursts. Because that timer can never
+//     fire inside a short take, a job may also carry force_glitches:
+//     [{at_ms, duration_ms}] windows that turn the glitch overlay on
+//     deterministically, on top of (never instead of) the seeded timer.
 
 export const FACE_WEIGHT_KEYS = [
   'brow_raise',
@@ -153,11 +156,29 @@ function advanceTwitch(state, dt, rng) {
   }
 }
 
+// Forced glitch windows: [{at_ms, duration_ms}] -> a frame-time
+// predicate. Invalid entries are refused loudly; an absent or empty
+// list means the seeded timer alone owns the glitch, as before.
+function makeForcedGlitch(windows) {
+  const spans = (windows || []).map((entry, index) => {
+    const at = entry?.at_ms;
+    const dur = entry?.duration_ms;
+    if (!Number.isInteger(at) || at < 0 || !Number.isInteger(dur) || dur < 1) {
+      throw new Error(
+        `force_glitches[${index}] needs integer at_ms >= 0 and duration_ms >= 1`,
+      );
+    }
+    return { from: at / 1000, to: (at + dur) / 1000 };
+  });
+  return (t) => spans.some((span) => t >= span.from && t < span.to);
+}
+
 // job: {
 //   fps, frame_end,
 //   face_beats: [{expression, intensity, at_ms, duration_ms}],
 //   viseme_samples: [{frame, shape_key, weight}],
 //   seed,
+//   force_glitches: [{at_ms, duration_ms}]  (optional),
 // }
 // library: EXPRESSION_LIBRARY
 // Returns [{frame, t, mood, weights, amplitude, blinkProgress,
@@ -186,6 +207,7 @@ export function buildFaceTimeline(job, library) {
     .sort((a, b) => a.base - b.base);
 
   const tracks = visemeTracks(job.viseme_samples);
+  const forcedGlitch = makeForcedGlitch(job.force_glitches);
   const rng = mulberry32(job.seed >>> 0);
   const twitch = makeTwitchState(rng);
   const dt = 1 / fps;
@@ -229,7 +251,7 @@ export function buildFaceTimeline(job, library) {
       weights: finalWeights,
       amplitude,
       blinkProgress: Math.min(1, Math.max(0, twitch.blinkProgress)),
-      glitchActive: twitch.glitchLeft > 0,
+      glitchActive: twitch.glitchLeft > 0 || forcedGlitch((frame - 1) / fps),
     });
   }
   return frames;

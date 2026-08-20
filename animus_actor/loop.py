@@ -144,8 +144,8 @@ def _voice_layers(jobs, voice_mode, out_dir, profile):
 
 
 def _launch_stage(port, profile_path, run_dir, blender, deadline,
-                  render_dir=None, render_audio=None, face_frames=None,
-                  render_engine=None):
+                  render_dir=None, render_audio=None, render_audio_start=None,
+                  face_frames=None, render_engine=None):
     done_file = os.path.join(run_dir, "stage.done")
     report_path = os.path.join(run_dir, "stage-report.json")
     log_path = os.path.join(run_dir, "stage.log")
@@ -174,6 +174,8 @@ def _launch_stage(port, profile_path, run_dir, blender, deadline,
         command += ["--render-dir", render_dir]
         if render_audio:
             command += ["--render-audio", render_audio]
+            if render_audio_start is not None:
+                command += ["--render-audio-start", str(render_audio_start)]
         if face_frames:
             command += ["--face-frames", face_frames]
         if render_engine:
@@ -252,12 +254,23 @@ def run_actor_loop(
         blender_bin = find_blender(blender)
         stage_port = port or pick_free_port()
         render_audio = None
+        render_audio_start = None
         render_engine = None
         if render_dir:
             for item in voice_receipts:
                 if item.get("wav"):
                     render_audio = item["wav"]
                     break
+            # The wav must land on the speech beat's first frame, not
+            # the take's: a plan whose speech starts after 0 ms would
+            # otherwise mux the voice ahead of the animated mouth.
+            if render_audio:
+                for layer in jobs["layers"]:
+                    if layer["channel"] == "speech":
+                        render_audio_start = layer["request"]["params"][
+                            "frame_start"
+                        ]
+                        break
             # The visor face: profiles with a screen object get the
             # webapp's face rendered as an image sequence first, then
             # the stage binds it as the screen's emissive texture.
@@ -273,6 +286,7 @@ def run_actor_loop(
         process, done_file, report_path, log_path, log_handle = _launch_stage(
             stage_port, profile_path, out_dir, blender_bin, stage_deadline,
             render_dir=render_dir, render_audio=render_audio,
+            render_audio_start=render_audio_start,
             face_frames=face_report["dir"] if face_report else None,
             render_engine=render_engine,
         )

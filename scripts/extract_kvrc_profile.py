@@ -57,6 +57,13 @@ CLIPS = {
     "talk": ("talking", 72, 6, BODY_BONES),
     "nod": ("head_nod_yes", 47, 4, BODY_BONES + HEAD_BONES),
     "point": ("angry_point", 60, 5, BODY_BONES),
+    # Scene-work harvest (fable-scenes): more of the GLB's own baked
+    # clips, same extraction rules, so stage directions can name them.
+    "think": ("thinking", 100, 6, BODY_BONES),
+    "sad": ("sad_idle", 96, 6, BODY_BONES),
+    "cocky": ("being_cocky", 56, 4, BODY_BONES),
+    "focus": ("focus", 96, 6, BODY_BONES),
+    "dance": ("silly_dancing", 180, 5, BODY_BONES),
 }
 
 
@@ -217,6 +224,11 @@ def main():
                 "dress_bones": False,
                 "hide_objects": [],
             },
+            # The webapp's LED face renders onto this mesh as an
+            # emissive image sequence (see animus_actor/face_frames.py
+            # and face_material.py). Added by fable-face on the shipped
+            # profile; kept here so regeneration does not drop it.
+            "face_screen": {"object": "screen", "emission_strength": 3.5},
         },
     }
 

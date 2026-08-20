@@ -144,6 +144,36 @@ test('a second face beat replaces the held expression', () => {
   assert.ok(Math.abs(settled.weights.brow_furrow - angry.weights.brow_furrow) < 1e-9);
 });
 
+test('force_glitches turns the glitch overlay on for exactly its windows', () => {
+  // A 2 s take can never reach the 8-20 s seeded glitch timer, so
+  // without the hook no frame glitches.
+  const quiet = buildFaceTimeline(makeJob({ frame_end: 48 }), EXPRESSION_LIBRARY);
+  assert.ok(quiet.every((f) => !f.glitchActive), 'short takes never glitch on their own');
+
+  // Forced window: 1000 ms to 1250 ms. Frame f covers t=(f-1)/fps, so
+  // frames 25..30 sit inside [1.0 s, 1.25 s) at 24 fps.
+  const forced = buildFaceTimeline(
+    makeJob({ frame_end: 48, force_glitches: [{ at_ms: 1000, duration_ms: 250 }] }),
+    EXPRESSION_LIBRARY,
+  );
+  const active = forced.filter((f) => f.glitchActive).map((f) => f.frame);
+  assert.deepEqual(active, [25, 26, 27, 28, 29, 30]);
+
+  // Everything else about the timeline is untouched by the hook.
+  const strip = (frames) => frames.map(({ glitchActive, ...rest }) => rest);
+  assert.deepEqual(strip(forced), strip(quiet));
+
+  // Malformed windows are refused loudly, never ignored.
+  assert.throws(() => buildFaceTimeline(
+    makeJob({ force_glitches: [{ at_ms: -1, duration_ms: 100 }] }),
+    EXPRESSION_LIBRARY,
+  ));
+  assert.throws(() => buildFaceTimeline(
+    makeJob({ force_glitches: [{ at_ms: 0 }] }),
+    EXPRESSION_LIBRARY,
+  ));
+});
+
 test('mulberry32 streams are reproducible', () => {
   const a = mulberry32(1234);
   const b = mulberry32(1234);
