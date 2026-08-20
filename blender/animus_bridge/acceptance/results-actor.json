@@ -47,6 +47,7 @@
         "viseme_count": 0,
         "stage_timed_out": null,
         "render": null,
+        "face_frames": null,
         "receipt_path": null
       },
       "stderr": ""
@@ -108,6 +109,7 @@
         "viseme_count": 40,
         "stage_timed_out": null,
         "render": null,
+        "face_frames": null,
         "receipt_path": "C:\\Users\\jainl\\resume-projects\\k-vrc-animus-poc\\blender\\animus_bridge\\acceptance\\actor-receipt-perform.json"
       },
       "stderr": ""
@@ -169,6 +171,7 @@
         "viseme_count": 40,
         "stage_timed_out": null,
         "render": null,
+        "face_frames": null,
         "receipt_path": "C:\\Users\\jainl\\resume-projects\\k-vrc-animus-poc\\blender\\animus_bridge\\acceptance\\actor-receipt-kvrc.json"
       },
       "stderr": ""
@@ -198,7 +201,7 @@
     {
       "name": "actor_suggest_not_performed",
       "passed": true,
-      "detail": "{'line': 'Hello, I am K-VRC', 'control_level': 'suggest', 'performed': False, 'operator': 'deterministic', 'fallback': True, 'beats': 1, 'beats_executed': 0, 'layers': [{'beat_id': 'fallback-1', 'channel': 'body', 'request_id': 'act-fallback-1-body', 'ok': None, 'action': None, 'strip': None, 'key_count': None, 'error': None}, {'beat_id': 'fallback-1', 'channel': 'gaze', 'request_id': 'act-fallback-1-gaze', 'ok': None, 'action': None, 'strip': None, 'key_count': None, 'error': None}, {'beat_id': 'fallback-1', 'channel': 'face', 'request_id': 'act-fallback-1-face', 'ok': None, 'action': None, 'strip': None, 'key_count': None, 'error': None}], 'voice_track': None, 'viseme_count': 0, 'stage_timed_out': None, 'render': None, 'receipt_path': None}"
+      "detail": "{'line': 'Hello, I am K-VRC', 'control_level': 'suggest', 'performed': False, 'operator': 'deterministic', 'fallback': True, 'beats': 1, 'beats_executed': 0, 'layers': [{'beat_id': 'fallback-1', 'channel': 'body', 'request_id': 'act-fallback-1-body', 'ok': None, 'action': None, 'strip': None, 'key_count': None, 'error': None}, {'beat_id': 'fallback-1', 'channel': 'gaze', 'request_id': 'act-fallback-1-gaze', 'ok': None, 'action': None, 'strip': None, 'key_count': None, 'error': None}, {'beat_id': 'fallback-1', 'channel': 'face', 'request_id': 'act-fallback-1-face', 'ok': None, 'action': None, 'strip': None, 'key_count': None, 'error': None}], 'voice_track': None, 'viseme_count': 0, 'stage_timed_out': None, 'render': None, 'face_frames': None, 'receipt_path': None}"
     },
     {
       "name": "actor_perform_exit_0",
@@ -289,6 +292,16 @@
       "name": "kvrc_actions_have_keyframes",
       "passed": true,
       "detail": "{'ANIMUS_wave_take002': 590, 'ANIMUS_gaze_camera_take002': 12, 'ANIMUS_face_neutral_idle_take002': 16, 'ANIMUS_animus_speech_take002': 80}"
+    },
+    {
+      "name": "kvrc_face_frames_rendered",
+      "passed": true,
+      "detail": "{'dir': 'C:\\\\Users\\\\jainl\\\\AppData\\\\Local\\\\Temp\\\\animus-face-acc-lt03tzl2\\\\frames', 'job': 'C:\\\\Users\\\\jainl\\\\AppData\\\\Local\\\\Temp\\\\animus-face-acc-lt03tzl2\\\\frames\\\\face-job.json', 'manifest': 'C:\\\\Users\\\\jainl\\\\AppData\\\\Local\\\\Temp\\\\animus-face-acc-lt03tzl2\\\\frames\\\\face-frames-manifest.json', 'frame_count': 49, 'frame_start': 1, 'frame_end': 49, 'seed': 0, 'moods': ['cold']}"
+    },
+    {
+      "name": "kvrc_face_material_bound",
+      "passed": true,
+      "detail": "{'object': 'screen', 'material': 'AnimusFaceScreen', 'image': 'face_0001.png', 'frames_dir': 'C:\\\\Users\\\\jainl\\\\AppData\\\\Local\\\\Temp\\\\animus-face-acc-lt03tzl2\\\\frames', 'frame_count': 49, 'frame_start': 1, 'emission_strength': 3.5}"
     }
   ],
   "environment": {
@@ -316,6 +329,29 @@
     "ANIMUS_gaze_camera_take002": 12,
     "ANIMUS_face_neutral_idle_take002": 16,
     "ANIMUS_animus_speech_take002": 80
+  },
+  "kvrc_face": {
+    "frames": {
+      "dir": "C:\\Users\\jainl\\AppData\\Local\\Temp\\animus-face-acc-lt03tzl2\\frames",
+      "job": "C:\\Users\\jainl\\AppData\\Local\\Temp\\animus-face-acc-lt03tzl2\\frames\\face-job.json",
+      "manifest": "C:\\Users\\jainl\\AppData\\Local\\Temp\\animus-face-acc-lt03tzl2\\frames\\face-frames-manifest.json",
+      "frame_count": 49,
+      "frame_start": 1,
+      "frame_end": 49,
+      "seed": 0,
+      "moods": [
+        "cold"
+      ]
+    },
+    "binding": {
+      "object": "screen",
+      "material": "AnimusFaceScreen",
+      "image": "face_0001.png",
+      "frames_dir": "C:\\Users\\jainl\\AppData\\Local\\Temp\\animus-face-acc-lt03tzl2\\frames",
+      "frame_count": 49,
+      "frame_start": 1,
+      "emission_strength": 3.5
+    }
   },
   "final_scene": {
     "actions": [

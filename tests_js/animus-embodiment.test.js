@@ -161,7 +161,8 @@ test('beat timing places takes: at_ms 1000 at 24 fps starts on frame 25', () => 
   // The mapper renormalizes profile quaternions, so check direction
   // and unit length instead of raw profile values.
   const last = gaze.samples[gaze.samples.length - 1].rotation_quaternion;
-  assert.ok(Math.abs(last[0] - 0.976) < 0.001 && Math.abs(last[3] - 0.216) < 0.001, last);
+  // 'left' is [0.976, 0, 0.216, 0] in wxyz order: the 0.216 is y (index 2).
+  assert.ok(Math.abs(last[0] - 0.976) < 0.001 && Math.abs(last[2] - 0.216) < 0.001, last);
   assert.ok(Math.abs(Math.hypot(...last) - 1) < 1e-6);
 });
 

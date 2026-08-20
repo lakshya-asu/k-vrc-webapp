@@ -35,8 +35,13 @@ for _entry in (BLENDER_DIR, ACCEPTANCE_DIR):
     if _entry not in sys.path:
         sys.path.insert(0, _entry)
 
+if REPO not in sys.path:
+    sys.path.insert(0, REPO)
+
 import animus_bridge  # noqa: E402
 import biped  # noqa: E402
+
+from animus_actor.face_material import bind_face_screen  # noqa: E402
 
 
 def parse_args():
@@ -68,7 +73,16 @@ def parse_args():
         dest="render_engine",
         default="BLENDER_WORKBENCH",
         choices=("BLENDER_WORKBENCH", "BLENDER_EEVEE_NEXT"),
-        help="Workbench is the fast headless default",
+        help="Workbench is the fast headless default; EEVEE renders "
+        "real materials (the emissive visor face needs it)",
+    )
+    parser.add_argument(
+        "--face-frames",
+        dest="face_frames",
+        default=None,
+        help="directory of face_*.png visor frames; the profile's "
+        "stage.face_screen object gets them as an emissive image "
+        "sequence before the render",
     )
     return parser.parse_args(script_args)
 
@@ -327,6 +341,13 @@ def render_take(args, profile):
             hidden.hide_render = True
     _add_camera_and_lights(render_cfg)
 
+    face_binding = None
+    if args.face_frames:
+        face_binding = bind_face_screen(
+            bpy, profile, args.face_frames, frame_start=frame_start
+        )
+        print(f"[animus_actor.stage] visor face bound: {face_binding}")
+
     width, height = (int(part) for part in args.render_size.lower().split("x"))
     scene.render.engine = args.render_engine
     scene.render.resolution_x = width
@@ -386,6 +407,7 @@ def render_take(args, profile):
         "video": video_path if os.path.exists(video_path) else None,
         "audio": audio,
         "stills": still_paths,
+        "face_screen": face_binding,
     }
 
 

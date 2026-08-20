@@ -30,6 +30,11 @@ from .embodiment import (
     viseme_artifact_to_pose_request,
     viseme_artifact_to_request,
 )
+from .face_frames import (
+    build_face_job,
+    face_screen_config,
+    render_face_frames,
+)
 from .fallback import deterministic_actor_plan
 from .model_brain import model_actor_plan
 from .voice import run_voice_job
@@ -139,7 +144,8 @@ def _voice_layers(jobs, voice_mode, out_dir, profile):
 
 
 def _launch_stage(port, profile_path, run_dir, blender, deadline,
-                  render_dir=None, render_audio=None):
+                  render_dir=None, render_audio=None, face_frames=None,
+                  render_engine=None):
     done_file = os.path.join(run_dir, "stage.done")
     report_path = os.path.join(run_dir, "stage-report.json")
     log_path = os.path.join(run_dir, "stage.log")
@@ -168,6 +174,10 @@ def _launch_stage(port, profile_path, run_dir, blender, deadline,
         command += ["--render-dir", render_dir]
         if render_audio:
             command += ["--render-audio", render_audio]
+        if face_frames:
+            command += ["--face-frames", face_frames]
+        if render_engine:
+            command += ["--render-engine", render_engine]
     log_handle = open(log_path, "w", encoding="utf-8")
     process = subprocess.Popen(
         command, cwd=REPO, stdout=log_handle, stderr=subprocess.STDOUT
@@ -226,6 +236,7 @@ def run_actor_loop(
     performed = plan["control_level"] == "perform"
     stage_report = None
     bridge_info = None
+    face_report = None
 
     if performed and sender is not None:
         for layer in jobs["layers"]:
@@ -241,14 +252,29 @@ def run_actor_loop(
         blender_bin = find_blender(blender)
         stage_port = port or pick_free_port()
         render_audio = None
+        render_engine = None
         if render_dir:
             for item in voice_receipts:
                 if item.get("wav"):
                     render_audio = item["wav"]
                     break
+            # The visor face: profiles with a screen object get the
+            # webapp's face rendered as an image sequence first, then
+            # the stage binds it as the screen's emissive texture.
+            # Real materials need EEVEE, so a face take renders there.
+            if face_screen_config(profile) is not None:
+                face_job = build_face_job(
+                    plan, profile, voice_receipts, jobs["layers"]
+                )
+                face_report = render_face_frames(
+                    face_job, os.path.join(render_dir, "face-frames")
+                )
+                render_engine = "BLENDER_EEVEE_NEXT"
         process, done_file, report_path, log_path, log_handle = _launch_stage(
             stage_port, profile_path, out_dir, blender_bin, stage_deadline,
             render_dir=render_dir, render_audio=render_audio,
+            face_frames=face_report["dir"] if face_report else None,
+            render_engine=render_engine,
         )
         try:
             if not wait_for_bridge("127.0.0.1", stage_port, deadline_s=120.0):
@@ -298,6 +324,7 @@ def run_actor_loop(
         "voice": voice_receipts,
         "bridge": bridge_info,
         "stage": stage_report,
+        "face_frames": face_report,
     }
     if receipt_path:
         os.makedirs(os.path.dirname(os.path.abspath(receipt_path)), exist_ok=True)
@@ -343,6 +370,7 @@ def summarize(receipt):
         "viseme_count": sum(item.get("sample_count", 0) for item in voice),
         "stage_timed_out": (receipt.get("stage") or {}).get("timed_out"),
         "render": (receipt.get("stage") or {}).get("render"),
+        "face_frames": (receipt.get("face_frames") or {}).get("frame_count"),
         "receipt_path": receipt.get("receipt_path"),
     }
 

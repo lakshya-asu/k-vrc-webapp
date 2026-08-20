@@ -697,5 +697,6 @@
     "host": "127.0.0.1",
     "port": 8793
   },
-  "stage": null
+  "stage": null,
+  "face_frames": null
 }

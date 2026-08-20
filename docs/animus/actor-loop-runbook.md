@@ -83,6 +83,40 @@ Channel-to-bone ownership on the NLA stack: gestures own the body
 (arms, spine, hips), gaze owns the Neck, face owns the Head, speech
 owns the ears. Distinct data paths, so the strips never fight.
 
+## The visor face (--render-dir on the K-VRC profile)
+
+A rendered K-VRC take now has a live LED face on the visor, the same
+face the webapp draws. Before launching the stage, the loop renders the
+take's face as a 512x512 PNG sequence at the take fps:
+
+    scripts/render-face-frames.mjs      Node CLI (needs @napi-rs/canvas)
+    src/animus/face/expressionLibrary.js  verbatim copy of the webapp's
+                                          expression library (weights +
+                                          mood palettes)
+    src/animus/face/faceScreenDraw.js   port of the webapp's canvas
+                                          renderer (drawWeighted, CRT,
+                                          pixel grid, waveform, blink)
+    src/animus/face/faceTimeline.js     deterministic per-frame state:
+                                          beat ramp-in then hold (webapp
+                                          setExpression semantics),
+                                          viseme mouth_open + amplitude,
+                                          seeded blink/glitch timers
+    animus_actor/face_frames.py         job build + Node invocation
+    animus_actor/face_material.py       Blender-side binding
+
+Face beats pick the expression weights and mood palette (warm_amused is
+warm orange), visemes drive mouth_open and the speech waveform, blinks
+run on the library's 3-7 s timer, all seeded, so one job and seed
+always render the same bytes (sha256 per frame in the manifest). The
+stage binds the sequence to the profile's stage.face_screen object
+('screen' in kvrc.glb) as an emissive material and renders with EEVEE
+so the screen glows. The ear-antenna speech proxy still runs; the visor
+is now the primary speech read.
+
+Determinism and binding are covered by tests_js/animus-face.test.js,
+tests/animus_actor/test_face_frames.py, and two checks in the actor
+acceptance harness.
+
 ## Contract boundaries
 
 The bridge (blender/animus_bridge/protocol.py, operations.py) is the
@@ -93,7 +127,7 @@ fixture and compares ops and params exactly.
 
 ## Tests
 
-    python -m unittest discover -s tests/animus_actor -t .    # 69 tests
+    python -m unittest discover -s tests/animus_actor -t .    # 77 tests
     blender --background --factory-startup \
         --python blender/animus_bridge/acceptance/run_actor_acceptance.py
 
@@ -103,7 +137,9 @@ must mutate nothing, a perform run with live voice where all four
 layers (body, gaze, face, speech) must land with keyframes, then a
 K-VRC run that imports kvrc.glb into the same scene and requires all
 four layers to land on the real KVRCArmature (face and speech as pose
-takes). 23 checks. Committed evidence: acceptance/results-actor.json,
+takes), plus the visor face: face frames render from the K-VRC receipt
+and bind to the screen object as an emissive image sequence. 25
+checks. Committed evidence: acceptance/results-actor.json,
 acceptance/actor-receipt-perform.json and
 acceptance/actor-receipt-kvrc.json.
 
@@ -126,9 +162,10 @@ Acceptance: run_acceptance 27/27, run_director_acceptance 22/22
   are caller policy (ANIMUS_LLM_ATTEMPTS), same as the director.
 - The default profile is still the test armature; pass --profile
   src/animus/embodiment/kvrc.profile.json for the real character.
-- K-VRC face and speech are mechanical proxies (head tilt, ear
-  motion): the model has no morph targets, so there is no true facial
-  articulation to drive.
+- K-VRC bone-level face and speech are mechanical proxies (head tilt,
+  ear motion): the model has no morph targets. Rendered takes now put
+  the webapp's LED face on the visor screen, which is the primary
+  facial read; the proxies remain the only in-scene articulation.
 - Gestures play the sampled clip timing; beats place them but never
   retime or blend them.
 - suggest and preview behave the same: map, never perform.

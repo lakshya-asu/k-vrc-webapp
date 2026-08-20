@@ -37,7 +37,7 @@ import bpy
 HERE = os.path.dirname(os.path.abspath(__file__))
 BLENDER_DIR = os.path.dirname(os.path.dirname(HERE))
 REPO = os.path.dirname(BLENDER_DIR)
-for entry in (BLENDER_DIR, HERE):
+for entry in (BLENDER_DIR, HERE, REPO):
     if entry not in sys.path:
         sys.path.insert(0, entry)
 
@@ -328,6 +328,60 @@ def main():
             keyed,
         )
         RESULTS["kvrc_actions"] = keyed
+
+    # The visor face: the same receipt drives the face-frame renderer
+    # (the ported webapp face under Node), and the frames bind to the
+    # 'screen' object as an emissive image sequence, exactly what a
+    # rendered take does. Checked here against the real imported GLB.
+    if kvrc_receipt is not None:
+        import shutil as _shutil
+        import tempfile
+
+        from animus_actor.face_frames import (
+            build_face_job,
+            render_face_frames,
+        )
+        from animus_actor.face_material import bind_face_screen
+
+        face_dir = os.path.join(tempfile.mkdtemp(prefix="animus-face-acc-"), "frames")
+        try:
+            job = build_face_job(
+                kvrc_receipt["plan"],
+                kvrc_profile,
+                kvrc_receipt.get("voice", []),
+                kvrc_receipt.get("layers", []),
+            )
+            face_report = render_face_frames(job, face_dir)
+            frame_files = [
+                name for name in os.listdir(face_dir)
+                if name.startswith("face_") and name.endswith(".png")
+            ]
+            check(
+                "kvrc_face_frames_rendered",
+                face_report["frame_count"] > 0
+                and len(frame_files) == face_report["frame_count"],
+                face_report,
+            )
+            binding = bind_face_screen(bpy, kvrc_profile, face_dir)
+            screen = bpy.data.objects.get("screen")
+            bound = (
+                screen is not None
+                and len(screen.data.materials) == 1
+                and screen.data.materials[0].name.startswith("AnimusFaceScreen")
+                and any(
+                    node.type == "TEX_IMAGE"
+                    and node.image is not None
+                    and node.image.source == "SEQUENCE"
+                    for node in screen.data.materials[0].node_tree.nodes
+                )
+            )
+            check("kvrc_face_material_bound", bound, binding)
+            RESULTS["kvrc_face"] = {"frames": face_report, "binding": binding}
+        except Exception as error:  # noqa: BLE001
+            check("kvrc_face_frames_rendered", False, repr(error))
+            check("kvrc_face_material_bound", False, "skipped: renderer failed")
+        finally:
+            _shutil.rmtree(os.path.dirname(face_dir), ignore_errors=True)
 
     animus_bridge.stop_bridge()
     RESULTS["final_scene"] = snapshot()

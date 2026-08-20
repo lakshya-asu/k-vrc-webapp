@@ -8911,6 +8911,10 @@
    "color_type": "TEXTURE",
    "dress_bones": false,
    "hide_objects": []
+  },
+  "face_screen": {
+   "object": "screen",
+   "emission_strength": 3.5
   }
  }
 }
