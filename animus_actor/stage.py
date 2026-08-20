@@ -69,8 +69,56 @@ def parse_args():
     return parser.parse_args(script_args)
 
 
+def _import_scene(profile):
+    """Import the profile's real character and verify the rig it names.
+
+    The imported file may carry its own baked clips (kvrc.glb ships 180
+    Mixamo takes); those are stripped so the stage starts silent and the
+    only motion in the scene is what the actor loop performs. The clip
+    data stays in the source file; nothing here rewrites the asset.
+    """
+    stage_cfg = profile.get("stage") or {}
+    spec = stage_cfg["import"]
+    path = spec["path"]
+    if not os.path.isabs(path):
+        path = os.path.join(REPO, path)
+    if spec.get("format", "glb") not in ("glb", "gltf"):
+        raise RuntimeError(f"unsupported stage import format: {spec}")
+    bpy.ops.import_scene.gltf(filepath=path)
+
+    rig = profile["rig"]
+    obj = bpy.data.objects.get(rig["object"])
+    if obj is None or obj.type != "ARMATURE":
+        raise RuntimeError(
+            f"stage import did not provide armature object '{rig['object']}'"
+        )
+    missing = [name for name in rig["bones"] if name not in obj.data.bones]
+    if missing:
+        raise RuntimeError(f"imported rig is missing profile bones: {missing}")
+
+    if stage_cfg.get("strip_imported_animation", True):
+        stripped = len(bpy.data.actions)
+        for action in list(bpy.data.actions):
+            bpy.data.actions.remove(action)
+        for holder in bpy.data.objects:
+            if holder.animation_data is not None:
+                holder.animation_data_clear()
+        print(f"[animus_actor.stage] stripped {stripped} imported actions")
+
+    face = None
+    if rig.get("face_object"):
+        face = bpy.data.objects.get(rig["face_object"])
+        if face is None:
+            raise RuntimeError(
+                f"stage import did not provide face object '{rig['face_object']}'"
+            )
+    return obj, face
+
+
 def build_scene(profile):
-    """The profile's rig as plain bpy data, same shape as the acceptance rig."""
+    """The profile's rig: imported character, or the plain test rig."""
+    if (profile.get("stage") or {}).get("import"):
+        return _import_scene(profile)
     rig = profile["rig"]
     armature = bpy.data.armatures.new(f"{rig['object']}_rig")
     obj = bpy.data.objects.new(rig["object"], armature)
@@ -83,15 +131,17 @@ def build_scene(profile):
         bone.tail = (0.0, 0.2, 0.2 * index)
     bpy.ops.object.mode_set(mode="OBJECT")
 
-    mesh = bpy.data.meshes.new(f"{rig['face_object']}_mesh")
-    mesh.from_pydata(
-        [(0.0, 0.0, 0.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0)], [], [(0, 1, 2)]
-    )
-    face = bpy.data.objects.new(rig["face_object"], mesh)
-    bpy.context.scene.collection.objects.link(face)
-    face.shape_key_add(name="Basis")
-    for name in rig["shape_keys"]:
-        face.shape_key_add(name=name)
+    face = None
+    if rig.get("face_object"):
+        mesh = bpy.data.meshes.new(f"{rig['face_object']}_mesh")
+        mesh.from_pydata(
+            [(0.0, 0.0, 0.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0)], [], [(0, 1, 2)]
+        )
+        face = bpy.data.objects.new(rig["face_object"], mesh)
+        bpy.context.scene.collection.objects.link(face)
+        face.shape_key_add(name="Basis")
+        for name in rig.get("shape_keys") or []:
+            face.shape_key_add(name=name)
     return obj, face
 
 
@@ -106,11 +156,15 @@ def strip_names(animation_data):
 def snapshot(profile):
     rig = profile["rig"]
     obj = bpy.data.objects[rig["object"]]
-    key = bpy.data.objects[rig["face_object"]].data.shape_keys
+    face_strips = []
+    if rig.get("face_object"):
+        key = bpy.data.objects[rig["face_object"]].data.shape_keys
+        if key is not None:
+            face_strips = strip_names(key.animation_data)
     return {
         "actions": sorted(action.name for action in bpy.data.actions),
         "pose_strips": strip_names(obj.animation_data),
-        "face_strips": strip_names(key.animation_data),
+        "face_strips": face_strips,
     }
 
 
@@ -201,28 +255,28 @@ def _clear_startup_objects():
             bpy.data.objects.remove(obj, do_unlink=True)
 
 
-def _add_camera_and_lights():
+def _add_camera_and_lights(render_cfg):
     scene = bpy.context.scene
     target = bpy.data.objects.new("RenderTarget", None)
-    target.location = (0.0, 0.1, 0.65)
+    target.location = tuple(render_cfg.get("camera_target", (0.0, 0.1, 0.65)))
     scene.collection.objects.link(target)
 
     camera = bpy.data.objects.new("RenderCamera", bpy.data.cameras.new("RenderCamera"))
-    camera.location = (1.8, -1.9, 1.05)
-    camera.data.lens = 35.0
+    camera.location = tuple(render_cfg.get("camera_location", (1.8, -1.9, 1.05)))
+    camera.data.lens = float(render_cfg.get("lens", 35.0))
     scene.collection.objects.link(camera)
     track = camera.constraints.new(type="TRACK_TO")
     track.target = target
     scene.camera = camera
 
     key = bpy.data.objects.new("KeyLight", bpy.data.lights.new("KeyLight", "AREA"))
-    key.data.energy = 400.0
+    key.data.energy = float(render_cfg.get("key_energy", 400.0))
     key.data.size = 3.0
-    key.location = (2.0, -2.0, 2.5)
+    key.location = tuple(render_cfg.get("key_location", (2.0, -2.0, 2.5)))
     scene.collection.objects.link(key)
     fill = bpy.data.objects.new("FillLight", bpy.data.lights.new("FillLight", "POINT"))
-    fill.data.energy = 120.0
-    fill.location = (-2.0, -1.0, 1.0)
+    fill.data.energy = float(render_cfg.get("fill_energy", 120.0))
+    fill.location = tuple(render_cfg.get("fill_location", (-2.0, -1.0, 1.0)))
     scene.collection.objects.link(fill)
 
 
@@ -231,10 +285,17 @@ def render_take(args, profile):
     os.makedirs(args.render_dir, exist_ok=True)
     scene = bpy.context.scene
     frame_start, frame_end = _take_frame_range()
+    render_cfg = (profile.get("stage") or {}).get("render") or {}
 
     _clear_startup_objects()
-    _dress_rig(profile)
-    _add_camera_and_lights()
+    imported = bool((profile.get("stage") or {}).get("import"))
+    if render_cfg.get("dress_bones", not imported):
+        _dress_rig(profile)
+    for name in render_cfg.get("hide_objects", []):
+        hidden = bpy.data.objects.get(name)
+        if hidden is not None:
+            hidden.hide_render = True
+    _add_camera_and_lights(render_cfg)
 
     width, height = (int(part) for part in args.render_size.lower().split("x"))
     scene.render.engine = args.render_engine
@@ -246,7 +307,9 @@ def render_take(args, profile):
     scene.frame_end = frame_end
     shading = scene.display.shading
     shading.light = "STUDIO"
-    shading.color_type = "OBJECT"
+    shading.color_type = render_cfg.get(
+        "color_type", "TEXTURE" if imported else "OBJECT"
+    )
 
     stills = {
         "start": frame_start,

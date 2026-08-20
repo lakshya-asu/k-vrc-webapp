@@ -77,6 +77,15 @@ function validateGestureSamples(gesture, name, bones, errors) {
   });
 }
 
+function channelMode(section, key, allowed, fallback, errors) {
+  if (!isObject(section) || !('mode' in section)) return fallback;
+  if (!allowed.includes(section.mode)) {
+    errors.push(`${key}.mode must be one of ${[...allowed].sort().join(', ')}`);
+    return fallback;
+  }
+  return section.mode;
+}
+
 export function validateEmbodimentProfile(profile) {
   const errors = [];
   if (!isObject(profile)) {
@@ -101,6 +110,17 @@ export function validateEmbodimentProfile(profile) {
     errors.push('profile.fps must be an integer from 1 to 240');
   }
 
+  // Mechanical rigs (rigid robots with no morph targets) may map the
+  // face channel to a bone pose and speech to viseme-driven bone
+  // motion. Shape-key structures are then optional; nothing is faked.
+  const faceMode = channelMode(
+    profile.expressions, 'expressions', ['shape_keys', 'pose'], 'shape_keys', errors,
+  );
+  const speechMode = channelMode(
+    profile.speech, 'speech', ['shape_keys', 'bone'], 'shape_keys', errors,
+  );
+  const needsShapeKeys = faceMode === 'shape_keys' || speechMode === 'shape_keys';
+
   const rig = profile.rig;
   let bones = new Set();
   let shapeKeys = new Set();
@@ -114,14 +134,17 @@ export function validateEmbodimentProfile(profile) {
     } else {
       bones = new Set(rig.bones);
     }
-    if (typeof rig.face_object !== 'string' || !rig.face_object) {
+    if ((needsShapeKeys || rig.face_object != null)
+      && (typeof rig.face_object !== 'string' || !rig.face_object)) {
       errors.push('rig.face_object is required');
     }
-    if (!Array.isArray(rig.shape_keys) || rig.shape_keys.length === 0
-      || rig.shape_keys.some((key) => typeof key !== 'string' || !key)) {
-      errors.push('rig.shape_keys must be a non-empty list of shape key names');
-    } else {
-      shapeKeys = new Set(rig.shape_keys);
+    if (needsShapeKeys || rig.shape_keys != null) {
+      if (!Array.isArray(rig.shape_keys) || rig.shape_keys.length === 0
+        || rig.shape_keys.some((key) => typeof key !== 'string' || !key)) {
+        errors.push('rig.shape_keys must be a non-empty list of shape key names');
+      } else {
+        shapeKeys = new Set(rig.shape_keys);
+      }
     }
   }
 
@@ -187,17 +210,31 @@ export function validateEmbodimentProfile(profile) {
     if (!NAME_HINT_RE.test(expressions.name_hint ?? '')) {
       errors.push('expressions.name_hint must be a valid bridge name hint');
     }
-    for (const [name, preset] of Object.entries(expressions.presets)) {
-      if (!isObject(preset) || Object.keys(preset).length === 0) {
-        errors.push(`expressions.presets.${name} must be a non-empty object`);
-        continue;
+    if (faceMode === 'pose') {
+      if (!bones.has(expressions.bone)) {
+        errors.push(`expressions.bone '${expressions.bone}' is not a rig bone`);
       }
-      for (const [key, weight] of Object.entries(preset)) {
-        if (!shapeKeys.has(key)) {
-          errors.push(`expressions.presets.${name}.${key} is not a rig shape key`);
+      if (!isQuaternion(expressions.neutral)) {
+        errors.push('expressions.neutral must be 4 finite numbers');
+      }
+      for (const [name, preset] of Object.entries(expressions.presets)) {
+        if (!isQuaternion(preset)) {
+          errors.push(`expressions.presets.${name} must be 4 finite numbers in pose mode`);
         }
-        if (!isFiniteNumber(weight) || weight < 0 || weight > 1) {
-          errors.push(`expressions.presets.${name}.${key} must be a number from 0 to 1`);
+      }
+    } else {
+      for (const [name, preset] of Object.entries(expressions.presets)) {
+        if (!isObject(preset) || Object.keys(preset).length === 0) {
+          errors.push(`expressions.presets.${name} must be a non-empty object`);
+          continue;
+        }
+        for (const [key, weight] of Object.entries(preset)) {
+          if (!shapeKeys.has(key)) {
+            errors.push(`expressions.presets.${name}.${key} is not a rig shape key`);
+          }
+          if (!isFiniteNumber(weight) || weight < 0 || weight > 1) {
+            errors.push(`expressions.presets.${name}.${key} must be a number from 0 to 1`);
+          }
         }
       }
     }
@@ -210,7 +247,30 @@ export function validateEmbodimentProfile(profile) {
   if (!isObject(speech)) {
     errors.push('profile.speech must be an object');
   } else {
-    if (isObject(rig) && speech.object !== rig.face_object) {
+    if (speechMode === 'bone') {
+      if (isObject(rig) && speech.object !== rig.object) {
+        errors.push('speech.object must equal rig.object in bone mode');
+      }
+      if (!Array.isArray(speech.bones) || speech.bones.length === 0) {
+        errors.push('speech.bones must be a non-empty list in bone mode');
+      } else {
+        speech.bones.forEach((entry, index) => {
+          const path = `speech.bones[${index}]`;
+          if (!isObject(entry)) {
+            errors.push(`${path} must be an object`);
+            return;
+          }
+          if (!bones.has(entry.bone)) {
+            errors.push(`${path}.bone '${entry.bone}' is not a rig bone`);
+          }
+          if (!isQuaternion(entry.neutral)) errors.push(`${path}.neutral must be 4 finite numbers`);
+          if (!isQuaternion(entry.peak)) errors.push(`${path}.peak must be 4 finite numbers`);
+        });
+      }
+      if ('driver' in speech && (typeof speech.driver !== 'string' || !speech.driver)) {
+        errors.push('speech.driver must be a viseme weight name');
+      }
+    } else if (isObject(rig) && speech.object !== rig.face_object) {
       errors.push('speech.object must equal rig.face_object');
     }
     if (!NAME_HINT_RE.test(speech.name_hint ?? '')) {
@@ -339,6 +399,36 @@ function mapFaceBeat(beat, profile) {
     frameWeights.set(end, 0);
   }
 
+  const nameHint = sanitizeNameHint(`${expressions.name_hint}_${name}`, 'face');
+
+  if (expressions.mode === 'pose') {
+    // Mechanical face: the mood is a bone pose (head tilt), eased by
+    // the same envelope shape-key expressions use.
+    const samples = [...frameWeights.entries()].map(([frame, envelope]) => ({
+      bone: expressions.bone,
+      frame,
+      rotation_quaternion: nlerp(
+        expressions.neutral, preset, Math.min(1, Math.max(0, intensity * envelope)),
+      ),
+    }));
+    return {
+      beat_id: beat.id,
+      channel: 'face',
+      expression: name,
+      request: {
+        id: requestId(beat.id, 'face'),
+        op: 'perform_take',
+        params: {
+          object: profile.rig.object,
+          name_hint: nameHint,
+          frame_start: base,
+          frame_end: end,
+          samples,
+        },
+      },
+    };
+  }
+
   const samples = [];
   for (const [frame, envelope] of frameWeights.entries()) {
     for (const [shapeKey, weight] of Object.entries(preset)) {
@@ -355,7 +445,7 @@ function mapFaceBeat(beat, profile) {
       op: 'apply_shape_keys',
       params: {
         object: profile.rig.face_object,
-        name_hint: sanitizeNameHint(`${expressions.name_hint}_${name}`, 'face'),
+        name_hint: nameHint,
         frame_start: base,
         frame_end: end,
         samples,
@@ -396,6 +486,54 @@ export function mapPlanToBridgeJobs(plan, profile) {
     profile: { name: profile.profile, version: profile.profile_version },
     layers,
     voice_jobs: voiceJobs,
+  };
+}
+
+// For rigs with no shape keys (speech.mode 'bone'): the driver viseme
+// weight (default 'mouth_open') becomes, frame for frame, an nlerp
+// between each configured bone's neutral and peak pose, sent as one
+// atomic perform_take. The voice pipeline still owns the timing; the
+// profile still owns every number.
+export function visemeArtifactToPoseRequest(artifact, speech, { requestId: id, object } = {}) {
+  if (artifact?.kind !== 'animus_viseme_take') {
+    throw new Error(`artifact kind is '${artifact?.kind}', expected 'animus_viseme_take'`);
+  }
+  const driver = speech.driver ?? 'mouth_open';
+  const driven = new Map();
+  const loudest = new Map();
+  for (const sample of artifact.samples) {
+    loudest.set(sample.frame, Math.max(loudest.get(sample.frame) ?? 0, sample.weight));
+    if (sample.shape_key === driver) driven.set(sample.frame, sample.weight);
+  }
+  const frames = [...loudest.keys()].sort((a, b) => a - b);
+  const bones = speech.bones;
+  let stride = 1;
+  while (frames.length
+    && Math.ceil(frames.length / stride) * bones.length > MAX_SAMPLES) {
+    stride += 1;
+  }
+  const samples = [];
+  frames.forEach((frame, index) => {
+    if (index % stride && frame !== frames[frames.length - 1]) return;
+    const weight = Math.min(1, Math.max(0, driven.get(frame) ?? loudest.get(frame)));
+    for (const bone of bones) {
+      samples.push({
+        bone: bone.bone,
+        frame,
+        rotation_quaternion: nlerp(bone.neutral, bone.peak, weight),
+      });
+    }
+  });
+  return {
+    id: id ?? 'speech-take',
+    op: 'perform_take',
+    params: {
+      object: object ?? speech.object,
+      name_hint: artifact.name_hint,
+      frame_start: artifact.frame_start,
+      frame_end: artifact.frame_end,
+      samples,
+    },
   };
 }
 

@@ -27,6 +27,7 @@ from .contract import validate_actor_plan
 from .embodiment import (
     load_profile,
     map_plan_to_bridge_jobs,
+    viseme_artifact_to_pose_request,
     viseme_artifact_to_request,
 )
 from .fallback import deterministic_actor_plan
@@ -103,22 +104,32 @@ def build_plan(line, instruction=None, speech=None, target="camera",
     return plan
 
 
-def _voice_layers(jobs, voice_mode, out_dir):
+def _voice_layers(jobs, voice_mode, out_dir, profile):
     """Run every speech beat through the voice pipeline; return receipts."""
     voice_receipts = []
     if voice_mode == "skip":
         return voice_receipts
+    speech_cfg = profile["speech"]
     for job in jobs["voice_jobs"]:
         receipt = run_voice_job(job, out_dir, voice_mode)
+        if speech_cfg.get("mode") == "bone":
+            request = viseme_artifact_to_pose_request(
+                receipt["artifact"],
+                speech_cfg,
+                request_id=f"act-{job['stem']}",
+                obj=job["object"],
+            )
+        else:
+            request = viseme_artifact_to_request(
+                receipt["artifact"],
+                request_id=f"act-{job['stem']}",
+                obj=job["object"],
+            )
         jobs["layers"].append(
             {
                 "beat_id": job["beat_id"],
                 "channel": "speech",
-                "request": viseme_artifact_to_request(
-                    receipt["artifact"],
-                    request_id=f"act-{job['stem']}",
-                    obj=job["object"],
-                ),
+                "request": request,
             }
         )
         slim = dict(receipt)
@@ -210,7 +221,7 @@ def run_actor_loop(
     jobs = map_plan_to_bridge_jobs(plan, profile)
 
     os.makedirs(out_dir, exist_ok=True)
-    voice_receipts = _voice_layers(jobs, voice_mode, out_dir)
+    voice_receipts = _voice_layers(jobs, voice_mode, out_dir, profile)
 
     performed = plan["control_level"] == "perform"
     stage_report = None

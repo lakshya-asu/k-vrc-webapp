@@ -105,6 +105,17 @@ def _validate_gesture_samples(gesture, name, bones, errors):
             errors.append(f"{path}.location must be 3 finite numbers")
 
 
+def _channel_mode(section, key, allowed, default, errors):
+    """Read an optional mode switch ('shape_keys' by default)."""
+    if not _is_object(section) or "mode" not in section:
+        return default
+    mode = section.get("mode")
+    if mode not in allowed:
+        errors.append(f"{key}.mode must be one of {sorted(allowed)}")
+        return default
+    return mode
+
+
 def validate_embodiment_profile(profile):
     """Full structural validation, port of validateEmbodimentProfile."""
     errors = []
@@ -127,6 +138,19 @@ def validate_embodiment_profile(profile):
     if not _is_integer(fps) or fps < 1 or fps > 240:
         errors.append("profile.fps must be an integer from 1 to 240")
 
+    # Mechanical rigs (rigid robots with no morph targets) may map the
+    # face channel to a bone pose and speech to viseme-driven bone
+    # motion. Shape-key structures are then optional; nothing is faked.
+    face_mode = _channel_mode(
+        profile.get("expressions"), "expressions", ("shape_keys", "pose"),
+        "shape_keys", errors,
+    )
+    speech_mode = _channel_mode(
+        profile.get("speech"), "speech", ("shape_keys", "bone"),
+        "shape_keys", errors,
+    )
+    needs_shape_keys = face_mode == "shape_keys" or speech_mode == "shape_keys"
+
     rig = profile.get("rig")
     bones = set()
     shape_keys = set()
@@ -144,17 +168,23 @@ def validate_embodiment_profile(profile):
             errors.append("rig.bones must be a non-empty list of bone names")
         else:
             bones = set(rig_bones)
-        if not isinstance(rig.get("face_object"), str) or not rig.get("face_object"):
-            errors.append("rig.face_object is required")
+        if needs_shape_keys or rig.get("face_object") is not None:
+            if not isinstance(rig.get("face_object"), str) or not rig.get(
+                "face_object"
+            ):
+                errors.append("rig.face_object is required")
         rig_keys = rig.get("shape_keys")
-        if (
-            not isinstance(rig_keys, list)
-            or not rig_keys
-            or any(not isinstance(key, str) or not key for key in rig_keys)
-        ):
-            errors.append("rig.shape_keys must be a non-empty list of shape key names")
-        else:
-            shape_keys = set(rig_keys)
+        if needs_shape_keys or rig_keys is not None:
+            if (
+                not isinstance(rig_keys, list)
+                or not rig_keys
+                or any(not isinstance(key, str) or not key for key in rig_keys)
+            ):
+                errors.append(
+                    "rig.shape_keys must be a non-empty list of shape key names"
+                )
+            else:
+                shape_keys = set(rig_keys)
 
     gestures = profile.get("gestures")
     if not _is_object(gestures) or not gestures:
@@ -222,20 +252,36 @@ def validate_embodiment_profile(profile):
     else:
         if not _NAME_HINT_RE.match(str(expressions.get("name_hint") or "")):
             errors.append("expressions.name_hint must be a valid bridge name hint")
-        for name, preset in expressions["presets"].items():
-            if not _is_object(preset) or not preset:
-                errors.append(f"expressions.presets.{name} must be a non-empty object")
-                continue
-            for key, weight in preset.items():
-                if key not in shape_keys:
+        if face_mode == "pose":
+            if expressions.get("bone") not in bones:
+                errors.append(
+                    f"expressions.bone '{expressions.get('bone')}' is not a rig bone"
+                )
+            if not _is_quaternion(expressions.get("neutral")):
+                errors.append("expressions.neutral must be 4 finite numbers")
+            for name, preset in expressions["presets"].items():
+                if not _is_quaternion(preset):
                     errors.append(
-                        f"expressions.presets.{name}.{key} is not a rig shape key"
+                        f"expressions.presets.{name} must be 4 finite numbers "
+                        "in pose mode"
                     )
-                if not _is_finite_number(weight) or weight < 0 or weight > 1:
+        else:
+            for name, preset in expressions["presets"].items():
+                if not _is_object(preset) or not preset:
                     errors.append(
-                        f"expressions.presets.{name}.{key} must be a number "
-                        "from 0 to 1"
+                        f"expressions.presets.{name} must be a non-empty object"
                     )
+                    continue
+                for key, weight in preset.items():
+                    if key not in shape_keys:
+                        errors.append(
+                            f"expressions.presets.{name}.{key} is not a rig shape key"
+                        )
+                    if not _is_finite_number(weight) or weight < 0 or weight > 1:
+                        errors.append(
+                            f"expressions.presets.{name}.{key} must be a number "
+                            "from 0 to 1"
+                        )
         if expressions.get("default_expression") not in expressions["presets"]:
             errors.append("expressions.default_expression must name a defined preset")
 
@@ -243,7 +289,33 @@ def validate_embodiment_profile(profile):
     if not _is_object(speech):
         errors.append("profile.speech must be an object")
     else:
-        if _is_object(rig) and speech.get("object") != rig.get("face_object"):
+        if speech_mode == "bone":
+            if _is_object(rig) and speech.get("object") != rig.get("object"):
+                errors.append("speech.object must equal rig.object in bone mode")
+            speech_bones = speech.get("bones")
+            if not isinstance(speech_bones, list) or not speech_bones:
+                errors.append(
+                    "speech.bones must be a non-empty list in bone mode"
+                )
+            else:
+                for index, entry in enumerate(speech_bones):
+                    path = f"speech.bones[{index}]"
+                    if not _is_object(entry):
+                        errors.append(f"{path} must be an object")
+                        continue
+                    if entry.get("bone") not in bones:
+                        errors.append(
+                            f"{path}.bone '{entry.get('bone')}' is not a rig bone"
+                        )
+                    if not _is_quaternion(entry.get("neutral")):
+                        errors.append(f"{path}.neutral must be 4 finite numbers")
+                    if not _is_quaternion(entry.get("peak")):
+                        errors.append(f"{path}.peak must be 4 finite numbers")
+            if "driver" in speech and (
+                not isinstance(speech.get("driver"), str) or not speech.get("driver")
+            ):
+                errors.append("speech.driver must be a viseme weight name")
+        elif _is_object(rig) and speech.get("object") != rig.get("face_object"):
             errors.append("speech.object must equal rig.face_object")
         if not _NAME_HINT_RE.match(str(speech.get("name_hint") or "")):
             errors.append("speech.name_hint must be a valid bridge name hint")
@@ -397,6 +469,39 @@ def _map_face_beat(beat, profile):
         frame_weights[base] = 1
         frame_weights[end] = 0
 
+    name_hint = sanitize_name_hint(f"{expressions['name_hint']}_{name}", "face")
+
+    if expressions.get("mode") == "pose":
+        # Mechanical face: the mood is a bone pose (head tilt), eased by
+        # the same envelope shape-key expressions use.
+        neutral = expressions["neutral"]
+        samples = [
+            {
+                "bone": expressions["bone"],
+                "frame": frame,
+                "rotation_quaternion": _nlerp(
+                    neutral, preset, min(1, max(0, intensity * envelope))
+                ),
+            }
+            for frame, envelope in frame_weights.items()
+        ]
+        return {
+            "beat_id": beat["id"],
+            "channel": "face",
+            "expression": name,
+            "request": {
+                "id": _request_id(beat["id"], "face"),
+                "op": "perform_take",
+                "params": {
+                    "object": profile["rig"]["object"],
+                    "name_hint": name_hint,
+                    "frame_start": base,
+                    "frame_end": end,
+                    "samples": samples,
+                },
+            },
+        }
+
     samples = []
     for frame, envelope in frame_weights.items():
         for shape_key, weight in preset.items():
@@ -413,9 +518,7 @@ def _map_face_beat(beat, profile):
             "op": "apply_shape_keys",
             "params": {
                 "object": profile["rig"]["face_object"],
-                "name_hint": sanitize_name_hint(
-                    f"{expressions['name_hint']}_{name}", "face"
-                ),
+                "name_hint": name_hint,
                 "frame_start": base,
                 "frame_end": end,
                 "samples": samples,
@@ -487,5 +590,60 @@ def viseme_artifact_to_request(artifact, request_id=None, obj=None):
             "frame_start": artifact["frame_start"],
             "frame_end": artifact["frame_end"],
             "samples": artifact["samples"],
+        },
+    }
+
+
+def viseme_artifact_to_pose_request(artifact, speech, request_id=None, obj=None):
+    """A viseme take artifact becomes one atomic perform_take request.
+
+    For rigs with no shape keys (speech.mode 'bone'): the driver viseme
+    weight (default 'mouth_open') becomes, frame for frame, an nlerp
+    between each configured bone's neutral and peak pose. The voice
+    pipeline still owns the timing; the profile still owns every number.
+    """
+    if not _is_object(artifact) or artifact.get("kind") != "animus_viseme_take":
+        kind = artifact.get("kind") if _is_object(artifact) else artifact
+        raise ValueError(
+            f"artifact kind is '{kind}', expected 'animus_viseme_take'"
+        )
+    driver = speech.get("driver", "mouth_open")
+    driven = {}
+    loudest = {}
+    for sample in artifact["samples"]:
+        frame = sample["frame"]
+        weight = sample["weight"]
+        loudest[frame] = max(loudest.get(frame, 0.0), weight)
+        if sample["shape_key"] == driver:
+            driven[frame] = weight
+    frames = sorted(loudest)
+    bones = speech["bones"]
+    stride = 1
+    while frames and (len(frames) + stride - 1) // stride * len(bones) > MAX_SAMPLES:
+        stride += 1
+    samples = []
+    for index, frame in enumerate(frames):
+        if index % stride and frame != frames[-1]:
+            continue
+        weight = min(1, max(0, driven.get(frame, loudest[frame])))
+        for bone in bones:
+            samples.append(
+                {
+                    "bone": bone["bone"],
+                    "frame": frame,
+                    "rotation_quaternion": _nlerp(
+                        bone["neutral"], bone["peak"], weight
+                    ),
+                }
+            )
+    return {
+        "id": request_id or "speech-take",
+        "op": "perform_take",
+        "params": {
+            "object": obj or speech["object"],
+            "name_hint": artifact["name_hint"],
+            "frame_start": artifact["frame_start"],
+            "frame_end": artifact["frame_end"],
+            "samples": samples,
         },
     }

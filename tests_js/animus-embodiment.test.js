@@ -8,6 +8,7 @@ import {
   mapPlanToBridgeJobs,
   sanitizeNameHint,
   validateEmbodimentProfile,
+  visemeArtifactToPoseRequest,
   visemeArtifactToRequest,
 } from '../src/animus/embodiment.js';
 import { validateActorPlan } from '../src/animus/contract.js';
@@ -15,6 +16,7 @@ import { deterministicActorPlan } from '../src/animus/fallback.js';
 
 const REPO = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const PROFILE_PATH = path.join(REPO, 'src', 'animus', 'embodiment', 'kvrc-testrig.profile.json');
+const KVRC_PROFILE_PATH = path.join(REPO, 'src', 'animus', 'embodiment', 'kvrc.profile.json');
 
 function loadProfile() {
   return JSON.parse(readFileSync(PROFILE_PATH, 'utf-8'));
@@ -253,4 +255,74 @@ test('name hints are always bridge-legal', () => {
   assert.equal(sanitizeNameHint('.hidden'), 'x.hidden');
   assert.equal(sanitizeNameHint(''), 'take');
   assert.equal(sanitizeNameHint('a'.repeat(80)).length, 60);
+});
+
+// --- the real K-VRC profile: mechanical face and speech ---------------
+
+function loadKvrcProfile() {
+  return JSON.parse(readFileSync(KVRC_PROFILE_PATH, 'utf-8'));
+}
+
+test('the committed K-VRC profile validates without shape keys', () => {
+  const checked = validateEmbodimentProfile(loadKvrcProfile());
+  assert.equal(checked.ok, true, checked.errors.join('; '));
+  assert.equal(checked.value.rig.object, 'KVRCArmature');
+  assert.equal('face_object' in checked.value.rig, false);
+});
+
+test('shape-key modes still require the shape-key structures', () => {
+  const profile = loadKvrcProfile();
+  delete profile.expressions.mode;
+  const checked = validateEmbodimentProfile(profile);
+  assert.equal(checked.ok, false);
+  assert.ok(checked.errors.some((error) => error.includes('rig.face_object')));
+  assert.ok(checked.errors.some((error) => error.includes('rig.shape_keys')));
+});
+
+test('a pose-mode face beat maps to a perform_take on the armature', () => {
+  const checked = validateEmbodimentProfile(loadKvrcProfile());
+  assert.equal(checked.ok, true, checked.errors.join('; '));
+  const plan = validatedFallbackPlan({
+    instruction: 'Wave to the viewer and say hello.',
+    target: 'camera',
+    speech: 'Hello, I am K-VRC.',
+  });
+  const jobs = mapPlanToBridgeJobs(plan, checked.value);
+  const face = jobs.layers.find((layer) => layer.channel === 'face');
+  assert.equal(face.request.op, 'perform_take');
+  assert.equal(face.request.params.object, 'KVRCArmature');
+  assertBridgeShaped(face.request);
+  assert.ok(face.request.params.samples.every((sample) => sample.bone === 'Head'));
+});
+
+test('a viseme artifact becomes an ear pose take in bone mode', () => {
+  const profile = loadKvrcProfile();
+  const artifact = {
+    kind: 'animus_viseme_take',
+    object: 'KVRCArmature',
+    name_hint: 'animus_speech',
+    frame_start: 1,
+    frame_end: 5,
+    samples: [
+      { shape_key: 'mouth_open', frame: 1, weight: 0 },
+      { shape_key: 'smile_width', frame: 1, weight: 0.1 },
+      { shape_key: 'mouth_open', frame: 3, weight: 0.85 },
+      { shape_key: 'mouth_open', frame: 5, weight: 0 },
+    ],
+  };
+  const request = visemeArtifactToPoseRequest(artifact, profile.speech, { requestId: 'dir-x' });
+  assert.equal(request.op, 'perform_take');
+  assert.equal(request.params.object, 'KVRCArmature');
+  assertBridgeShaped(request);
+  assert.equal(request.params.samples.length, 3 * profile.speech.bones.length);
+  const silent = request.params.samples.filter((sample) => sample.frame === 1);
+  for (const sample of silent) {
+    assert.deepEqual(sample.rotation_quaternion, [1, 0, 0, 0]);
+  }
+  const loud = request.params.samples.find((sample) => sample.frame === 3);
+  assert.notDeepEqual(loud.rotation_quaternion, [1, 0, 0, 0]);
+  assert.throws(
+    () => visemeArtifactToPoseRequest({ kind: 'nope' }, profile.speech),
+    /expected 'animus_viseme_take'/,
+  );
 });

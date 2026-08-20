@@ -689,7 +689,7 @@
         "wav": "C:\\Users\\jainl\\resume-projects\\k-vrc-animus-poc\\voice\\animus_voice\\out\\director\\fallback-1_speech.wav",
         "cue_json": "C:\\Users\\jainl\\resume-projects\\k-vrc-animus-poc\\voice\\animus_voice\\out\\director\\fallback-1_speech.rhubarb.json",
         "take_json": "C:\\Users\\jainl\\resume-projects\\k-vrc-animus-poc\\voice\\animus_voice\\out\\director\\fallback-1_speech.animus.json",
-        "audio_sha256": "13fabdacba9234fb73aa2fd9875c6ecd36ca893cd1eb830052d9388c60f64733",
+        "audio_sha256": "cd0d9578f07fd3b8ed173a0433e0934e55c54334b3962f0b0c36b5b4d76c2756",
         "duration_ms": 2100,
         "cue_count": 10,
         "sample_count": 40

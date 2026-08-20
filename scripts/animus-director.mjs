@@ -28,6 +28,7 @@ import { createOpenAICompatibleProvider } from '../src/animus/providers/openaiCo
 import {
   mapPlanToBridgeJobs,
   validateEmbodimentProfile,
+  visemeArtifactToPoseRequest,
   visemeArtifactToRequest,
 } from '../src/animus/embodiment.js';
 
@@ -200,13 +201,19 @@ if (voiceMode !== 'skip') {
   mkdirSync(outDir, { recursive: true });
   for (const job of jobs.voice_jobs) {
     const { artifact, takePath, tool_report } = runVoiceJob(job, outDir);
+    const speechRequest = profile.speech.mode === 'bone'
+      ? visemeArtifactToPoseRequest(artifact, profile.speech, {
+        requestId: `dir-${job.stem}`,
+        object: job.object,
+      })
+      : visemeArtifactToRequest(artifact, {
+        requestId: `dir-${job.stem}`,
+        object: job.object,
+      });
     jobs.layers.push({
       beat_id: job.beat_id,
       channel: 'speech',
-      request: visemeArtifactToRequest(artifact, {
-        requestId: `dir-${job.stem}`,
-        object: job.object,
-      }),
+      request: speechRequest,
     });
     voiceReceipts.push({
       beat_id: job.beat_id,

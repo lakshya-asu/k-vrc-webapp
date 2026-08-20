@@ -251,6 +251,84 @@ def main():
             "cue_count": voice_track.get("cue_count"),
         }
 
+    # Run 3: the real K-VRC character. The GLB is imported into the same
+    # scene (its baked clips stripped, exactly what the stage does) and
+    # the loop performs the same line through the kvrc profile: gestures
+    # sampled from the model's own clips, gaze on the Neck, face as a
+    # Head pose, visemes as ear motion. No shape keys exist or are faked.
+    kvrc_profile_path = os.path.join(
+        REPO, "src", "animus", "embodiment", "kvrc.profile.json"
+    )
+    with open(kvrc_profile_path, "r", encoding="utf-8-sig") as handle:
+        kvrc_profile = json.load(handle)
+    bpy.ops.import_scene.gltf(
+        filepath=os.path.join(REPO, "public", "models", "kvrc.glb")
+    )
+    for action in list(bpy.data.actions):
+        if action.name not in RESULTS.get("perform_actions", {}):
+            bpy.data.actions.remove(action)
+    for holder in bpy.data.objects:
+        if holder.animation_data is not None and holder.name == "KVRCArmature":
+            holder.animation_data_clear()
+    armature = bpy.data.objects.get("KVRCArmature")
+    check(
+        "kvrc_scene_imported",
+        armature is not None
+        and armature.type == "ARMATURE"
+        and all(
+            bone in armature.data.bones for bone in kvrc_profile["rig"]["bones"]
+        ),
+        sorted(kvrc_profile["rig"]["bones"]),
+    )
+
+    kvrc_receipt_path = os.path.join(HERE, "actor-receipt-kvrc.json")
+    before = snapshot()
+    before_kvrc = strip_names(armature.animation_data) if armature else []
+    record = run_actor(
+        "kvrc-perform",
+        ["--control-level", "perform", "--voice-mode", VOICE_MODE,
+         "--profile", kvrc_profile_path, "--receipt", kvrc_receipt_path],
+    )
+    check("kvrc_perform_exit_0", record["exit_code"] == 0, record["stderr"])
+    kvrc_receipt = load_receipt(kvrc_receipt_path)
+    after = snapshot()
+    after_kvrc = strip_names(armature.animation_data) if armature else []
+
+    if kvrc_receipt is not None:
+        layers = kvrc_receipt.get("layers", [])
+        channels = [layer.get("channel") for layer in layers]
+        check(
+            "kvrc_channels_complete",
+            channels == ["body", "gaze", "face", "speech"],
+            channels,
+        )
+        check(
+            "kvrc_every_layer_ok",
+            layers != [] and all(
+                layer.get("response", {}).get("ok") is True for layer in layers
+            ),
+            [layer.get("response") for layer in layers],
+        )
+        new_actions = sorted(set(after["actions"]) - set(before["actions"]))
+        new_strips = sorted(set(after_kvrc) - set(before_kvrc))
+        check(
+            "kvrc_all_layers_land_on_the_armature",
+            len(new_actions) == len(layers) and len(new_strips) == len(layers)
+            and after["kvrc_strips"] == before["kvrc_strips"]
+            and after["face_strips"] == before["face_strips"],
+            {"new_actions": new_actions, "new_strips": new_strips},
+        )
+        keyed = keyed_action_names(
+            layer.get("response", {}).get("result", {}).get("action")
+            for layer in layers
+        )
+        check(
+            "kvrc_actions_have_keyframes",
+            all(isinstance(keys, int) and keys > 0 for keys in keyed.values()),
+            keyed,
+        )
+        RESULTS["kvrc_actions"] = keyed
+
     animus_bridge.stop_bridge()
     RESULTS["final_scene"] = snapshot()
     RESULTS["passed"] = all(item["passed"] for item in RESULTS["checks"])

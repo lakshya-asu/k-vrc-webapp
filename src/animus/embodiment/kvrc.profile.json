@@ -1,0 +1,8916 @@
+{
+ "kind": "animus_embodiment_profile",
+ "schema_version": "0.1",
+ "profile": "kvrc",
+ "profile_version": "0.1.0",
+ "source": {
+  "authored_by": "fable-embody",
+  "license": "project-internal fan asset: public/models/kvrc.glb (K-VRC robot from the webapp, Mixamo-baked clips); gesture samples extracted from those baked clips by scripts/extract_kvrc_profile.py",
+  "rig": "KVRCArmature, 27 bones, rigid per-part armature skinning, no shape keys",
+  "note": "face and speech are mechanical: Head-bone tilt for mood, viseme-driven ear motion for speech, because the model has no morph targets"
+ },
+ "fps": 24,
+ "rig": {
+  "object": "KVRCArmature",
+  "bones": [
+   "Head",
+   "Hips",
+   "LeftArm",
+   "LeftEar",
+   "LeftForeArm",
+   "LeftHand",
+   "LeftShoulder",
+   "LeftShoulderPlate",
+   "Neck",
+   "RightArm",
+   "RightEar",
+   "RightForeArm",
+   "RightHand",
+   "RightShoulder",
+   "RightShoulderPlate",
+   "Spine",
+   "Spine1",
+   "Spine2"
+  ]
+ },
+ "default_gesture": "idle",
+ "body_action_gestures": {
+  "idle": "idle",
+  "wait": "idle",
+  "walk_to": "idle",
+  "turn_to": "idle",
+  "interact": "point"
+ },
+ "gestures": {
+  "wave": {
+   "name_hint": "wave",
+   "frames": 27,
+   "source_clip": "waving_1",
+   "samples": [
+    {
+     "bone": "Hips",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.999805,
+      -9.6e-05,
+      0.019191,
+      -0.004644
+     ],
+     "location": [
+      -0.000382,
+      -0.004354,
+      -0.001
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 4,
+     "rotation_quaternion": [
+      0.999614,
+      -0.000963,
+      0.027629,
+      -0.00269
+     ],
+     "location": [
+      -0.003997,
+      -0.005606,
+      -0.002595
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 7,
+     "rotation_quaternion": [
+      0.999373,
+      -0.004355,
+      0.034796,
+      -0.004832
+     ],
+     "location": [
+      -0.004356,
+      -0.004984,
+      0.000563
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 10,
+     "rotation_quaternion": [
+      0.999554,
+      -0.002671,
+      0.027362,
+      -0.011587
+     ],
+     "location": [
+      -0.005334,
+      -0.004064,
+      0.002108
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.99979,
+      -0.002314,
+      0.0159,
+      -0.012682
+     ],
+     "location": [
+      -0.005028,
+      -0.004124,
+      0.001749
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 16,
+     "rotation_quaternion": [
+      0.999685,
+      -0.007464,
+      0.021926,
+      -0.009679
+     ],
+     "location": [
+      -0.00334,
+      -0.004411,
+      -0.001264
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 19,
+     "rotation_quaternion": [
+      0.999213,
+      -0.01307,
+      0.037013,
+      -0.005642
+     ],
+     "location": [
+      -0.001179,
+      -0.004168,
+      -0.000915
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 22,
+     "rotation_quaternion": [
+      0.999284,
+      -0.006163,
+      0.037092,
+      -0.003921
+     ],
+     "location": [
+      0.000449,
+      -0.003342,
+      0.002194
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.999711,
+      -0.001821,
+      0.02351,
+      -0.004525
+     ],
+     "location": [
+      0.000815,
+      -0.003538,
+      0.001256
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 27,
+     "rotation_quaternion": [
+      0.999805,
+      -0.00021,
+      0.019104,
+      -0.004891
+     ],
+     "location": [
+      -0.000194,
+      -0.004244,
+      -0.000738
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.993897,
+      -0.056965,
+      0.042904,
+      0.084095
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 4,
+     "rotation_quaternion": [
+      0.995332,
+      -0.059251,
+      0.028495,
+      0.070656
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 7,
+     "rotation_quaternion": [
+      0.994972,
+      -0.048969,
+      0.041785,
+      0.07663
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 10,
+     "rotation_quaternion": [
+      0.993599,
+      -0.042816,
+      0.06119,
+      0.084741
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.993282,
+      -0.049507,
+      0.062626,
+      0.083763
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 16,
+     "rotation_quaternion": [
+      0.994349,
+      -0.050964,
+      0.04881,
+      0.07931
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 19,
+     "rotation_quaternion": [
+      0.994263,
+      -0.046524,
+      0.041569,
+      0.086875
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 22,
+     "rotation_quaternion": [
+      0.992991,
+      -0.050966,
+      0.04649,
+      0.095953
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.992976,
+      -0.053006,
+      0.050696,
+      0.092805
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 27,
+     "rotation_quaternion": [
+      0.993758,
+      -0.05655,
+      0.044254,
+      0.085371
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.999095,
+      0.03537,
+      0.006059,
+      -0.022804
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 4,
+     "rotation_quaternion": [
+      0.999198,
+      0.035344,
+      0.004085,
+      -0.018386
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 7,
+     "rotation_quaternion": [
+      0.999193,
+      0.032118,
+      0.005697,
+      -0.023394
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 10,
+     "rotation_quaternion": [
+      0.999166,
+      0.026751,
+      0.008191,
+      -0.029738
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.999224,
+      0.029239,
+      0.008977,
+      -0.024794
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 16,
+     "rotation_quaternion": [
+      0.999237,
+      0.033216,
+      0.007249,
+      -0.019203
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 19,
+     "rotation_quaternion": [
+      0.999151,
+      0.033155,
+      0.005636,
+      -0.023783
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 22,
+     "rotation_quaternion": [
+      0.999041,
+      0.032602,
+      0.00588,
+      -0.028628
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.999025,
+      0.034668,
+      0.006938,
+      -0.026412
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 27,
+     "rotation_quaternion": [
+      0.999084,
+      0.035359,
+      0.006238,
+      -0.023271
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.999097,
+      0.035816,
+      0.005294,
+      -0.022218
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 4,
+     "rotation_quaternion": [
+      0.999199,
+      0.035606,
+      0.003163,
+      -0.017958
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 7,
+     "rotation_quaternion": [
+      0.999194,
+      0.032518,
+      0.005115,
+      -0.022928
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 10,
+     "rotation_quaternion": [
+      0.999166,
+      0.027403,
+      0.008002,
+      -0.029193
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.999224,
+      0.029837,
+      0.008736,
+      -0.024166
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 16,
+     "rotation_quaternion": [
+      0.999238,
+      0.033615,
+      0.006839,
+      -0.01864
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 19,
+     "rotation_quaternion": [
+      0.999152,
+      0.033568,
+      0.005061,
+      -0.023297
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 22,
+     "rotation_quaternion": [
+      0.999042,
+      0.03314,
+      0.005368,
+      -0.028084
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.999026,
+      0.035241,
+      0.006333,
+      -0.025764
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 27,
+     "rotation_quaternion": [
+      0.999086,
+      0.035824,
+      0.005491,
+      -0.022672
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 1,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 4,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 7,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 10,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 13,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 16,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 19,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 22,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 25,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 27,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 1,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 4,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 7,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 10,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 13,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 16,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 19,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 22,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 25,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 27,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.998295,
+      -0.021955,
+      -0.00571,
+      0.053785
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 4,
+     "rotation_quaternion": [
+      0.998103,
+      -0.026337,
+      -0.005967,
+      0.055325
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 7,
+     "rotation_quaternion": [
+      0.997889,
+      -0.030729,
+      -0.006241,
+      0.056871
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 10,
+     "rotation_quaternion": [
+      0.99782,
+      -0.031964,
+      -0.006332,
+      0.057382
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.998171,
+      -0.024649,
+      -0.005886,
+      0.054866
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 16,
+     "rotation_quaternion": [
+      0.998552,
+      -0.01657,
+      -0.005088,
+      0.050923
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 19,
+     "rotation_quaternion": [
+      0.998362,
+      -0.020714,
+      -0.005517,
+      0.053009
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 22,
+     "rotation_quaternion": [
+      0.99751,
+      -0.037042,
+      -0.00677,
+      0.059624
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.997971,
+      -0.029232,
+      -0.006101,
+      0.056194
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 27,
+     "rotation_quaternion": [
+      0.998305,
+      -0.021709,
+      -0.005664,
+      0.053692
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.763941,
+      -0.384833,
+      0.341804,
+      -0.389168
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 4,
+     "rotation_quaternion": [
+      0.770387,
+      -0.387213,
+      0.349955,
+      -0.366198
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 7,
+     "rotation_quaternion": [
+      0.77437,
+      -0.390104,
+      0.347487,
+      -0.356961
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 10,
+     "rotation_quaternion": [
+      0.782958,
+      -0.390949,
+      0.345453,
+      -0.338807
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.779274,
+      -0.40946,
+      0.331708,
+      -0.339176
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 16,
+     "rotation_quaternion": [
+      0.76929,
+      -0.406209,
+      0.339046,
+      -0.3581
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 19,
+     "rotation_quaternion": [
+      0.76567,
+      -0.376431,
+      0.354735,
+      -0.382339
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 22,
+     "rotation_quaternion": [
+      0.769401,
+      -0.350109,
+      0.358987,
+      -0.395684
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.76641,
+      -0.37301,
+      0.339859,
+      -0.397447
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 27,
+     "rotation_quaternion": [
+      0.763396,
+      -0.384655,
+      0.340878,
+      -0.39124
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.974464,
+      0.0,
+      0.0,
+      -0.224488
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 4,
+     "rotation_quaternion": [
+      0.96732,
+      0.0,
+      0.0,
+      -0.25356
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 7,
+     "rotation_quaternion": [
+      0.964765,
+      0.0,
+      0.0,
+      -0.263113
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 10,
+     "rotation_quaternion": [
+      0.959214,
+      0.0,
+      0.0,
+      -0.282667
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.963148,
+      0.0,
+      0.0,
+      -0.268969
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 16,
+     "rotation_quaternion": [
+      0.966717,
+      0.0,
+      0.0,
+      -0.255847
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 19,
+     "rotation_quaternion": [
+      0.970781,
+      0.0,
+      0.0,
+      -0.239965
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 22,
+     "rotation_quaternion": [
+      0.973407,
+      0.0,
+      0.0,
+      -0.229066
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.976252,
+      0.0,
+      0.0,
+      -0.216637
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 27,
+     "rotation_quaternion": [
+      0.97511,
+      0.0,
+      0.0,
+      -0.221721
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 1,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 4,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 7,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 10,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 13,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 16,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 19,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 22,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 25,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 27,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.999126,
+      -0.012039,
+      -0.020794,
+      0.03412
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 4,
+     "rotation_quaternion": [
+      0.999092,
+      0.000929,
+      -0.021292,
+      0.036889
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 7,
+     "rotation_quaternion": [
+      0.999072,
+      -0.010307,
+      -0.021303,
+      0.035936
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 10,
+     "rotation_quaternion": [
+      0.998917,
+      -0.023945,
+      -0.021063,
+      0.033863
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.999165,
+      -0.013155,
+      -0.020405,
+      0.032793
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 16,
+     "rotation_quaternion": [
+      0.999151,
+      -0.003962,
+      -0.020917,
+      0.035256
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 19,
+     "rotation_quaternion": [
+      0.999067,
+      -0.011666,
+      -0.021282,
+      0.03569
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 22,
+     "rotation_quaternion": [
+      0.998802,
+      -0.025805,
+      -0.021632,
+      0.035474
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.998927,
+      -0.021824,
+      -0.021301,
+      0.034802
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 27,
+     "rotation_quaternion": [
+      0.999114,
+      -0.013348,
+      -0.020815,
+      0.034066
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.876681,
+      -0.165604,
+      0.355082,
+      0.277767
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 4,
+     "rotation_quaternion": [
+      0.926428,
+      -0.07386,
+      0.225927,
+      0.291945
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 7,
+     "rotation_quaternion": [
+      0.884823,
+      -0.15038,
+      0.343312,
+      0.275252
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 10,
+     "rotation_quaternion": [
+      0.807047,
+      -0.237755,
+      0.482538,
+      0.243425
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.867748,
+      -0.184998,
+      0.381052,
+      0.258539
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 16,
+     "rotation_quaternion": [
+      0.92632,
+      -0.090015,
+      0.247848,
+      0.269072
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 19,
+     "rotation_quaternion": [
+      0.883882,
+      -0.173019,
+      0.352752,
+      0.25193
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 22,
+     "rotation_quaternion": [
+      0.77451,
+      -0.279025,
+      0.515734,
+      0.236952
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.820808,
+      -0.23311,
+      0.454533,
+      0.254085
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 27,
+     "rotation_quaternion": [
+      0.87135,
+      -0.174201,
+      0.367147,
+      0.274966
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.701564,
+      0.0,
+      0.0,
+      0.712583
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 4,
+     "rotation_quaternion": [
+      0.675634,
+      0.0,
+      0.0,
+      0.737237
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 7,
+     "rotation_quaternion": [
+      0.730582,
+      0.0,
+      0.0,
+      0.682705
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 10,
+     "rotation_quaternion": [
+      0.760989,
+      0.0,
+      0.0,
+      0.648744
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.71299,
+      0.0,
+      0.0,
+      0.701124
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 16,
+     "rotation_quaternion": [
+      0.675286,
+      0.0,
+      0.0,
+      0.737556
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 19,
+     "rotation_quaternion": [
+      0.703028,
+      0.0,
+      0.0,
+      0.711101
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 22,
+     "rotation_quaternion": [
+      0.743044,
+      0.0,
+      0.0,
+      0.669242
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.721693,
+      0.0,
+      0.0,
+      0.692186
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 27,
+     "rotation_quaternion": [
+      0.703912,
+      0.0,
+      0.0,
+      0.710287
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 1,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 4,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 7,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 10,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 13,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 16,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 19,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 22,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 25,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 27,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   ]
+  },
+  "idle": {
+   "name_hint": "idle",
+   "frames": 48,
+   "source_clip": "breathing_idle",
+   "samples": [
+    {
+     "bone": "Hips",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.99987,
+      -0.013291,
+      -0.001127,
+      -0.009059
+     ],
+     "location": [
+      -0.002817,
+      -0.015444,
+      0.002478
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 7,
+     "rotation_quaternion": [
+      0.99983,
+      -0.014508,
+      -0.000899,
+      -0.011301
+     ],
+     "location": [
+      0.002182,
+      -0.016171,
+      0.003101
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.999778,
+      -0.016322,
+      0.000481,
+      -0.01332
+     ],
+     "location": [
+      0.005762,
+      -0.017975,
+      0.004815
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 19,
+     "rotation_quaternion": [
+      0.999729,
+      -0.017639,
+      0.001497,
+      -0.015087
+     ],
+     "location": [
+      0.007787,
+      -0.020851,
+      0.006085
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.999711,
+      -0.018158,
+      0.001483,
+      -0.015687
+     ],
+     "location": [
+      0.008222,
+      -0.023726,
+      0.006856
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 31,
+     "rotation_quaternion": [
+      0.999694,
+      -0.018526,
+      0.00017,
+      -0.01638
+     ],
+     "location": [
+      0.007777,
+      -0.025917,
+      0.006917
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.999642,
+      -0.020229,
+      -0.000638,
+      -0.017486
+     ],
+     "location": [
+      0.006581,
+      -0.026985,
+      0.007136
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 43,
+     "rotation_quaternion": [
+      0.999589,
+      -0.022347,
+      -0.001272,
+      -0.017933
+     ],
+     "location": [
+      0.004703,
+      -0.028304,
+      0.007692
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 48,
+     "rotation_quaternion": [
+      0.999552,
+      -0.024149,
+      -0.001804,
+      -0.017582
+     ],
+     "location": [
+      0.002641,
+      -0.02884,
+      0.008111
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.999963,
+      0.008489,
+      -0.001058,
+      -0.000235
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 7,
+     "rotation_quaternion": [
+      0.999955,
+      0.009393,
+      -0.000562,
+      -0.00088
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.999946,
+      0.010187,
+      0.000147,
+      -0.002014
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 19,
+     "rotation_quaternion": [
+      0.999937,
+      0.010726,
+      0.000764,
+      -0.003109
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.999933,
+      0.010812,
+      0.000962,
+      -0.004089
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 31,
+     "rotation_quaternion": [
+      0.999925,
+      0.011261,
+      0.001118,
+      -0.004623
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.999918,
+      0.011949,
+      0.000959,
+      -0.00445
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 43,
+     "rotation_quaternion": [
+      0.999916,
+      0.01192,
+      0.001073,
+      -0.004907
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 48,
+     "rotation_quaternion": [
+      0.999919,
+      0.011693,
+      0.001181,
+      -0.004905
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.999726,
+      0.008959,
+      -0.021616,
+      0.001068
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 7,
+     "rotation_quaternion": [
+      0.999728,
+      0.01074,
+      -0.020699,
+      0.000384
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.999735,
+      0.012343,
+      -0.019414,
+      -0.0009
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 19,
+     "rotation_quaternion": [
+      0.999733,
+      0.01342,
+      -0.018679,
+      -0.002201
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.999721,
+      0.013785,
+      -0.018798,
+      -0.003783
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 31,
+     "rotation_quaternion": [
+      0.999706,
+      0.014489,
+      -0.0189,
+      -0.004577
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.99968,
+      0.015419,
+      -0.019616,
+      -0.004146
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 43,
+     "rotation_quaternion": [
+      0.999689,
+      0.015191,
+      -0.019196,
+      -0.004655
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 48,
+     "rotation_quaternion": [
+      0.999709,
+      0.014617,
+      -0.018612,
+      -0.004662
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.999726,
+      0.008907,
+      -0.021588,
+      0.001448
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 7,
+     "rotation_quaternion": [
+      0.999728,
+      0.010715,
+      -0.020675,
+      0.000808
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.999735,
+      0.012372,
+      -0.019389,
+      -0.000426
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 19,
+     "rotation_quaternion": [
+      0.999733,
+      0.013502,
+      -0.01866,
+      -0.001688
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.999721,
+      0.013924,
+      -0.018802,
+      -0.003249
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 31,
+     "rotation_quaternion": [
+      0.999706,
+      0.014676,
+      -0.0189,
+      -0.004004
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.99968,
+      0.015592,
+      -0.019606,
+      -0.003521
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 43,
+     "rotation_quaternion": [
+      0.999689,
+      0.015402,
+      -0.01919,
+      -0.004059
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 48,
+     "rotation_quaternion": [
+      0.999708,
+      0.014838,
+      -0.01861,
+      -0.00411
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 1,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 7,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 13,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 19,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 25,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 31,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 37,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 43,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 48,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 1,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 7,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 13,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 19,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 25,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 31,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 37,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 43,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 48,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.997923,
+      -0.004144,
+      -0.003348,
+      0.064202
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 7,
+     "rotation_quaternion": [
+      0.998045,
+      -0.003388,
+      -0.003152,
+      0.062331
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.998492,
+      -8.8e-05,
+      -0.002634,
+      0.054827
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 19,
+     "rotation_quaternion": [
+      0.999076,
+      0.006457,
+      -0.001665,
+      0.042445
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.999468,
+      0.008747,
+      -0.000794,
+      0.031404
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 31,
+     "rotation_quaternion": [
+      0.999764,
+      0.010245,
+      0.000313,
+      0.01916
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.999901,
+      0.004129,
+      0.001022,
+      0.013405
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 43,
+     "rotation_quaternion": [
+      0.99998,
+      0.005648,
+      0.002077,
+      0.001652
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 48,
+     "rotation_quaternion": [
+      0.999976,
+      0.005914,
+      0.002496,
+      -0.002702
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.79494,
+      -0.567806,
+      0.139865,
+      -0.161569
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 7,
+     "rotation_quaternion": [
+      0.794922,
+      -0.567617,
+      0.139546,
+      -0.162596
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.794445,
+      -0.571228,
+      0.135827,
+      -0.155261
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 19,
+     "rotation_quaternion": [
+      0.790515,
+      -0.580078,
+      0.13231,
+      -0.14522
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.788358,
+      -0.584014,
+      0.133456,
+      -0.140028
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 31,
+     "rotation_quaternion": [
+      0.786852,
+      -0.58785,
+      0.130895,
+      -0.134768
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.788912,
+      -0.586738,
+      0.126534,
+      -0.131702
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 43,
+     "rotation_quaternion": [
+      0.786963,
+      -0.593132,
+      0.119151,
+      -0.121182
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 48,
+     "rotation_quaternion": [
+      0.785201,
+      -0.596584,
+      0.118513,
+      -0.116199
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.967505,
+      0.0,
+      0.0,
+      -0.252851
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 7,
+     "rotation_quaternion": [
+      0.967773,
+      0.0,
+      0.0,
+      -0.251823
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.968297,
+      0.0,
+      0.0,
+      -0.2498
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 19,
+     "rotation_quaternion": [
+      0.968767,
+      0.0,
+      0.0,
+      -0.247971
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.969043,
+      0.0,
+      0.0,
+      -0.246894
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 31,
+     "rotation_quaternion": [
+      0.969111,
+      0.0,
+      0.0,
+      -0.246624
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.969108,
+      0.0,
+      0.0,
+      -0.246635
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 43,
+     "rotation_quaternion": [
+      0.969804,
+      0.0,
+      0.0,
+      -0.243885
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 48,
+     "rotation_quaternion": [
+      0.970076,
+      0.0,
+      0.0,
+      -0.242802
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 1,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 7,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 13,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 19,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 25,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 31,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 37,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 43,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 48,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.999219,
+      0.032044,
+      -0.008039,
+      0.021654
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 7,
+     "rotation_quaternion": [
+      0.999177,
+      0.029882,
+      -0.008777,
+      0.02599
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.999096,
+      0.02596,
+      -0.010159,
+      0.032074
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 19,
+     "rotation_quaternion": [
+      0.998728,
+      0.017338,
+      -0.013139,
+      0.04548
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.997936,
+      0.006272,
+      -0.017159,
+      0.061554
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 31,
+     "rotation_quaternion": [
+      0.997152,
+      -0.000689,
+      -0.019903,
+      0.072743
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.996789,
+      -0.002056,
+      -0.020931,
+      0.077262
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 43,
+     "rotation_quaternion": [
+      0.995692,
+      -0.008888,
+      -0.024017,
+      0.089115
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 48,
+     "rotation_quaternion": [
+      0.995073,
+      -0.01204,
+      -0.025527,
+      0.095038
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.777266,
+      -0.588744,
+      -0.115872,
+      0.189239
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 7,
+     "rotation_quaternion": [
+      0.776651,
+      -0.588631,
+      -0.117334,
+      0.191205
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.776965,
+      -0.588472,
+      -0.120018,
+      0.188735
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 19,
+     "rotation_quaternion": [
+      0.782259,
+      -0.583447,
+      -0.121424,
+      0.181428
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.791197,
+      -0.5718,
+      -0.124797,
+      0.177416
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 31,
+     "rotation_quaternion": [
+      0.797193,
+      -0.561442,
+      -0.127039,
+      0.182008
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.797905,
+      -0.559591,
+      -0.124574,
+      0.186243
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 43,
+     "rotation_quaternion": [
+      0.802694,
+      -0.557372,
+      -0.120179,
+      0.174858
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 48,
+     "rotation_quaternion": [
+      0.804105,
+      -0.55683,
+      -0.123098,
+      0.167933
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.972156,
+      0.0,
+      0.0,
+      0.234332
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 7,
+     "rotation_quaternion": [
+      0.971877,
+      0.0,
+      0.0,
+      0.23549
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.971089,
+      0.0,
+      0.0,
+      0.238719
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 19,
+     "rotation_quaternion": [
+      0.969778,
+      0.0,
+      0.0,
+      0.243989
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.967903,
+      0.0,
+      0.0,
+      0.251322
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 31,
+     "rotation_quaternion": [
+      0.966823,
+      0.0,
+      0.0,
+      0.255448
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.966752,
+      0.0,
+      0.0,
+      0.255714
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 43,
+     "rotation_quaternion": [
+      0.965661,
+      0.0,
+      0.0,
+      0.259806
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 48,
+     "rotation_quaternion": [
+      0.965293,
+      0.0,
+      0.0,
+      0.261168
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 1,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 7,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 13,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 19,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 25,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 31,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 37,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 43,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 48,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   ]
+  },
+  "talk": {
+   "name_hint": "talk",
+   "frames": 72,
+   "source_clip": "talking",
+   "samples": [
+    {
+     "bone": "Hips",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.978801,
+      -0.014389,
+      0.20134,
+      0.0347
+     ],
+     "location": [
+      0.031285,
+      -0.038624,
+      -0.001845
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 7,
+     "rotation_quaternion": [
+      0.979333,
+      -0.014678,
+      0.198895,
+      0.033663
+     ],
+     "location": [
+      0.03152,
+      -0.038398,
+      -0.001281
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.98049,
+      -0.01366,
+      0.193402,
+      0.032367
+     ],
+     "location": [
+      0.031976,
+      -0.038042,
+      -3.7e-05
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 19,
+     "rotation_quaternion": [
+      0.980332,
+      -0.014595,
+      0.194741,
+      0.028499
+     ],
+     "location": [
+      0.030917,
+      -0.037219,
+      0.002904
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.979319,
+      -0.004128,
+      0.200241,
+      0.028639
+     ],
+     "location": [
+      0.028872,
+      -0.036982,
+      0.002601
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 31,
+     "rotation_quaternion": [
+      0.980509,
+      0.008588,
+      0.194617,
+      0.025527
+     ],
+     "location": [
+      0.02481,
+      -0.036647,
+      0.002194
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.981744,
+      0.02405,
+      0.187925,
+      0.016866
+     ],
+     "location": [
+      0.019744,
+      -0.036033,
+      0.001417
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 43,
+     "rotation_quaternion": [
+      0.980864,
+      0.029668,
+      0.191986,
+      0.012887
+     ],
+     "location": [
+      0.018234,
+      -0.035411,
+      0.002503
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 49,
+     "rotation_quaternion": [
+      0.979659,
+      0.023641,
+      0.198756,
+      0.014329
+     ],
+     "location": [
+      0.020777,
+      -0.035992,
+      0.00314
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 55,
+     "rotation_quaternion": [
+      0.979334,
+      0.029272,
+      0.199451,
+      0.016337
+     ],
+     "location": [
+      0.023569,
+      -0.036077,
+      0.002552
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 61,
+     "rotation_quaternion": [
+      0.979423,
+      0.032622,
+      0.198688,
+      0.013742
+     ],
+     "location": [
+      0.027636,
+      -0.035917,
+      0.006624
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 67,
+     "rotation_quaternion": [
+      0.981467,
+      0.034513,
+      0.188181,
+      0.010903
+     ],
+     "location": [
+      0.031608,
+      -0.03611,
+      0.012444
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 72,
+     "rotation_quaternion": [
+      0.982412,
+      0.032591,
+      0.183582,
+      0.010044
+     ],
+     "location": [
+      0.033731,
+      -0.03621,
+      0.017549
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.997305,
+      -0.061432,
+      -0.016997,
+      -0.036336
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 7,
+     "rotation_quaternion": [
+      0.997455,
+      -0.060106,
+      -0.01563,
+      -0.035032
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.997711,
+      -0.057333,
+      -0.01015,
+      -0.034391
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 19,
+     "rotation_quaternion": [
+      0.99837,
+      -0.047388,
+      -0.002529,
+      -0.031698
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.998781,
+      -0.037099,
+      0.005671,
+      -0.032054
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 31,
+     "rotation_quaternion": [
+      0.998812,
+      -0.029048,
+      0.011163,
+      -0.037501
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.998651,
+      -0.024399,
+      0.021138,
+      -0.040654
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 43,
+     "rotation_quaternion": [
+      0.998502,
+      -0.02243,
+      0.027669,
+      -0.041525
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 49,
+     "rotation_quaternion": [
+      0.99881,
+      -0.008352,
+      0.020465,
+      -0.043469
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 55,
+     "rotation_quaternion": [
+      0.998818,
+      -0.000699,
+      0.022878,
+      -0.04288
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 61,
+     "rotation_quaternion": [
+      0.998984,
+      -0.000145,
+      0.020167,
+      -0.04031
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 67,
+     "rotation_quaternion": [
+      0.999101,
+      -0.009495,
+      0.017648,
+      -0.037338
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 72,
+     "rotation_quaternion": [
+      0.998846,
+      -0.020175,
+      0.010165,
+      -0.042383
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.998071,
+      0.06185,
+      -0.003235,
+      -0.004296
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 7,
+     "rotation_quaternion": [
+      0.998094,
+      0.061516,
+      -0.003014,
+      -0.003969
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.99823,
+      0.059381,
+      -0.002215,
+      -0.002442
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 19,
+     "rotation_quaternion": [
+      0.998368,
+      0.057081,
+      -0.001083,
+      -0.001513
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.998752,
+      0.049371,
+      9e-06,
+      -0.007495
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 31,
+     "rotation_quaternion": [
+      0.998992,
+      0.043693,
+      0.000729,
+      -0.010272
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.999077,
+      0.041497,
+      0.002101,
+      -0.010901
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 43,
+     "rotation_quaternion": [
+      0.99875,
+      0.049266,
+      0.00287,
+      -0.007842
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 49,
+     "rotation_quaternion": [
+      0.998382,
+      0.056555,
+      0.001779,
+      -0.005658
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 55,
+     "rotation_quaternion": [
+      0.998428,
+      0.055102,
+      0.002124,
+      -0.01007
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 61,
+     "rotation_quaternion": [
+      0.998724,
+      0.049608,
+      0.001894,
+      -0.009245
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 67,
+     "rotation_quaternion": [
+      0.999095,
+      0.041869,
+      0.00169,
+      -0.00724
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 72,
+     "rotation_quaternion": [
+      0.999355,
+      0.035911,
+      0.000731,
+      5.3e-05
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.998071,
+      0.061852,
+      -0.00276,
+      -0.004625
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 7,
+     "rotation_quaternion": [
+      0.998093,
+      0.061519,
+      -0.002561,
+      -0.004274
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.99823,
+      0.059384,
+      -0.001788,
+      -0.002663
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 19,
+     "rotation_quaternion": [
+      0.998367,
+      0.057086,
+      -0.000704,
+      -0.001628
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.998752,
+      0.049367,
+      0.000403,
+      -0.007515
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 31,
+     "rotation_quaternion": [
+      0.998992,
+      0.043687,
+      0.001139,
+      -0.010251
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.999077,
+      0.041495,
+      0.002501,
+      -0.010787
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 43,
+     "rotation_quaternion": [
+      0.998751,
+      0.049257,
+      0.003339,
+      -0.007638
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 49,
+     "rotation_quaternion": [
+      0.998382,
+      0.056541,
+      0.002311,
+      -0.005516
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 55,
+     "rotation_quaternion": [
+      0.998428,
+      0.055103,
+      0.002644,
+      -0.009875
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 61,
+     "rotation_quaternion": [
+      0.998725,
+      0.049603,
+      0.002337,
+      -0.009079
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 67,
+     "rotation_quaternion": [
+      0.999097,
+      0.041849,
+      0.002058,
+      -0.007096
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 72,
+     "rotation_quaternion": [
+      0.999355,
+      0.035884,
+      0.001077,
+      0.000127
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 1,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 7,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 13,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 19,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 25,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 31,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 37,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 43,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 49,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 55,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 61,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 67,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 72,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 1,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 7,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 13,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 19,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 25,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 31,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 37,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 43,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 49,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 55,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 61,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 67,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 72,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.990313,
+      -0.085921,
+      0.014322,
+      -0.108135
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 7,
+     "rotation_quaternion": [
+      0.99101,
+      -0.08172,
+      0.014047,
+      -0.104993
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.992044,
+      -0.074823,
+      0.013413,
+      -0.100347
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 19,
+     "rotation_quaternion": [
+      0.992957,
+      -0.070072,
+      0.012708,
+      -0.094682
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.994013,
+      -0.062118,
+      0.011994,
+      -0.089084
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 31,
+     "rotation_quaternion": [
+      0.994578,
+      -0.063141,
+      0.011415,
+      -0.081838
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.996028,
+      -0.053178,
+      0.010171,
+      -0.070675
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 43,
+     "rotation_quaternion": [
+      0.996921,
+      -0.047374,
+      0.009244,
+      -0.061782
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 49,
+     "rotation_quaternion": [
+      0.995324,
+      -0.071012,
+      0.010208,
+      -0.064677
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 55,
+     "rotation_quaternion": [
+      0.995311,
+      -0.066397,
+      0.010478,
+      -0.069543
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 61,
+     "rotation_quaternion": [
+      0.995963,
+      -0.054985,
+      0.010187,
+      -0.070211
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 67,
+     "rotation_quaternion": [
+      0.996007,
+      -0.051432,
+      0.010251,
+      -0.072253
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 72,
+     "rotation_quaternion": [
+      0.995229,
+      -0.059515,
+      0.010859,
+      -0.076547
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.831752,
+      -0.52795,
+      0.129441,
+      -0.112706
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 7,
+     "rotation_quaternion": [
+      0.829036,
+      -0.530012,
+      0.144704,
+      -0.104132
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.82665,
+      -0.532516,
+      0.16643,
+      -0.073305
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 19,
+     "rotation_quaternion": [
+      0.83519,
+      -0.517888,
+      0.176072,
+      -0.056904
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.898542,
+      -0.434037,
+      0.053928,
+      -0.032034
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 31,
+     "rotation_quaternion": [
+      0.898401,
+      -0.33986,
+      -0.258612,
+      0.100174
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.812323,
+      -0.309207,
+      -0.456359,
+      0.19033
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 43,
+     "rotation_quaternion": [
+      0.801389,
+      -0.315273,
+      -0.423668,
+      0.280676
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 49,
+     "rotation_quaternion": [
+      0.830072,
+      -0.339459,
+      -0.311478,
+      0.314192
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 55,
+     "rotation_quaternion": [
+      0.82706,
+      -0.338019,
+      -0.314079,
+      0.321037
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 61,
+     "rotation_quaternion": [
+      0.820529,
+      -0.322733,
+      -0.344708,
+      0.322095
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 67,
+     "rotation_quaternion": [
+      0.801626,
+      -0.307701,
+      -0.372879,
+      0.351668
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 72,
+     "rotation_quaternion": [
+      0.783711,
+      -0.315904,
+      -0.394247,
+      0.361346
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.986765,
+      0.0,
+      0.0,
+      -0.162156
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 7,
+     "rotation_quaternion": [
+      0.982303,
+      0.0,
+      0.0,
+      -0.187275
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.967553,
+      0.0,
+      0.0,
+      -0.252597
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 19,
+     "rotation_quaternion": [
+      0.905875,
+      0.0,
+      0.0,
+      -0.423177
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.673594,
+      0.0,
+      0.0,
+      -0.738746
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 31,
+     "rotation_quaternion": [
+      0.396439,
+      0.0,
+      0.0,
+      -0.917957
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.272079,
+      0.0,
+      0.0,
+      -0.962269
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 43,
+     "rotation_quaternion": [
+      0.347104,
+      0.0,
+      0.0,
+      -0.93774
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 49,
+     "rotation_quaternion": [
+      0.424548,
+      0.0,
+      0.0,
+      -0.905402
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 55,
+     "rotation_quaternion": [
+      0.429392,
+      0.0,
+      0.0,
+      -0.903117
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 61,
+     "rotation_quaternion": [
+      0.462499,
+      0.0,
+      0.0,
+      -0.886612
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 67,
+     "rotation_quaternion": [
+      0.502713,
+      0.0,
+      0.0,
+      -0.864453
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 72,
+     "rotation_quaternion": [
+      0.463025,
+      0.0,
+      0.0,
+      -0.886345
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 1,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 7,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 13,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 19,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 25,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 31,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 37,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 43,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 49,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 55,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 61,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 67,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 72,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.988579,
+      -0.131163,
+      -0.012742,
+      0.073109
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 7,
+     "rotation_quaternion": [
+      0.988823,
+      -0.129856,
+      -0.012626,
+      0.072153
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.989412,
+      -0.126603,
+      -0.012336,
+      0.069883
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 19,
+     "rotation_quaternion": [
+      0.990116,
+      -0.12186,
+      -0.012062,
+      0.068375
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.989498,
+      -0.126147,
+      -0.012285,
+      0.069486
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 31,
+     "rotation_quaternion": [
+      0.98924,
+      -0.128502,
+      -0.012303,
+      0.068848
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.989172,
+      -0.129123,
+      -0.012305,
+      0.068652
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 43,
+     "rotation_quaternion": [
+      0.990765,
+      -0.120053,
+      -0.011467,
+      0.061966
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 49,
+     "rotation_quaternion": [
+      0.990393,
+      -0.122878,
+      -0.011585,
+      0.062352
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 55,
+     "rotation_quaternion": [
+      0.989017,
+      -0.131011,
+      -0.012249,
+      0.067312
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 61,
+     "rotation_quaternion": [
+      0.98952,
+      -0.128264,
+      -0.011989,
+      0.065215
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 67,
+     "rotation_quaternion": [
+      0.990463,
+      -0.122537,
+      -0.011537,
+      0.061908
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 72,
+     "rotation_quaternion": [
+      0.988089,
+      -0.136317,
+      -0.012658,
+      0.070262
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.768293,
+      -0.438139,
+      -0.352807,
+      -0.30543
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 7,
+     "rotation_quaternion": [
+      0.768691,
+      -0.440528,
+      -0.348156,
+      -0.306327
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.775236,
+      -0.442549,
+      -0.325287,
+      -0.311999
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 19,
+     "rotation_quaternion": [
+      0.788193,
+      -0.440099,
+      -0.294675,
+      -0.313414
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.799637,
+      -0.435143,
+      -0.263668,
+      -0.318915
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 31,
+     "rotation_quaternion": [
+      0.814885,
+      -0.435067,
+      -0.240907,
+      -0.297722
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.817796,
+      -0.436308,
+      -0.2484,
+      -0.281321
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 43,
+     "rotation_quaternion": [
+      0.811987,
+      -0.440344,
+      -0.253837,
+      -0.286951
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 49,
+     "rotation_quaternion": [
+      0.813329,
+      -0.438061,
+      -0.259801,
+      -0.28125
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 55,
+     "rotation_quaternion": [
+      0.807821,
+      -0.438145,
+      -0.264571,
+      -0.292322
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 61,
+     "rotation_quaternion": [
+      0.811397,
+      -0.440622,
+      -0.202144,
+      -0.326315
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 67,
+     "rotation_quaternion": [
+      0.857601,
+      -0.383678,
+      0.087342,
+      -0.330682
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 72,
+     "rotation_quaternion": [
+      0.849241,
+      -0.314608,
+      0.308682,
+      -0.290734
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.563038,
+      0.0,
+      0.0,
+      0.826431
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 7,
+     "rotation_quaternion": [
+      0.563921,
+      0.0,
+      0.0,
+      0.825829
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.569038,
+      0.0,
+      0.0,
+      0.822311
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 19,
+     "rotation_quaternion": [
+      0.572859,
+      0.0,
+      0.0,
+      0.819654
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.556601,
+      0.0,
+      0.0,
+      0.830779
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 31,
+     "rotation_quaternion": [
+      0.540359,
+      0.0,
+      0.0,
+      0.841434
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.533906,
+      0.0,
+      0.0,
+      0.845544
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 43,
+     "rotation_quaternion": [
+      0.537833,
+      0.0,
+      0.0,
+      0.843051
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 49,
+     "rotation_quaternion": [
+      0.543215,
+      0.0,
+      0.0,
+      0.839594
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 55,
+     "rotation_quaternion": [
+      0.542681,
+      0.0,
+      0.0,
+      0.839939
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 61,
+     "rotation_quaternion": [
+      0.515661,
+      0.0,
+      0.0,
+      0.856792
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 67,
+     "rotation_quaternion": [
+      0.551301,
+      0.0,
+      0.0,
+      0.834303
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 72,
+     "rotation_quaternion": [
+      0.484846,
+      0.0,
+      0.0,
+      0.874599
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 1,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 7,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 13,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 19,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 25,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 31,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 37,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 43,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 49,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 55,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 61,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 67,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 72,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   ]
+  },
+  "nod": {
+   "name_hint": "nod",
+   "frames": 47,
+   "source_clip": "head_nod_yes",
+   "samples": [
+    {
+     "bone": "Hips",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.99809,
+      -0.031415,
+      -0.046501,
+      -0.025829
+     ],
+     "location": [
+      0.002337,
+      -0.008243,
+      0.002644
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 5,
+     "rotation_quaternion": [
+      0.998254,
+      -0.030118,
+      -0.044305,
+      -0.024859
+     ],
+     "location": [
+      0.002257,
+      -0.008266,
+      0.00366
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 9,
+     "rotation_quaternion": [
+      0.998574,
+      -0.026597,
+      -0.039338,
+      -0.02439
+     ],
+     "location": [
+      0.00187,
+      -0.008153,
+      0.005119
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.998898,
+      -0.022673,
+      -0.033418,
+      -0.023915
+     ],
+     "location": [
+      0.00117,
+      -0.008047,
+      0.006174
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 17,
+     "rotation_quaternion": [
+      0.999118,
+      -0.022246,
+      -0.027466,
+      -0.022648
+     ],
+     "location": [
+      0.00045,
+      -0.008092,
+      0.006446
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 21,
+     "rotation_quaternion": [
+      0.999175,
+      -0.026148,
+      -0.022652,
+      -0.021261
+     ],
+     "location": [
+      -0.000156,
+      -0.008082,
+      0.006594
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.999252,
+      -0.025753,
+      -0.020118,
+      -0.020659
+     ],
+     "location": [
+      -0.000887,
+      -0.008063,
+      0.004444
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 29,
+     "rotation_quaternion": [
+      0.999339,
+      -0.021772,
+      -0.020298,
+      -0.020843
+     ],
+     "location": [
+      -0.001775,
+      -0.008164,
+      0.001996
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 33,
+     "rotation_quaternion": [
+      0.999178,
+      -0.025542,
+      -0.023906,
+      -0.020497
+     ],
+     "location": [
+      -0.00185,
+      -0.008002,
+      0.002525
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.999057,
+      -0.026844,
+      -0.027105,
+      -0.02071
+     ],
+     "location": [
+      -0.001589,
+      -0.008,
+      0.003027
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 41,
+     "rotation_quaternion": [
+      0.998776,
+      -0.031604,
+      -0.031924,
+      -0.020712
+     ],
+     "location": [
+      -0.00091,
+      -0.008034,
+      0.003775
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 45,
+     "rotation_quaternion": [
+      0.99856,
+      -0.031501,
+      -0.037716,
+      -0.021492
+     ],
+     "location": [
+      -0.000401,
+      -0.008106,
+      0.002568
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 47,
+     "rotation_quaternion": [
+      0.998458,
+      -0.030922,
+      -0.040371,
+      -0.022235
+     ],
+     "location": [
+      -0.000259,
+      -0.008131,
+      0.002003
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.999316,
+      0.029084,
+      0.012898,
+      0.018861
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 5,
+     "rotation_quaternion": [
+      0.999315,
+      0.028951,
+      0.012936,
+      0.019091
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 9,
+     "rotation_quaternion": [
+      0.999302,
+      0.029152,
+      0.013069,
+      0.019343
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.999291,
+      0.029348,
+      0.013221,
+      0.019514
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 17,
+     "rotation_quaternion": [
+      0.999283,
+      0.029363,
+      0.013432,
+      0.019763
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 21,
+     "rotation_quaternion": [
+      0.999271,
+      0.029464,
+      0.013657,
+      0.020085
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.999241,
+      0.03031,
+      0.013713,
+      0.020263
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 29,
+     "rotation_quaternion": [
+      0.999231,
+      0.030716,
+      0.013608,
+      0.0202
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 33,
+     "rotation_quaternion": [
+      0.999229,
+      0.030692,
+      0.013457,
+      0.020456
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.999246,
+      0.030153,
+      0.013416,
+      0.020469
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 41,
+     "rotation_quaternion": [
+      0.999267,
+      0.029538,
+      0.013333,
+      0.020393
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 45,
+     "rotation_quaternion": [
+      0.999276,
+      0.029317,
+      0.013265,
+      0.020293
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 47,
+     "rotation_quaternion": [
+      0.999281,
+      0.029244,
+      0.013147,
+      0.02023
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.999851,
+      0.010081,
+      0.002927,
+      0.013673
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 5,
+     "rotation_quaternion": [
+      0.999848,
+      0.009929,
+      0.003034,
+      0.013996
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 9,
+     "rotation_quaternion": [
+      0.999835,
+      0.010664,
+      0.003312,
+      0.014342
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.999822,
+      0.011354,
+      0.003608,
+      0.014607
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 17,
+     "rotation_quaternion": [
+      0.999812,
+      0.011573,
+      0.004003,
+      0.015014
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 21,
+     "rotation_quaternion": [
+      0.999808,
+      0.011334,
+      0.004439,
+      0.015374
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.999784,
+      0.01288,
+      0.004578,
+      0.015653
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 29,
+     "rotation_quaternion": [
+      0.999772,
+      0.013681,
+      0.004398,
+      0.015796
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 33,
+     "rotation_quaternion": [
+      0.999776,
+      0.01332,
+      0.004137,
+      0.015902
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.999788,
+      0.012403,
+      0.004027,
+      0.015911
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 41,
+     "rotation_quaternion": [
+      0.999806,
+      0.011114,
+      0.003871,
+      0.015765
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 45,
+     "rotation_quaternion": [
+      0.999814,
+      0.0107,
+      0.003755,
+      0.015621
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 47,
+     "rotation_quaternion": [
+      0.999818,
+      0.010501,
+      0.003472,
+      0.015522
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.999853,
+      0.009857,
+      0.003079,
+      0.013704
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 5,
+     "rotation_quaternion": [
+      0.999849,
+      0.009707,
+      0.003238,
+      0.014033
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 9,
+     "rotation_quaternion": [
+      0.999836,
+      0.01044,
+      0.003507,
+      0.014379
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.999824,
+      0.011128,
+      0.003798,
+      0.014642
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 17,
+     "rotation_quaternion": [
+      0.999813,
+      0.011347,
+      0.004193,
+      0.015051
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 21,
+     "rotation_quaternion": [
+      0.999809,
+      0.011107,
+      0.004621,
+      0.015419
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.999785,
+      0.012654,
+      0.004765,
+      0.015696
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 29,
+     "rotation_quaternion": [
+      0.999773,
+      0.013455,
+      0.004588,
+      0.015867
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 33,
+     "rotation_quaternion": [
+      0.999778,
+      0.013093,
+      0.004294,
+      0.015963
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.999789,
+      0.012178,
+      0.004209,
+      0.015964
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 41,
+     "rotation_quaternion": [
+      0.999807,
+      0.010891,
+      0.004047,
+      0.015818
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 45,
+     "rotation_quaternion": [
+      0.999815,
+      0.010476,
+      0.00394,
+      0.01567
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 47,
+     "rotation_quaternion": [
+      0.999819,
+      0.010277,
+      0.003659,
+      0.015565
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 1,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 5,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 9,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 13,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 17,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 21,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 25,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 29,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 33,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 37,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 41,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 45,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 47,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 1,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 5,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 9,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 13,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 17,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 21,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 25,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 29,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 33,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 37,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 41,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 45,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 47,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.982555,
+      -0.107426,
+      0.025257,
+      -0.149691
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 5,
+     "rotation_quaternion": [
+      0.982844,
+      -0.107024,
+      0.025039,
+      -0.148111
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 9,
+     "rotation_quaternion": [
+      0.983156,
+      -0.107193,
+      0.024759,
+      -0.145946
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.983711,
+      -0.104912,
+      0.024505,
+      -0.143896
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 17,
+     "rotation_quaternion": [
+      0.983944,
+      -0.103311,
+      0.024456,
+      -0.143464
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 21,
+     "rotation_quaternion": [
+      0.98369,
+      -0.104425,
+      0.02457,
+      -0.144378
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.983678,
+      -0.103618,
+      0.02467,
+      -0.145028
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 29,
+     "rotation_quaternion": [
+      0.983126,
+      -0.104696,
+      0.025024,
+      -0.147905
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 33,
+     "rotation_quaternion": [
+      0.982742,
+      -0.105622,
+      0.025255,
+      -0.149746
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.982936,
+      -0.105362,
+      0.02512,
+      -0.148674
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 41,
+     "rotation_quaternion": [
+      0.983187,
+      -0.104655,
+      0.02498,
+      -0.147535
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 45,
+     "rotation_quaternion": [
+      0.98334,
+      -0.10401,
+      0.024912,
+      -0.14698
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 47,
+     "rotation_quaternion": [
+      0.983191,
+      -0.104389,
+      0.025002,
+      -0.147695
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.804045,
+      -0.567677,
+      0.126845,
+      -0.123146
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 5,
+     "rotation_quaternion": [
+      0.804727,
+      -0.566254,
+      0.127042,
+      -0.12502
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 9,
+     "rotation_quaternion": [
+      0.806581,
+      -0.563028,
+      0.126587,
+      -0.12807
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.808483,
+      -0.56046,
+      0.124912,
+      -0.128984
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 17,
+     "rotation_quaternion": [
+      0.809998,
+      -0.559141,
+      0.121772,
+      -0.1282
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 21,
+     "rotation_quaternion": [
+      0.807727,
+      -0.562895,
+      0.122973,
+      -0.124916
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.804666,
+      -0.566253,
+      0.12691,
+      -0.125552
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 29,
+     "rotation_quaternion": [
+      0.807211,
+      -0.563622,
+      0.125115,
+      -0.12283
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 33,
+     "rotation_quaternion": [
+      0.808318,
+      -0.562997,
+      0.123241,
+      -0.120282
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.805757,
+      -0.565575,
+      0.124317,
+      -0.124201
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 41,
+     "rotation_quaternion": [
+      0.803392,
+      -0.568452,
+      0.125566,
+      -0.125123
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 45,
+     "rotation_quaternion": [
+      0.803253,
+      -0.569287,
+      0.123949,
+      -0.12383
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 47,
+     "rotation_quaternion": [
+      0.804112,
+      -0.568602,
+      0.123287,
+      -0.122047
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.999917,
+      0.0,
+      0.0,
+      -0.012871
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 5,
+     "rotation_quaternion": [
+      0.999915,
+      0.0,
+      0.0,
+      -0.012999
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 9,
+     "rotation_quaternion": [
+      0.999899,
+      0.0,
+      0.0,
+      -0.014206
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.999873,
+      0.0,
+      0.0,
+      -0.015923
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 17,
+     "rotation_quaternion": [
+      0.999936,
+      0.0,
+      0.0,
+      -0.011298
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 21,
+     "rotation_quaternion": [
+      0.999955,
+      0.0,
+      0.0,
+      -0.009525
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.999904,
+      0.0,
+      0.0,
+      -0.01387
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 29,
+     "rotation_quaternion": [
+      0.99991,
+      0.0,
+      0.0,
+      -0.013438
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 33,
+     "rotation_quaternion": [
+      0.99989,
+      0.0,
+      0.0,
+      -0.014797
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.999872,
+      0.0,
+      0.0,
+      -0.016013
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 41,
+     "rotation_quaternion": [
+      0.999858,
+      0.0,
+      0.0,
+      -0.016863
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 45,
+     "rotation_quaternion": [
+      0.999891,
+      0.0,
+      0.0,
+      -0.014747
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 47,
+     "rotation_quaternion": [
+      0.999911,
+      0.0,
+      0.0,
+      -0.013357
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 1,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 5,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 9,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 13,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 17,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 21,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 25,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 29,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 33,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 37,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 41,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 45,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 47,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.982683,
+      -0.128177,
+      -0.027331,
+      0.130986
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 5,
+     "rotation_quaternion": [
+      0.982906,
+      -0.127746,
+      -0.027262,
+      0.129748
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 9,
+     "rotation_quaternion": [
+      0.983059,
+      -0.126521,
+      -0.02734,
+      0.129766
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.983037,
+      -0.12573,
+      -0.02749,
+      0.130666
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 17,
+     "rotation_quaternion": [
+      0.982767,
+      -0.12661,
+      -0.027592,
+      0.131826
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 21,
+     "rotation_quaternion": [
+      0.98253,
+      -0.129524,
+      -0.02738,
+      0.1308
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.982204,
+      -0.132391,
+      -0.027061,
+      0.130442
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 29,
+     "rotation_quaternion": [
+      0.982065,
+      -0.132216,
+      -0.027261,
+      0.13162
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 33,
+     "rotation_quaternion": [
+      0.981895,
+      -0.133027,
+      -0.027275,
+      0.132069
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.982104,
+      -0.132328,
+      -0.027205,
+      0.131226
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 41,
+     "rotation_quaternion": [
+      0.982237,
+      -0.132931,
+      -0.027005,
+      0.129652
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 45,
+     "rotation_quaternion": [
+      0.982314,
+      -0.131979,
+      -0.027012,
+      0.130044
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 47,
+     "rotation_quaternion": [
+      0.982325,
+      -0.131817,
+      -0.027024,
+      0.130121
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.827281,
+      -0.497226,
+      -0.213076,
+      0.151563
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 5,
+     "rotation_quaternion": [
+      0.828207,
+      -0.495619,
+      -0.212737,
+      0.152241
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 9,
+     "rotation_quaternion": [
+      0.828547,
+      -0.495064,
+      -0.211505,
+      0.153907
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.829248,
+      -0.493589,
+      -0.20935,
+      0.157764
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 17,
+     "rotation_quaternion": [
+      0.83054,
+      -0.491404,
+      -0.207682,
+      0.159982
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 21,
+     "rotation_quaternion": [
+      0.831233,
+      -0.490392,
+      -0.209288,
+      0.157369
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.832505,
+      -0.488673,
+      -0.210141,
+      0.154837
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 29,
+     "rotation_quaternion": [
+      0.832609,
+      -0.489179,
+      -0.208711,
+      0.154618
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 33,
+     "rotation_quaternion": [
+      0.832971,
+      -0.489147,
+      -0.208551,
+      0.152975
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.831665,
+      -0.49079,
+      -0.210091,
+      0.152705
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 41,
+     "rotation_quaternion": [
+      0.831844,
+      -0.490799,
+      -0.210154,
+      0.151612
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 45,
+     "rotation_quaternion": [
+      0.831087,
+      -0.491474,
+      -0.210985,
+      0.152422
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 47,
+     "rotation_quaternion": [
+      0.830428,
+      -0.49273,
+      -0.21126,
+      0.151576
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.998294,
+      0.0,
+      0.0,
+      0.058381
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 5,
+     "rotation_quaternion": [
+      0.99828,
+      0.0,
+      0.0,
+      0.058618
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 9,
+     "rotation_quaternion": [
+      0.998265,
+      0.0,
+      0.0,
+      0.058872
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.998221,
+      0.0,
+      0.0,
+      0.059626
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 17,
+     "rotation_quaternion": [
+      0.998243,
+      0.0,
+      0.0,
+      0.059247
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 21,
+     "rotation_quaternion": [
+      0.998326,
+      0.0,
+      0.0,
+      0.057842
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.998404,
+      0.0,
+      0.0,
+      0.056472
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 29,
+     "rotation_quaternion": [
+      0.998542,
+      0.0,
+      0.0,
+      0.053977
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 33,
+     "rotation_quaternion": [
+      0.998425,
+      0.0,
+      0.0,
+      0.056109
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.998576,
+      0.0,
+      0.0,
+      0.053342
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 41,
+     "rotation_quaternion": [
+      0.998513,
+      0.0,
+      0.0,
+      0.054507
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 45,
+     "rotation_quaternion": [
+      0.998473,
+      0.0,
+      0.0,
+      0.055244
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 47,
+     "rotation_quaternion": [
+      0.998483,
+      0.0,
+      0.0,
+      0.055051
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 1,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 5,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 9,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 13,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 17,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 21,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 25,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 29,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 33,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 37,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 41,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 45,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 47,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "Neck",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.998792,
+      0.048977,
+      -0.000898,
+      0.003953
+     ]
+    },
+    {
+     "bone": "Neck",
+     "frame": 5,
+     "rotation_quaternion": [
+      0.998982,
+      0.044769,
+      -0.000482,
+      0.005468
+     ]
+    },
+    {
+     "bone": "Neck",
+     "frame": 9,
+     "rotation_quaternion": [
+      0.999485,
+      0.030236,
+      0.001246,
+      0.01054
+     ]
+    },
+    {
+     "bone": "Neck",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.999721,
+      0.015976,
+      0.002022,
+      0.017201
+     ]
+    },
+    {
+     "bone": "Neck",
+     "frame": 17,
+     "rotation_quaternion": [
+      0.999551,
+      0.02069,
+      0.003422,
+      0.021319
+     ]
+    },
+    {
+     "bone": "Neck",
+     "frame": 21,
+     "rotation_quaternion": [
+      0.998653,
+      0.044933,
+      0.004067,
+      0.025531
+     ]
+    },
+    {
+     "bone": "Neck",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.998032,
+      0.056206,
+      0.004557,
+      0.027418
+     ]
+    },
+    {
+     "bone": "Neck",
+     "frame": 29,
+     "rotation_quaternion": [
+      0.998345,
+      0.050882,
+      0.003145,
+      0.026611
+     ]
+    },
+    {
+     "bone": "Neck",
+     "frame": 33,
+     "rotation_quaternion": [
+      0.998048,
+      0.05814,
+      0.0022,
+      0.022705
+     ]
+    },
+    {
+     "bone": "Neck",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.998567,
+      0.050043,
+      0.001352,
+      0.018912
+     ]
+    },
+    {
+     "bone": "Neck",
+     "frame": 41,
+     "rotation_quaternion": [
+      0.998346,
+      0.055181,
+      0.001333,
+      0.016079
+     ]
+    },
+    {
+     "bone": "Neck",
+     "frame": 45,
+     "rotation_quaternion": [
+      0.998595,
+      0.051423,
+      0.000716,
+      0.012763
+     ]
+    },
+    {
+     "bone": "Neck",
+     "frame": 47,
+     "rotation_quaternion": [
+      0.99871,
+      0.049402,
+      0.000583,
+      0.011721
+     ]
+    },
+    {
+     "bone": "Head",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.997755,
+      -0.065892,
+      0.011907,
+      -0.001428
+     ]
+    },
+    {
+     "bone": "Head",
+     "frame": 5,
+     "rotation_quaternion": [
+      0.997313,
+      -0.071688,
+      0.014835,
+      0.001473
+     ]
+    },
+    {
+     "bone": "Head",
+     "frame": 9,
+     "rotation_quaternion": [
+      0.991606,
+      -0.125809,
+      0.020097,
+      0.021648
+     ]
+    },
+    {
+     "bone": "Head",
+     "frame": 13,
+     "rotation_quaternion": [
+      0.98448,
+      -0.169378,
+      0.023683,
+      0.039153
+     ]
+    },
+    {
+     "bone": "Head",
+     "frame": 17,
+     "rotation_quaternion": [
+      0.985673,
+      -0.157355,
+      0.031307,
+      0.051812
+     ]
+    },
+    {
+     "bone": "Head",
+     "frame": 21,
+     "rotation_quaternion": [
+      0.994525,
+      -0.07013,
+      0.037384,
+      0.067126
+     ]
+    },
+    {
+     "bone": "Head",
+     "frame": 25,
+     "rotation_quaternion": [
+      0.995758,
+      -0.042037,
+      0.042079,
+      0.070096
+     ]
+    },
+    {
+     "bone": "Head",
+     "frame": 29,
+     "rotation_quaternion": [
+      0.9946,
+      -0.073394,
+      0.033904,
+      0.065068
+     ]
+    },
+    {
+     "bone": "Head",
+     "frame": 33,
+     "rotation_quaternion": [
+      0.996893,
+      -0.048539,
+      0.029362,
+      0.054615
+     ]
+    },
+    {
+     "bone": "Head",
+     "frame": 37,
+     "rotation_quaternion": [
+      0.996228,
+      -0.071671,
+      0.02437,
+      0.042403
+     ]
+    },
+    {
+     "bone": "Head",
+     "frame": 41,
+     "rotation_quaternion": [
+      0.997954,
+      -0.04711,
+      0.024604,
+      0.035411
+     ]
+    },
+    {
+     "bone": "Head",
+     "frame": 45,
+     "rotation_quaternion": [
+      0.997605,
+      -0.061177,
+      0.021286,
+      0.024202
+     ]
+    },
+    {
+     "bone": "Head",
+     "frame": 47,
+     "rotation_quaternion": [
+      0.997249,
+      -0.068254,
+      0.020648,
+      0.020201
+     ]
+    }
+   ]
+  },
+  "point": {
+   "name_hint": "point",
+   "frames": 60,
+   "source_clip": "angry_point",
+   "samples": [
+    {
+     "bone": "Hips",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.998089,
+      -0.031387,
+      -0.046528,
+      -0.025839
+     ],
+     "location": [
+      0.00235,
+      -0.00826,
+      0.00275
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 6,
+     "rotation_quaternion": [
+      0.99838,
+      -0.027371,
+      -0.04368,
+      -0.024076
+     ],
+     "location": [
+      0.00256,
+      -0.009018,
+      0.005973
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 11,
+     "rotation_quaternion": [
+      0.999245,
+      -0.018076,
+      -0.02933,
+      -0.017828
+     ],
+     "location": [
+      0.002928,
+      -0.007466,
+      0.007851
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 16,
+     "rotation_quaternion": [
+      0.999861,
+      0.005218,
+      0.012224,
+      -0.010084
+     ],
+     "location": [
+      0.001386,
+      -0.003315,
+      0.001066
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 21,
+     "rotation_quaternion": [
+      0.999086,
+      0.026438,
+      0.032148,
+      -0.009646
+     ],
+     "location": [
+      -0.002905,
+      -0.002613,
+      -0.014187
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 26,
+     "rotation_quaternion": [
+      0.996116,
+      0.036879,
+      0.079218,
+      -0.009463
+     ],
+     "location": [
+      -0.010568,
+      -0.002561,
+      -0.018066
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 31,
+     "rotation_quaternion": [
+      0.993941,
+      0.023878,
+      0.106839,
+      -0.009788
+     ],
+     "location": [
+      -0.015823,
+      -0.004016,
+      -0.010596
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 36,
+     "rotation_quaternion": [
+      0.993527,
+      0.013036,
+      0.112501,
+      -0.008781
+     ],
+     "location": [
+      -0.017614,
+      -0.006275,
+      -0.006335
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 41,
+     "rotation_quaternion": [
+      0.993932,
+      0.002345,
+      0.109709,
+      -0.007603
+     ],
+     "location": [
+      -0.018479,
+      -0.007509,
+      -0.005013
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 46,
+     "rotation_quaternion": [
+      0.994584,
+      -0.004125,
+      0.103635,
+      -0.006775
+     ],
+     "location": [
+      -0.018718,
+      -0.008236,
+      -0.006574
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 51,
+     "rotation_quaternion": [
+      0.995787,
+      -0.007174,
+      0.091166,
+      -0.006614
+     ],
+     "location": [
+      -0.017853,
+      -0.008125,
+      -0.010577
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 56,
+     "rotation_quaternion": [
+      0.998243,
+      -0.009537,
+      0.057896,
+      -0.008237
+     ],
+     "location": [
+      -0.016467,
+      -0.008449,
+      -0.016575
+     ]
+    },
+    {
+     "bone": "Hips",
+     "frame": 60,
+     "rotation_quaternion": [
+      0.9995,
+      -0.012379,
+      0.026937,
+      -0.011025
+     ],
+     "location": [
+      -0.015593,
+      -0.008733,
+      -0.021
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.999315,
+      0.029149,
+      0.012822,
+      0.018847
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 6,
+     "rotation_quaternion": [
+      0.999316,
+      0.02868,
+      0.012078,
+      0.019976
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 11,
+     "rotation_quaternion": [
+      0.999295,
+      0.028473,
+      0.0114,
+      0.021643
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 16,
+     "rotation_quaternion": [
+      0.999195,
+      0.030363,
+      0.012678,
+      0.022961
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 21,
+     "rotation_quaternion": [
+      0.998959,
+      0.03506,
+      0.016685,
+      0.023946
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 26,
+     "rotation_quaternion": [
+      0.998881,
+      0.035944,
+      0.019,
+      0.024156
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 31,
+     "rotation_quaternion": [
+      0.998955,
+      0.035624,
+      0.016418,
+      0.023444
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 36,
+     "rotation_quaternion": [
+      0.998979,
+      0.034236,
+      0.019788,
+      0.021865
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 41,
+     "rotation_quaternion": [
+      0.999038,
+      0.032963,
+      0.019255,
+      0.0216
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 46,
+     "rotation_quaternion": [
+      0.999053,
+      0.032786,
+      0.018628,
+      0.021698
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 51,
+     "rotation_quaternion": [
+      0.999113,
+      0.032294,
+      0.01675,
+      0.021213
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 56,
+     "rotation_quaternion": [
+      0.999152,
+      0.03239,
+      0.015282,
+      0.020296
+     ]
+    },
+    {
+     "bone": "Spine",
+     "frame": 60,
+     "rotation_quaternion": [
+      0.999155,
+      0.032798,
+      0.014769,
+      0.019901
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.999853,
+      0.01007,
+      0.002817,
+      0.013597
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 6,
+     "rotation_quaternion": [
+      0.999851,
+      0.0092,
+      0.001469,
+      0.014509
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 11,
+     "rotation_quaternion": [
+      0.999818,
+      0.009369,
+      0.000302,
+      0.016614
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 16,
+     "rotation_quaternion": [
+      0.999723,
+      0.013505,
+      0.002713,
+      0.019062
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 21,
+     "rotation_quaternion": [
+      0.999544,
+      0.019974,
+      0.009695,
+      0.020447
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 26,
+     "rotation_quaternion": [
+      0.999478,
+      0.020919,
+      0.013651,
+      0.020494
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 31,
+     "rotation_quaternion": [
+      0.999554,
+      0.020223,
+      0.009233,
+      0.019919
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 36,
+     "rotation_quaternion": [
+      0.999539,
+      0.018599,
+      0.015079,
+      0.01868
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 41,
+     "rotation_quaternion": [
+      0.999593,
+      0.016684,
+      0.014115,
+      0.018351
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 46,
+     "rotation_quaternion": [
+      0.999613,
+      0.016168,
+      0.013002,
+      0.018519
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 51,
+     "rotation_quaternion": [
+      0.999682,
+      0.01491,
+      0.009855,
+      0.017761
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 56,
+     "rotation_quaternion": [
+      0.999726,
+      0.014945,
+      0.007448,
+      0.016387
+     ]
+    },
+    {
+     "bone": "Spine1",
+     "frame": 60,
+     "rotation_quaternion": [
+      0.999738,
+      0.015626,
+      0.006594,
+      0.015358
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.999854,
+      0.009847,
+      0.003012,
+      0.013625
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 6,
+     "rotation_quaternion": [
+      0.999853,
+      0.00897,
+      0.00163,
+      0.014522
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 11,
+     "rotation_quaternion": [
+      0.99982,
+      0.009134,
+      0.000413,
+      0.016607
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 16,
+     "rotation_quaternion": [
+      0.999726,
+      0.013279,
+      0.002791,
+      0.01908
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 21,
+     "rotation_quaternion": [
+      0.999545,
+      0.019742,
+      0.009787,
+      0.020572
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 26,
+     "rotation_quaternion": [
+      0.999478,
+      0.020688,
+      0.013738,
+      0.020666
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 31,
+     "rotation_quaternion": [
+      0.999555,
+      0.019991,
+      0.009342,
+      0.020036
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 36,
+     "rotation_quaternion": [
+      0.999537,
+      0.018355,
+      0.015236,
+      0.01887
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 41,
+     "rotation_quaternion": [
+      0.999591,
+      0.01644,
+      0.014276,
+      0.01853
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 46,
+     "rotation_quaternion": [
+      0.999612,
+      0.015927,
+      0.013161,
+      0.018682
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 51,
+     "rotation_quaternion": [
+      0.999682,
+      0.014675,
+      0.01005,
+      0.017877
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 56,
+     "rotation_quaternion": [
+      0.999726,
+      0.014718,
+      0.007686,
+      0.01647
+     ]
+    },
+    {
+     "bone": "Spine2",
+     "frame": 60,
+     "rotation_quaternion": [
+      0.999739,
+      0.015401,
+      0.006842,
+      0.015431
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 1,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 6,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 11,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 16,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 21,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 26,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 31,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 36,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 41,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 46,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 51,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 56,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulderPlate",
+     "frame": 60,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 1,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 6,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 11,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 16,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 21,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 26,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 31,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 36,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 41,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 46,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 51,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 56,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulderPlate",
+     "frame": 60,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.982557,
+      -0.107347,
+      0.025265,
+      -0.149731
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 6,
+     "rotation_quaternion": [
+      0.983323,
+      -0.103034,
+      0.025085,
+      -0.147749
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 11,
+     "rotation_quaternion": [
+      0.983364,
+      -0.101702,
+      0.025182,
+      -0.148382
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 16,
+     "rotation_quaternion": [
+      0.982842,
+      -0.104232,
+      0.025349,
+      -0.150048
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 21,
+     "rotation_quaternion": [
+      0.983017,
+      -0.106938,
+      0.024935,
+      -0.147024
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 26,
+     "rotation_quaternion": [
+      0.98266,
+      -0.107285,
+      0.025185,
+      -0.149092
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 31,
+     "rotation_quaternion": [
+      0.983351,
+      -0.107947,
+      0.024557,
+      -0.144091
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 36,
+     "rotation_quaternion": [
+      0.984852,
+      -0.10931,
+      0.023117,
+      -0.132599
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 41,
+     "rotation_quaternion": [
+      0.984679,
+      -0.10906,
+      0.023301,
+      -0.134056
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 46,
+     "rotation_quaternion": [
+      0.984603,
+      -0.108623,
+      0.023415,
+      -0.134942
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 51,
+     "rotation_quaternion": [
+      0.983354,
+      -0.110468,
+      0.024295,
+      -0.1422
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 56,
+     "rotation_quaternion": [
+      0.981941,
+      -0.114548,
+      0.025035,
+      -0.14847
+     ]
+    },
+    {
+     "bone": "LeftShoulder",
+     "frame": 60,
+     "rotation_quaternion": [
+      0.9815,
+      -0.114363,
+      0.025408,
+      -0.151437
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.803951,
+      -0.567854,
+      0.126888,
+      -0.122898
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 6,
+     "rotation_quaternion": [
+      0.80153,
+      -0.570494,
+      0.133357,
+      -0.11959
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 11,
+     "rotation_quaternion": [
+      0.802916,
+      -0.566058,
+      0.141973,
+      -0.121438
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 16,
+     "rotation_quaternion": [
+      0.809581,
+      -0.557481,
+      0.12048,
+      -0.138843
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 21,
+     "rotation_quaternion": [
+      0.814939,
+      -0.549831,
+      0.0966,
+      -0.155621
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 26,
+     "rotation_quaternion": [
+      0.815053,
+      -0.545489,
+      0.092684,
+      -0.171812
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 31,
+     "rotation_quaternion": [
+      0.811941,
+      -0.558646,
+      0.087034,
+      -0.14522
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 36,
+     "rotation_quaternion": [
+      0.810088,
+      -0.560378,
+      0.090093,
+      -0.147027
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 41,
+     "rotation_quaternion": [
+      0.808589,
+      -0.568524,
+      0.083971,
+      -0.126146
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 46,
+     "rotation_quaternion": [
+      0.807481,
+      -0.569214,
+      0.091028,
+      -0.125235
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 51,
+     "rotation_quaternion": [
+      0.808407,
+      -0.569387,
+      0.091171,
+      -0.118165
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 56,
+     "rotation_quaternion": [
+      0.811102,
+      -0.565588,
+      0.094428,
+      -0.115357
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "frame": 60,
+     "rotation_quaternion": [
+      0.811093,
+      -0.565185,
+      0.094659,
+      -0.117192
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.999919,
+      0.0,
+      0.0,
+      -0.012735
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 6,
+     "rotation_quaternion": [
+      0.999836,
+      0.0,
+      0.0,
+      -0.018066
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 11,
+     "rotation_quaternion": [
+      0.999501,
+      0.0,
+      0.0,
+      -0.031577
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 16,
+     "rotation_quaternion": [
+      0.999279,
+      0.0,
+      0.0,
+      -0.037972
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 21,
+     "rotation_quaternion": [
+      0.998691,
+      0.0,
+      0.0,
+      -0.05115
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 26,
+     "rotation_quaternion": [
+      0.998515,
+      0.0,
+      0.0,
+      -0.054469
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 31,
+     "rotation_quaternion": [
+      0.999233,
+      0.0,
+      0.0,
+      -0.039092
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 36,
+     "rotation_quaternion": [
+      0.999925,
+      0.0,
+      0.0,
+      -0.012209
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 41,
+     "rotation_quaternion": [
+      0.999999,
+      0.0,
+      0.0,
+      -0.001307
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 46,
+     "rotation_quaternion": [
+      0.999973,
+      0.0,
+      0.0,
+      -0.00722
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 51,
+     "rotation_quaternion": [
+      0.999874,
+      0.0,
+      0.0,
+      -0.015858
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 56,
+     "rotation_quaternion": [
+      0.99989,
+      0.0,
+      0.0,
+      -0.014815
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "frame": 60,
+     "rotation_quaternion": [
+      0.999948,
+      0.0,
+      0.0,
+      -0.01023
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 1,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 6,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 11,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 16,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 21,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 26,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 31,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 36,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 41,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 46,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 51,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 56,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "LeftHand",
+     "frame": 60,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.982616,
+      -0.128596,
+      -0.027492,
+      0.131047
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 6,
+     "rotation_quaternion": [
+      0.982116,
+      -0.137394,
+      -0.026269,
+      0.126018
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 11,
+     "rotation_quaternion": [
+      0.983473,
+      -0.133779,
+      -0.025634,
+      0.119272
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 16,
+     "rotation_quaternion": [
+      0.985876,
+      -0.106879,
+      -0.027937,
+      0.125877
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 21,
+     "rotation_quaternion": [
+      0.985173,
+      -0.054544,
+      -0.034836,
+      0.158708
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 26,
+     "rotation_quaternion": [
+      0.98817,
+      -0.061747,
+      -0.031678,
+      0.136429
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 31,
+     "rotation_quaternion": [
+      0.985301,
+      -0.101939,
+      -0.029186,
+      0.133909
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 36,
+     "rotation_quaternion": [
+      0.980248,
+      -0.117224,
+      -0.031122,
+      0.156218
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 41,
+     "rotation_quaternion": [
+      0.979914,
+      -0.124828,
+      -0.030256,
+      0.152544
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 46,
+     "rotation_quaternion": [
+      0.979544,
+      -0.131701,
+      -0.029479,
+      0.149252
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 51,
+     "rotation_quaternion": [
+      0.981977,
+      -0.135956,
+      -0.026672,
+      0.128546
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 56,
+     "rotation_quaternion": [
+      0.983261,
+      -0.131129,
+      -0.026329,
+      0.123734
+     ]
+    },
+    {
+     "bone": "RightShoulder",
+     "frame": 60,
+     "rotation_quaternion": [
+      0.982728,
+      -0.129481,
+      -0.027126,
+      0.129403
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.827615,
+      -0.496124,
+      -0.214222,
+      0.151702
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 6,
+     "rotation_quaternion": [
+      0.849651,
+      -0.442338,
+      -0.241426,
+      0.155195
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 11,
+     "rotation_quaternion": [
+      0.876127,
+      -0.405408,
+      -0.219531,
+      0.140796
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 16,
+     "rotation_quaternion": [
+      0.881469,
+      -0.437493,
+      -0.098243,
+      0.148192
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 21,
+     "rotation_quaternion": [
+      0.857491,
+      -0.427331,
+      0.112312,
+      0.263239
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 26,
+     "rotation_quaternion": [
+      0.84808,
+      -0.451595,
+      0.146254,
+      0.235291
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 31,
+     "rotation_quaternion": [
+      0.864544,
+      -0.469088,
+      0.070436,
+      0.165804
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 36,
+     "rotation_quaternion": [
+      0.873113,
+      -0.475746,
+      -0.020993,
+      0.104393
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 41,
+     "rotation_quaternion": [
+      0.849187,
+      -0.508872,
+      -0.086669,
+      0.11136
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 46,
+     "rotation_quaternion": [
+      0.832602,
+      -0.533819,
+      -0.126225,
+      0.076389
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 51,
+     "rotation_quaternion": [
+      0.828019,
+      -0.517327,
+      -0.207182,
+      0.061787
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 56,
+     "rotation_quaternion": [
+      0.834129,
+      -0.504917,
+      -0.211539,
+      0.067367
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "frame": 60,
+     "rotation_quaternion": [
+      0.84168,
+      -0.500007,
+      -0.185449,
+      0.084712
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 1,
+     "rotation_quaternion": [
+      0.998196,
+      0.0,
+      0.0,
+      0.059967
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 6,
+     "rotation_quaternion": [
+      0.987231,
+      0.0,
+      0.0,
+      0.1587
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 11,
+     "rotation_quaternion": [
+      0.889683,
+      0.0,
+      0.0,
+      0.455871
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 16,
+     "rotation_quaternion": [
+      0.710006,
+      0.0,
+      0.0,
+      0.704195
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 21,
+     "rotation_quaternion": [
+      0.860818,
+      0.0,
+      0.0,
+      0.508182
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 26,
+     "rotation_quaternion": [
+      0.859608,
+      0.0,
+      0.0,
+      0.510796
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 31,
+     "rotation_quaternion": [
+      0.882026,
+      0.0,
+      0.0,
+      0.471095
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 36,
+     "rotation_quaternion": [
+      0.950909,
+      0.0,
+      0.0,
+      0.309469
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 41,
+     "rotation_quaternion": [
+      0.996655,
+      0.0,
+      0.0,
+      0.080839
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 46,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 51,
+     "rotation_quaternion": [
+      0.9996,
+      0.0,
+      0.0,
+      0.028189
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 56,
+     "rotation_quaternion": [
+      0.999409,
+      0.0,
+      0.0,
+      0.034359
+     ]
+    },
+    {
+     "bone": "RightForeArm",
+     "frame": 60,
+     "rotation_quaternion": [
+      0.999668,
+      0.0,
+      0.0,
+      0.025778
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 1,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 6,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 11,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 16,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 21,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 26,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 31,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 36,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 41,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 46,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 51,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 56,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "bone": "RightHand",
+     "frame": 60,
+     "rotation_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   ]
+  }
+ },
+ "gaze": {
+  "bone": "Neck",
+  "name_hint": "gaze",
+  "neutral": [
+   1.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "ease_frames": 6,
+  "default_target": "camera",
+  "targets": {
+   "camera": [
+    0.997,
+    0.076,
+    0.0,
+    0.0
+   ],
+   "viewer": [
+    0.997,
+    0.076,
+    0.0,
+    0.0
+   ],
+   "left": [
+    0.976,
+    0.0,
+    0.216,
+    0.0
+   ],
+   "right": [
+    0.976,
+    0.0,
+    -0.216,
+    0.0
+   ],
+   "up": [
+    0.991,
+    -0.131,
+    0.0,
+    0.0
+   ],
+   "down": [
+    0.991,
+    0.131,
+    0.0,
+    0.0
+   ]
+  }
+ },
+ "expressions": {
+  "mode": "pose",
+  "name_hint": "face",
+  "bone": "Head",
+  "neutral": [
+   1.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "default_expression": "neutral_idle",
+  "presets": {
+   "neutral_idle": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "warm_amused": [
+    0.9945,
+    0.0348,
+    0.0,
+    0.0958
+   ],
+   "concerned": [
+    0.9945,
+    0.1045,
+    0.0,
+    0.0
+   ],
+   "surprised": [
+    0.9962,
+    -0.0872,
+    0.0,
+    0.0
+   ]
+  }
+ },
+ "speech": {
+  "mode": "bone",
+  "object": "KVRCArmature",
+  "name_hint": "animus_speech",
+  "driver": "mouth_open",
+  "bones": [
+   {
+    "bone": "LeftEar",
+    "neutral": [
+     1.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "peak": [
+     0.9877,
+     0.1564,
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "bone": "RightEar",
+    "neutral": [
+     1.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "peak": [
+     0.9877,
+     0.1564,
+     0.0,
+     0.0
+    ]
+   }
+  ],
+  "voice": "af_heart",
+  "lang": "a",
+  "speed": 1.0,
+  "seed": 0
+ },
+ "stage": {
+  "import": {
+   "format": "glb",
+   "path": "public/models/kvrc.glb"
+  },
+  "strip_imported_animation": true,
+  "render": {
+   "camera_location": [
+    1.15,
+    -3.65,
+    1.4
+   ],
+   "camera_target": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lens": 40.0,
+   "key_energy": 900.0,
+   "fill_energy": 260.0,
+   "key_location": [
+    2.0,
+    -2.5,
+    2.8
+   ],
+   "fill_location": [
+    -2.2,
+    -1.4,
+    1.2
+   ],
+   "color_type": "TEXTURE",
+   "dress_bones": false,
+   "hide_objects": []
+  }
+ }
+}

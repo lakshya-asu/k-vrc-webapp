@@ -21,6 +21,7 @@ from animus_actor.embodiment import (  # noqa: E402
     map_plan_to_bridge_jobs,
     sanitize_name_hint,
     validate_embodiment_profile,
+    viseme_artifact_to_pose_request,
     viseme_artifact_to_request,
 )
 from animus_actor.fallback import deterministic_actor_plan  # noqa: E402
@@ -30,6 +31,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(HERE))
 PROFILE_PATH = os.path.join(
     REPO, "src", "animus", "embodiment", "kvrc-testrig.profile.json"
+)
+KVRC_PROFILE_PATH = os.path.join(
+    REPO, "src", "animus", "embodiment", "kvrc.profile.json"
 )
 JS_FIXTURE = os.path.join(
     REPO, "tests", "animus_bridge", "fixtures", "director_requests.json"
@@ -196,6 +200,132 @@ class CrossLanguageParityTests(unittest.TestCase):
         for py_request, js_request in zip(python_requests, js_requests):
             self.assertEqual(py_request["op"], js_request["op"])
             self.assertEqual(py_request["params"], js_request["params"])
+
+
+class KvrcProfileTests(unittest.TestCase):
+    """The real K-VRC profile: mechanical face and speech, no shape keys."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.profile = load_profile(KVRC_PROFILE_PATH)
+
+    def _kvrc_profile_copy(self):
+        with open(KVRC_PROFILE_PATH, "r", encoding="utf-8-sig") as handle:
+            return json.load(handle)
+
+    def test_committed_kvrc_profile_validates(self):
+        self.assertEqual(self.profile["profile"], "kvrc")
+        self.assertEqual(self.profile["rig"]["object"], "KVRCArmature")
+        self.assertNotIn("face_object", self.profile["rig"])
+        self.assertNotIn("shape_keys", self.profile["rig"])
+
+    def test_shape_key_modes_still_require_shape_keys(self):
+        profile = self._kvrc_profile_copy()
+        # Flip only the face channel back to shape keys: the relaxed rig
+        # rules must tighten again and refuse the missing structures.
+        del profile["expressions"]["mode"]
+        checked = validate_embodiment_profile(profile)
+        self.assertFalse(checked["ok"])
+        self.assertTrue(
+            any("rig.face_object" in error for error in checked["errors"])
+        )
+        self.assertTrue(
+            any("rig.shape_keys" in error for error in checked["errors"])
+        )
+
+    def test_bad_mode_refused(self):
+        profile = self._kvrc_profile_copy()
+        profile["speech"]["mode"] = "telepathy"
+        checked = validate_embodiment_profile(profile)
+        self.assertFalse(checked["ok"])
+        self.assertTrue(any("speech.mode" in error for error in checked["errors"]))
+
+    def test_speech_bones_must_be_rig_bones(self):
+        profile = self._kvrc_profile_copy()
+        profile["speech"]["bones"][0]["bone"] = "Antenna"
+        checked = validate_embodiment_profile(profile)
+        self.assertFalse(checked["ok"])
+
+    def test_pose_presets_must_be_quaternions(self):
+        profile = self._kvrc_profile_copy()
+        profile["expressions"]["presets"]["warm_amused"] = {"smile_width": 1}
+        checked = validate_embodiment_profile(profile)
+        self.assertFalse(checked["ok"])
+
+    def test_face_beat_maps_to_pose_take_on_the_armature(self):
+        plan = validated_plan()
+        jobs = map_plan_to_bridge_jobs(plan, self.profile)
+        face = [layer for layer in jobs["layers"] if layer["channel"] == "face"]
+        self.assertEqual(len(face), 1)
+        request = face[0]["request"]
+        self.assertEqual(request["op"], "perform_take")
+        self.assertEqual(request["params"]["object"], "KVRCArmature")
+        bones = {sample["bone"] for sample in request["params"]["samples"]}
+        self.assertEqual(bones, {"Head"})
+        for sample in request["params"]["samples"]:
+            self.assertIn("rotation_quaternion", sample)
+
+    def test_every_kvrc_request_passes_bridge_validation(self):
+        plan = validated_plan()
+        jobs = map_plan_to_bridge_jobs(plan, self.profile)
+        for layer in jobs["layers"]:
+            request = layer["request"]
+            _, op, raw = protocol.validate_envelope(request)
+            protocol.validate_params(op, raw)
+
+    def test_wave_gesture_comes_from_the_baked_clip(self):
+        gesture = self.profile["gestures"]["wave"]
+        self.assertEqual(gesture["source_clip"], "waving_1")
+        right_arm = [
+            sample["rotation_quaternion"]
+            for sample in gesture["samples"]
+            if sample["bone"] == "RightArm"
+        ]
+        self.assertGreater(len(right_arm), 3)
+        spread = max(quat[2] for quat in right_arm) - min(
+            quat[2] for quat in right_arm
+        )
+        self.assertGreater(spread, 0.05, "the sampled wave must move the arm")
+
+    def test_viseme_artifact_becomes_ear_pose_take(self):
+        sys.path.insert(0, os.path.join(REPO, "voice"))
+        from animus_voice.pipeline import convert_only
+
+        with tempfile.TemporaryDirectory() as out_dir:
+            artifact, _ = convert_only(
+                FIXTURE_CUES, out_dir, stem="t", fps=24, frame_start=1,
+                obj="KVRCArmature", name_hint="animus_speech",
+            )
+        request = viseme_artifact_to_pose_request(
+            artifact, self.profile["speech"], request_id="act-x"
+        )
+        _, op, raw = protocol.validate_envelope(request)
+        self.assertEqual(op, "perform_take")
+        params = protocol.validate_params(op, raw)
+        self.assertEqual(params["object"], "KVRCArmature")
+        frames = sorted({sample["frame"] for sample in artifact["samples"]})
+        self.assertEqual(
+            len(params["samples"]),
+            len(frames) * len(self.profile["speech"]["bones"]),
+        )
+        bones = {sample["bone"] for sample in params["samples"]}
+        self.assertEqual(bones, {"LeftEar", "RightEar"})
+        # A silent frame (driver weight 0) must sit at the neutral pose.
+        by_frame = {}
+        for sample in artifact["samples"]:
+            if sample["shape_key"] == "mouth_open":
+                by_frame[sample["frame"]] = sample["weight"]
+        silent = [frame for frame, weight in by_frame.items() if weight == 0]
+        self.assertTrue(silent)
+        for sample in params["samples"]:
+            if sample["frame"] == silent[0]:
+                self.assertEqual(sample["rotation_quaternion"], [1, 0, 0, 0])
+
+    def test_pose_request_wrong_artifact_kind_refused(self):
+        with self.assertRaises(ValueError):
+            viseme_artifact_to_pose_request(
+                {"kind": "something_else"}, self.profile["speech"]
+            )
 
 
 if __name__ == "__main__":
