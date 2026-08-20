@@ -17,8 +17,11 @@ Knobs:
     temperature    sampling temperature (XTTS default 0.65)
     tempo          pitch-preserving time compression applied to the
                    rendered wav with ffmpeg rubberband (1.2 = 20%
-                   faster, same pitch and formants). XTTS reads are
-                   slow for snappy characters; this is the honest fix.
+                   faster, same pitch and formants). LESSON from reel
+                   v2 (2026-08-20): compression at 1.15-1.25 makes the
+                   voice audibly robotic. Ship at 1.0 and fit the video
+                   to the audio instead; 1.05 is the ceiling for a line
+                   that truly drags.
 
 Output is a 24kHz mono WAV, same contract as the other backends. The
 torch seed is set from seed for repeatability on one device/version.

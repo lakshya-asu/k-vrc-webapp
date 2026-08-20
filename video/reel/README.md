@@ -34,6 +34,29 @@ durations, and writes `src/reel-data.json` (scene order, durations,
 captions). The composition reads that file, so re-running the tool on
 a new batch re-times the whole reel automatically.
 
+`build-data.mjs` measures loudness first and applies a LINEAR
+(constant-gain) second pass; dynamic single-pass loudnorm rides the
+gain and pumps the noise floor up inside the silent gaps around each
+line, which defeats the dialogue spacing below.
+
+## Dialogue spacing (the v3 rule: fit video to audio)
+
+Scene takes must be built so no line ever collides with a crossfade
+or with a neighboring scene's line. With `CROSS = 16` frames at 30 fps
+(533 ms per fade), each scene's speech must obey:
+
+- head: speech starts at least 400 ms after the incoming crossfade
+  ends, so at least 933 ms into the scene (use 1000 ms).
+- tail: speech ends with at least 800 ms of clean silence before the
+  outgoing crossfade begins, so the scene runs at least 1333 ms past
+  the end of the wav (use 1400 ms).
+
+Extend the scene's hold beats (gaze, face) to reach the required scene
+end; the actor's strips hold their pose, so a longer scene ends on a
+held idle, never a frozen mid-gesture frame. Never tempo-compress the
+voice to fit a slot: compression is audibly robotic. The scene gets
+longer; the audio does not get faster.
+
 `npx remotion studio` opens the interactive preview.
 
 Remotion downloads its own headless Chrome shell on first render; that
