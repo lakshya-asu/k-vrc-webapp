@@ -277,8 +277,8 @@ export function validateEmbodimentProfile(profile) {
       errors.push('speech.name_hint must be a valid bridge name hint');
     }
     if (typeof speech.voice !== 'string' || !speech.voice) errors.push('speech.voice is required');
-    if ('backend' in speech && speech.backend !== 'kokoro' && speech.backend !== 'chatterbox') {
-      errors.push("speech.backend must be 'kokoro' or 'chatterbox' when present");
+    if ('backend' in speech && !['kokoro', 'chatterbox', 'xtts'].includes(speech.backend)) {
+      errors.push("speech.backend must be 'kokoro', 'chatterbox', or 'xtts' when present");
     }
     if ('tts' in speech && !isObject(speech.tts)) {
       errors.push('speech.tts must be an object when present');

@@ -67,7 +67,7 @@ def convert_only(
     return artifact, take_path
 
 
-TTS_BACKENDS = ("kokoro", "chatterbox")
+TTS_BACKENDS = ("kokoro", "chatterbox", "xtts")
 
 
 def run_pipeline(
@@ -109,7 +109,20 @@ def run_pipeline(
     take_path = os.path.join(out_dir, f"{stem}.animus.json")
 
     opts = dict(tts_opts or {})
-    if backend == "chatterbox":
+    if backend == "xtts":
+        from .tts_xtts import render_to_wav
+
+        tts_receipt = render_to_wav(
+            text,
+            wav_path,
+            speaker=opts.get("speaker", "Torcull Diarmuid"),
+            speed=opts.get("speed", speed),
+            temperature=opts.get("temperature", 0.65),
+            tempo=opts.get("tempo", 1.0),
+            seed=seed,
+            device=opts.get("device", "auto"),
+        )
+    elif backend == "chatterbox":
         from .tts_chatterbox import render_to_wav
 
         tts_receipt = render_to_wav(

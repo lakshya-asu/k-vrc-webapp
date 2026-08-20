@@ -147,3 +147,42 @@ Profile selection (embodiment profile `speech` block):
     "speech": { ..., "backend": "chatterbox", "seed": 3,
                 "tts": {"exaggeration": 0.7, "cfg_weight": 0.35,
                         "temperature": 0.8, "device": "cuda"} }
+
+## Third backend: XTTS-v2 (production reel voice), 2026-08-20
+
+`--backend xtts` selects Coqui XTTS-v2 with its built-in licensed
+studio speakers (no reference audio accepted, nothing cloned). This is
+the voice Lakshya picked for the Project Animus reel: speaker
+"Torcull Diarmuid", with pitch-preserving tempo compression because
+XTTS reads slowly for a snappy character.
+
+LICENSE, read this: the XTTS-v2 weights are under the Coqui Public
+Model License (CPML), which is NON-COMMERCIAL. Lakshya accepted that
+restriction knowingly for the reel (2026-08-20). Every receipt from
+this backend carries the license string.
+
+Isolated env (third venv; the actor loop picks it for xtts jobs):
+
+    py -3.11 -m venv .venv-voice3
+    .venv-voice3\Scripts\python -m pip install coqui-tts torchcodec
+    .venv-voice3\Scripts\python -m pip install torch torchaudio \
+        --index-url https://download.pytorch.org/whl/cu128
+
+What ran live on the build host: coqui-tts 0.27.5, torch
+2.11.0+cu128, CUDA on the RTX 5080; first run downloads ~2GB of
+weights (COQUI_TOS_AGREED=1 is set by the wrapper). 58 built-in
+speakers; ~4 s per line on GPU after a ~15 s model load.
+
+Knobs (profile `speech.tts` or CLI):
+
+    --speaker "Torcull Diarmuid"   built-in speaker name
+    --tempo 1.2                    pitch- and formant-preserving time
+                                   compression of the rendered wav
+                                   (ffmpeg rubberband; 1.2 = 20% faster)
+    --temperature 0.65             sampling temperature
+    --speed 1.0                    XTTS's own pacing control
+
+XTTS sampling is stochastic and take quality varies: some takes slur a
+word. The reel pipeline sweeps a few seeds per line, transcribes each
+candidate with faster-whisper, and bakes the verified seed into the
+scene profile; the same seed regenerates the same take on this host.

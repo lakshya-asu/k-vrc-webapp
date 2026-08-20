@@ -44,6 +44,13 @@ def find_voice_python(backend="kokoro"):
         venv = os.path.join(REPO, ".venv-voice2", "Scripts", "python.exe")
         if os.path.exists(venv):
             return venv
+    if backend == "xtts":
+        env = os.environ.get("ANIMUS_VOICE_PYTHON_XTTS")
+        if env:
+            return env
+        venv = os.path.join(REPO, ".venv-voice3", "Scripts", "python.exe")
+        if os.path.exists(venv):
+            return venv
     venv = os.path.join(REPO, ".venv-voice", "Scripts", "python.exe")
     if os.path.exists(venv):
         return venv
@@ -117,6 +124,8 @@ def _run_live(job, out_dir, timeout=600):
         ("temperature", "--temperature"),
         ("device", "--device"),
         ("pitch_semitones", "--pitch-semitones"),
+        ("speaker", "--speaker"),
+        ("tempo", "--tempo"),
     ):
         if key in tts_opts:
             command += [flag, str(tts_opts[key])]

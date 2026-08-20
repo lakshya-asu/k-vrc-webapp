@@ -118,6 +118,33 @@ class BackendInterpreterTests(unittest.TestCase):
             else:
                 os.environ["ANIMUS_VOICE_PYTHON"] = old
 
+    def test_xtts_backend_and_opts_reach_the_job(self):
+        profile = profile_dict()
+        profile["speech"]["backend"] = "xtts"
+        profile["speech"]["tts"] = {
+            "speaker": "Torcull Diarmuid",
+            "tempo": 1.2,
+            "temperature": 0.7,
+        }
+        checked = validate_embodiment_profile(profile)
+        self.assertTrue(checked["ok"], checked["errors"])
+        jobs = map_plan_to_bridge_jobs(validated_plan(), checked["value"])
+        job = jobs["voice_jobs"][0]
+        self.assertEqual(job["backend"], "xtts")
+        self.assertEqual(job["tts_opts"]["speaker"], "Torcull Diarmuid")
+        self.assertEqual(job["tts_opts"]["tempo"], 1.2)
+
+    def test_xtts_env_override(self):
+        old = os.environ.get("ANIMUS_VOICE_PYTHON_XTTS")
+        os.environ["ANIMUS_VOICE_PYTHON_XTTS"] = r"C:\fake\xtts.exe"
+        try:
+            self.assertEqual(find_voice_python("xtts"), r"C:\fake\xtts.exe")
+        finally:
+            if old is None:
+                del os.environ["ANIMUS_VOICE_PYTHON_XTTS"]
+            else:
+                os.environ["ANIMUS_VOICE_PYTHON_XTTS"] = old
+
     def test_chatterbox_env_override(self):
         old = os.environ.get("ANIMUS_VOICE_PYTHON_CHATTERBOX")
         os.environ["ANIMUS_VOICE_PYTHON_CHATTERBOX"] = r"C:\fake\cbx.exe"

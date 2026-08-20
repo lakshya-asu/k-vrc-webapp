@@ -324,9 +324,11 @@ def validate_embodiment_profile(profile):
         if "backend" in speech and speech.get("backend") not in (
             "kokoro",
             "chatterbox",
+            "xtts",
         ):
             errors.append(
-                "speech.backend must be 'kokoro' or 'chatterbox' when present"
+                "speech.backend must be 'kokoro', 'chatterbox', or 'xtts' "
+                "when present"
             )
         if "tts" in speech and not _is_object(speech.get("tts")):
             errors.append("speech.tts must be an object when present")

@@ -26,10 +26,12 @@ def _cmd_doctor(_args):
     from .rhubarb import find_rhubarb, rhubarb_available
     from .tts_chatterbox import tts_available as chatterbox_available
     from .tts_kokoro import tts_available
+    from .tts_xtts import tts_available as xtts_available
 
     report = {
         "kokoro_tts": tts_available(),
         "chatterbox_tts": chatterbox_available(),
+        "xtts_tts": xtts_available(),
         "rhubarb": rhubarb_available(),
         "rhubarb_path": find_rhubarb(),
     }
@@ -70,6 +72,8 @@ def _cmd_speak(args):
         "temperature": args.temperature,
         "device": args.device,
         "pitch_semitones": args.pitch_semitones,
+        "speaker": args.speaker,
+        "tempo": args.tempo,
     }
     receipt = run_pipeline(
         args.text,
@@ -117,9 +121,10 @@ def build_parser():
     p_speak.add_argument(
         "--backend",
         default="kokoro",
-        choices=("kokoro", "chatterbox"),
-        help="TTS engine: kokoro (deterministic CPU) or chatterbox "
-        "(expressive, built-in voice only)",
+        choices=("kokoro", "chatterbox", "xtts"),
+        help="TTS engine: kokoro (deterministic CPU), chatterbox "
+        "(expressive, built-in voice only), or xtts (built-in studio "
+        "speakers, CPML non-commercial license)",
     )
     p_speak.add_argument("--voice", default="af_heart", help="kokoro voice id")
     p_speak.add_argument("--lang", default="a")
@@ -148,6 +153,18 @@ def build_parser():
         "--device",
         default="auto",
         help="chatterbox device: auto, cuda, or cpu",
+    )
+    p_speak.add_argument(
+        "--speaker",
+        default="Torcull Diarmuid",
+        help="xtts: built-in studio speaker name",
+    )
+    p_speak.add_argument(
+        "--tempo",
+        type=float,
+        default=1.0,
+        help="xtts: pitch-preserving time compression of the rendered "
+        "wav (1.2 = 20 percent faster; ffmpeg rubberband)",
     )
     p_speak.add_argument(
         "--pitch-semitones",
