@@ -5,6 +5,7 @@
   "requested_speech": "Hello, I am K-VRC",
   "control_level": "perform",
   "performed": true,
+  "brain": "fallback",
   "voice_mode": "live",
   "plan": {
     "schema_version": "0.1",

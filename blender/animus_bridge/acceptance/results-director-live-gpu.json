@@ -1,0 +1,362 @@
+{
+  "runs": [
+    {
+      "run": "suggest",
+      "exit_code": 0,
+      "summary": {
+        "control_level": "suggest",
+        "performed": false,
+        "operator": "local-small",
+        "fallback": false,
+        "beats": 1,
+        "layers": [
+          {
+            "beat_id": "greet-1",
+            "channel": "body",
+            "request_id": "dir-greet-1-body",
+            "ok": null,
+            "receipt": null
+          },
+          {
+            "beat_id": "greet-1",
+            "channel": "gaze",
+            "request_id": "dir-greet-1-gaze",
+            "ok": null,
+            "receipt": null
+          },
+          {
+            "beat_id": "greet-1",
+            "channel": "face",
+            "request_id": "dir-greet-1-face",
+            "ok": null,
+            "receipt": null
+          }
+        ],
+        "receipt_path": null
+      },
+      "stderr": ""
+    },
+    {
+      "run": "perform",
+      "exit_code": 0,
+      "summary": {
+        "control_level": "perform",
+        "performed": true,
+        "operator": "local-small-retry1",
+        "fallback": false,
+        "beats": 1,
+        "layers": [
+          {
+            "beat_id": "greet-1",
+            "channel": "body",
+            "request_id": "dir-greet-1-body",
+            "ok": true,
+            "receipt": {
+              "action": "ANIMUS_wave_take001",
+              "track": "ANIMUS_wave_take001_track",
+              "strip": "ANIMUS_wave_take001",
+              "bones": [
+                "arm.R",
+                "hand.R"
+              ],
+              "sample_count": 10,
+              "key_count": 40,
+              "frame_start": 1,
+              "frame_end": 48
+            }
+          },
+          {
+            "beat_id": "greet-1",
+            "channel": "gaze",
+            "request_id": "dir-greet-1-gaze",
+            "ok": true,
+            "receipt": {
+              "action": "ANIMUS_gaze_camera_take001",
+              "track": "ANIMUS_gaze_camera_take001_track",
+              "strip": "ANIMUS_gaze_camera_take001",
+              "bones": [
+                "head"
+              ],
+              "sample_count": 3,
+              "key_count": 12,
+              "frame_start": 1,
+              "frame_end": 43
+            }
+          },
+          {
+            "beat_id": "greet-1",
+            "channel": "face",
+            "request_id": "dir-greet-1-face",
+            "ok": true,
+            "receipt": {
+              "action": "ANIMUS_face_warm_amused_take001",
+              "track": "ANIMUS_face_warm_amused_take001_track",
+              "strip": "ANIMUS_face_warm_amused_take001",
+              "shape_keys": [
+                "mouth_curl_left",
+                "mouth_curl_right",
+                "mouth_open",
+                "smile_width"
+              ],
+              "sample_count": 16,
+              "key_count": 16,
+              "frame_start": 1,
+              "frame_end": 43
+            }
+          },
+          {
+            "beat_id": "greet-1",
+            "channel": "speech",
+            "request_id": "dir-greet-1_speech",
+            "ok": true,
+            "receipt": {
+              "action": "ANIMUS_animus_speech_take001",
+              "track": "ANIMUS_animus_speech_take001_track",
+              "strip": "ANIMUS_animus_speech_take001",
+              "shape_keys": [
+                "mouth_curl_left",
+                "mouth_curl_right",
+                "mouth_open",
+                "smile_width"
+              ],
+              "sample_count": 40,
+              "key_count": 40,
+              "frame_start": 1,
+              "frame_end": 51
+            }
+          }
+        ],
+        "receipt_path": "C:\\Users\\jainl\\resume-projects\\k-vrc-animus-poc\\blender\\animus_bridge\\acceptance\\director-receipt-perform.json"
+      },
+      "stderr": ""
+    },
+    {
+      "run": "fallback-from-invalid-plan",
+      "exit_code": 0,
+      "summary": {
+        "control_level": "perform",
+        "performed": true,
+        "operator": "deterministic",
+        "fallback": true,
+        "beats": 1,
+        "layers": [
+          {
+            "beat_id": "fallback-1",
+            "channel": "body",
+            "request_id": "dir-fallback-1-body",
+            "ok": true,
+            "receipt": {
+              "action": "ANIMUS_wave_take002",
+              "track": "ANIMUS_wave_take002_track",
+              "strip": "ANIMUS_wave_take002",
+              "bones": [
+                "arm.R",
+                "hand.R"
+              ],
+              "sample_count": 10,
+              "key_count": 40,
+              "frame_start": 1,
+              "frame_end": 48
+            }
+          },
+          {
+            "beat_id": "fallback-1",
+            "channel": "gaze",
+            "request_id": "dir-fallback-1-gaze",
+            "ok": true,
+            "receipt": {
+              "action": "ANIMUS_gaze_camera_take002",
+              "track": "ANIMUS_gaze_camera_take002_track",
+              "strip": "ANIMUS_gaze_camera_take002",
+              "bones": [
+                "head"
+              ],
+              "sample_count": 3,
+              "key_count": 12,
+              "frame_start": 1,
+              "frame_end": 43
+            }
+          },
+          {
+            "beat_id": "fallback-1",
+            "channel": "face",
+            "request_id": "dir-fallback-1-face",
+            "ok": true,
+            "receipt": {
+              "action": "ANIMUS_face_neutral_idle_take001",
+              "track": "ANIMUS_face_neutral_idle_take001_track",
+              "strip": "ANIMUS_face_neutral_idle_take001",
+              "shape_keys": [
+                "mouth_curl_left",
+                "mouth_curl_right",
+                "mouth_open",
+                "smile_width"
+              ],
+              "sample_count": 16,
+              "key_count": 16,
+              "frame_start": 1,
+              "frame_end": 43
+            }
+          }
+        ],
+        "receipt_path": "C:\\Users\\jainl\\resume-projects\\k-vrc-animus-poc\\blender\\animus_bridge\\acceptance\\director-receipt-fallback.json"
+      },
+      "stderr": ""
+    }
+  ],
+  "checks": [
+    {
+      "name": "scene_built",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "server_started",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "suggest_exit_0",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "suggest_mutated_nothing",
+      "passed": true,
+      "detail": "{'actions': [], 'kvrc_strips': [], 'face_strips': []}"
+    },
+    {
+      "name": "suggest_not_performed",
+      "passed": true,
+      "detail": "{'control_level': 'suggest', 'performed': False, 'operator': 'local-small', 'fallback': False, 'beats': 1, 'layers': [{'beat_id': 'greet-1', 'channel': 'body', 'request_id': 'dir-greet-1-body', 'ok': None, 'receipt': None}, {'beat_id': 'greet-1', 'channel': 'gaze', 'request_id': 'dir-greet-1-gaze', 'ok': None, 'receipt': None}, {'beat_id': 'greet-1', 'channel': 'face', 'request_id': 'dir-greet-1-face', 'ok': None, 'receipt': None}], 'receipt_path': None}"
+    },
+    {
+      "name": "perform_exit_0",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "perform_receipt_written",
+      "passed": true,
+      "detail": "C:\\Users\\jainl\\resume-projects\\k-vrc-animus-poc\\blender\\animus_bridge\\acceptance\\director-receipt-perform.json"
+    },
+    {
+      "name": "perform_has_pose_layer",
+      "passed": true,
+      "detail": "['body', 'gaze', 'face', 'speech']"
+    },
+    {
+      "name": "perform_has_voiced_take",
+      "passed": true,
+      "detail": "['body', 'gaze', 'face', 'speech']"
+    },
+    {
+      "name": "perform_every_layer_ok",
+      "passed": true,
+      "detail": "[{'id': 'dir-greet-1-body', 'ok': True, 'op': 'perform_take', 'result': {'action': 'ANIMUS_wave_take001', 'track': 'ANIMUS_wave_take001_track', 'strip': 'ANIMUS_wave_take001', 'bones': ['arm.R', 'hand.R'], 'sample_count': 10, 'key_count': 40, 'frame_start': 1, 'frame_end': 48}}, {'id': 'dir-greet-1-gaze', 'ok': True, 'op': 'perform_take', 'result': {'action': 'ANIMUS_gaze_camera_take001', 'track': 'ANIMUS_gaze_camera_take001_track', 'strip': 'ANIMUS_gaze_camera_take001', 'bones': ['head'], 'sample_count': 3, 'key_count': 12, 'frame_start': 1, 'frame_end': 43}}, {'id': 'dir-greet-1-face', 'ok': True, 'op': 'apply_shape_keys', 'result': {'action': 'ANIMUS_face_warm_amused_take001', 'track': 'ANIMUS_face_warm_amused_take001_track', 'strip': 'ANIMUS_face_warm_amused_take001', 'shape_keys': ['mouth_curl_left', 'mouth_curl_right', 'mouth_open', 'smile_width'], 'sample_count': 16, 'key_count': 16, 'frame_start': 1, 'frame_end': 43}}, {'id': 'dir-greet-1_speech', 'ok': True, 'op': 'apply_shape_keys', 'result': {'action': 'ANIMUS_animus_speech_take001', 'track': 'ANIMUS_animus_speech_take001_track', 'strip': 'ANIMUS_animus_speech_take001', 'shape_keys': ['mouth_curl_left', 'mouth_curl_right', 'mouth_open', 'smile_width'], 'sample_count': 40, 'key_count': 40, 'frame_start': 1, 'frame_end': 51}}]"
+    },
+    {
+      "name": "perform_one_action_per_layer",
+      "passed": true,
+      "detail": "{'layers': 4, 'new_actions': ['ANIMUS_animus_speech_take001', 'ANIMUS_face_warm_amused_take001', 'ANIMUS_gaze_camera_take001', 'ANIMUS_wave_take001']}"
+    },
+    {
+      "name": "perform_pose_strip_counts",
+      "passed": true,
+      "detail": "['ANIMUS_gaze_camera_take001', 'ANIMUS_wave_take001']"
+    },
+    {
+      "name": "perform_face_strip_counts",
+      "passed": true,
+      "detail": "['ANIMUS_animus_speech_take001', 'ANIMUS_face_warm_amused_take001']"
+    },
+    {
+      "name": "perform_receipts_name_real_actions",
+      "passed": true,
+      "detail": "['ANIMUS_wave_take001', 'ANIMUS_gaze_camera_take001', 'ANIMUS_face_warm_amused_take001', 'ANIMUS_animus_speech_take001']"
+    },
+    {
+      "name": "perform_actions_have_keyframes",
+      "passed": true,
+      "detail": "{'ANIMUS_wave_take001': 40, 'ANIMUS_gaze_camera_take001': 12, 'ANIMUS_face_warm_amused_take001': 16, 'ANIMUS_animus_speech_take001': 40}"
+    },
+    {
+      "name": "perform_provenance_recorded",
+      "passed": true,
+      "detail": "{'operator': 'local-small-retry1', 'model': 'Qwen3-4B-Q4_K_M', 'fallback': False}"
+    },
+    {
+      "name": "fallback_exit_0",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "fallback_receipt_written",
+      "passed": true,
+      "detail": "C:\\Users\\jainl\\resume-projects\\k-vrc-animus-poc\\blender\\animus_bridge\\acceptance\\director-receipt-fallback.json"
+    },
+    {
+      "name": "fallback_used_deterministic",
+      "passed": true,
+      "detail": "{'operator': 'deterministic', 'model': None, 'fallback': True, 'prior_failures': [{'provider': 'stub-invalid', 'reason': 'plan.keyframes is forbidden; plan.keyframes is not allowed; plan.beats must contain at least one beat'}]}"
+    },
+    {
+      "name": "fallback_flag_true",
+      "passed": true,
+      "detail": "{'operator': 'deterministic', 'model': None, 'fallback': True, 'prior_failures': [{'provider': 'stub-invalid', 'reason': 'plan.keyframes is forbidden; plan.keyframes is not allowed; plan.beats must contain at least one beat'}]}"
+    },
+    {
+      "name": "fallback_names_rejected_provider",
+      "passed": true,
+      "detail": "[{'provider': 'stub-invalid', 'reason': 'plan.keyframes is forbidden; plan.keyframes is not allowed; plan.beats must contain at least one beat'}]"
+    },
+    {
+      "name": "fallback_still_performed",
+      "passed": true,
+      "detail": "['ANIMUS_face_neutral_idle_take001', 'ANIMUS_gaze_camera_take002', 'ANIMUS_wave_take002']"
+    }
+  ],
+  "environment": {
+    "blender_version": "4.5.12 LTS",
+    "background": true,
+    "port": 8792,
+    "live_llm": true,
+    "voice_mode": "live",
+    "node": "C:\\Program Files\\nodejs\\node.EXE",
+    "line": "Wave to the viewer and say hello."
+  },
+  "perform_provenance": {
+    "operator": "local-small-retry1",
+    "model": "Qwen3-4B-Q4_K_M",
+    "fallback": false
+  },
+  "perform_actions": {
+    "ANIMUS_wave_take001": 40,
+    "ANIMUS_gaze_camera_take001": 12,
+    "ANIMUS_face_warm_amused_take001": 16,
+    "ANIMUS_animus_speech_take001": 40
+  },
+  "final_scene": {
+    "actions": [
+      "ANIMUS_animus_speech_take001",
+      "ANIMUS_face_neutral_idle_take001",
+      "ANIMUS_face_warm_amused_take001",
+      "ANIMUS_gaze_camera_take001",
+      "ANIMUS_gaze_camera_take002",
+      "ANIMUS_wave_take001",
+      "ANIMUS_wave_take002"
+    ],
+    "kvrc_strips": [
+      "ANIMUS_gaze_camera_take001",
+      "ANIMUS_gaze_camera_take002",
+      "ANIMUS_wave_take001",
+      "ANIMUS_wave_take002"
+    ],
+    "face_strips": [
+      "ANIMUS_animus_speech_take001",
+      "ANIMUS_face_neutral_idle_take001",
+      "ANIMUS_face_warm_amused_take001"
+    ]
+  },
+  "passed": true
+}

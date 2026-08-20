@@ -1,0 +1,1292 @@
+{
+  "kind": "animus_actor_receipt",
+  "line": "Hello, I am K-VRC, and this plan came from my own local brain.",
+  "instruction": "Greet the viewer warmly with a wave, look at the camera, and say hello.",
+  "requested_speech": "Hello, I am K-VRC, and this plan came from my own local brain.",
+  "control_level": "perform",
+  "performed": true,
+  "brain": "model",
+  "voice_mode": "live",
+  "plan": {
+    "schema_version": "0.1",
+    "actor_id": "kvrc",
+    "control_level": "perform",
+    "summary": "Greet the viewer warmly with a wave, look at the camera, and say hello",
+    "beats": [
+      {
+        "id": "greet-1",
+        "at_ms": 0,
+        "duration_ms": 1800,
+        "body": {
+          "action": "gesture",
+          "gesture": "wave",
+          "style": "warm",
+          "intensity": 0.7
+        },
+        "gaze": {
+          "target": "camera",
+          "intensity": 0.7
+        },
+        "face": {
+          "expression": "warm_amused",
+          "intensity": 0.5
+        },
+        "speech": {
+          "text": "Hello, I am K-VRC, and this plan came from my own local brain.",
+          "delivery": "neutral"
+        }
+      }
+    ],
+    "provenance": {
+      "operator": "local-small",
+      "model": "Qwen3-4B-Q4_K_M",
+      "fallback": false
+    }
+  },
+  "profile": {
+    "name": "kvrc-testrig",
+    "version": "0.1.0"
+  },
+  "layers": [
+    {
+      "beat_id": "greet-1",
+      "channel": "body",
+      "gesture": "wave",
+      "request": {
+        "id": "act-greet-1-body",
+        "op": "perform_take",
+        "params": {
+          "object": "KVRC",
+          "name_hint": "wave",
+          "frame_start": 1,
+          "frame_end": 48,
+          "samples": [
+            {
+              "bone": "arm.R",
+              "frame": 1,
+              "rotation_quaternion": [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "bone": "arm.R",
+              "frame": 12,
+              "rotation_quaternion": [
+                0.92,
+                0.0,
+                0.0,
+                0.38
+              ]
+            },
+            {
+              "bone": "arm.R",
+              "frame": 24,
+              "rotation_quaternion": [
+                0.98,
+                0.0,
+                0.0,
+                -0.2
+              ]
+            },
+            {
+              "bone": "arm.R",
+              "frame": 36,
+              "rotation_quaternion": [
+                0.92,
+                0.0,
+                0.0,
+                0.38
+              ]
+            },
+            {
+              "bone": "arm.R",
+              "frame": 48,
+              "rotation_quaternion": [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "bone": "hand.R",
+              "frame": 8,
+              "rotation_quaternion": [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "bone": "hand.R",
+              "frame": 16,
+              "rotation_quaternion": [
+                0.966,
+                0.0,
+                0.259,
+                0.0
+              ]
+            },
+            {
+              "bone": "hand.R",
+              "frame": 24,
+              "rotation_quaternion": [
+                0.966,
+                0.0,
+                -0.259,
+                0.0
+              ]
+            },
+            {
+              "bone": "hand.R",
+              "frame": 32,
+              "rotation_quaternion": [
+                0.966,
+                0.0,
+                0.259,
+                0.0
+              ]
+            },
+            {
+              "bone": "hand.R",
+              "frame": 40,
+              "rotation_quaternion": [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          ]
+        }
+      },
+      "response": {
+        "id": "act-greet-1-body",
+        "ok": true,
+        "op": "perform_take",
+        "result": {
+          "action": "ANIMUS_wave_take001",
+          "track": "ANIMUS_wave_take001_track",
+          "strip": "ANIMUS_wave_take001",
+          "bones": [
+            "arm.R",
+            "hand.R"
+          ],
+          "sample_count": 10,
+          "key_count": 40,
+          "frame_start": 1,
+          "frame_end": 48
+        }
+      }
+    },
+    {
+      "beat_id": "greet-1",
+      "channel": "gaze",
+      "target": "camera",
+      "request": {
+        "id": "act-greet-1-gaze",
+        "op": "perform_take",
+        "params": {
+          "object": "KVRC",
+          "name_hint": "gaze_camera",
+          "frame_start": 1,
+          "frame_end": 43,
+          "samples": [
+            {
+              "bone": "head",
+              "frame": 1,
+              "rotation_quaternion": [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "bone": "head",
+              "frame": 7,
+              "rotation_quaternion": [
+                0.998582,
+                0.053236,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "bone": "head",
+              "frame": 43,
+              "rotation_quaternion": [
+                0.998582,
+                0.053236,
+                0.0,
+                0.0
+              ]
+            }
+          ]
+        }
+      },
+      "response": {
+        "id": "act-greet-1-gaze",
+        "ok": true,
+        "op": "perform_take",
+        "result": {
+          "action": "ANIMUS_gaze_camera_take001",
+          "track": "ANIMUS_gaze_camera_take001_track",
+          "strip": "ANIMUS_gaze_camera_take001",
+          "bones": [
+            "head"
+          ],
+          "sample_count": 3,
+          "key_count": 12,
+          "frame_start": 1,
+          "frame_end": 43
+        }
+      }
+    },
+    {
+      "beat_id": "greet-1",
+      "channel": "face",
+      "expression": "warm_amused",
+      "request": {
+        "id": "act-greet-1-face",
+        "op": "apply_shape_keys",
+        "params": {
+          "object": "KVRC_face",
+          "name_hint": "face_warm_amused",
+          "frame_start": 1,
+          "frame_end": 43,
+          "samples": [
+            {
+              "shape_key": "mouth_open",
+              "frame": 1,
+              "weight": 0.0
+            },
+            {
+              "shape_key": "smile_width",
+              "frame": 1,
+              "weight": 0.0
+            },
+            {
+              "shape_key": "mouth_curl_left",
+              "frame": 1,
+              "weight": 0.0
+            },
+            {
+              "shape_key": "mouth_curl_right",
+              "frame": 1,
+              "weight": 0.0
+            },
+            {
+              "shape_key": "mouth_open",
+              "frame": 5,
+              "weight": 0.05
+            },
+            {
+              "shape_key": "smile_width",
+              "frame": 5,
+              "weight": 0.3
+            },
+            {
+              "shape_key": "mouth_curl_left",
+              "frame": 5,
+              "weight": 0.125
+            },
+            {
+              "shape_key": "mouth_curl_right",
+              "frame": 5,
+              "weight": 0.125
+            },
+            {
+              "shape_key": "mouth_open",
+              "frame": 39,
+              "weight": 0.05
+            },
+            {
+              "shape_key": "smile_width",
+              "frame": 39,
+              "weight": 0.3
+            },
+            {
+              "shape_key": "mouth_curl_left",
+              "frame": 39,
+              "weight": 0.125
+            },
+            {
+              "shape_key": "mouth_curl_right",
+              "frame": 39,
+              "weight": 0.125
+            },
+            {
+              "shape_key": "mouth_open",
+              "frame": 43,
+              "weight": 0.0
+            },
+            {
+              "shape_key": "smile_width",
+              "frame": 43,
+              "weight": 0.0
+            },
+            {
+              "shape_key": "mouth_curl_left",
+              "frame": 43,
+              "weight": 0.0
+            },
+            {
+              "shape_key": "mouth_curl_right",
+              "frame": 43,
+              "weight": 0.0
+            }
+          ]
+        }
+      },
+      "response": {
+        "id": "act-greet-1-face",
+        "ok": true,
+        "op": "apply_shape_keys",
+        "result": {
+          "action": "ANIMUS_face_warm_amused_take001",
+          "track": "ANIMUS_face_warm_amused_take001_track",
+          "strip": "ANIMUS_face_warm_amused_take001",
+          "shape_keys": [
+            "mouth_curl_left",
+            "mouth_curl_right",
+            "mouth_open",
+            "smile_width"
+          ],
+          "sample_count": 16,
+          "key_count": 16,
+          "frame_start": 1,
+          "frame_end": 43
+        }
+      }
+    },
+    {
+      "beat_id": "greet-1",
+      "channel": "speech",
+      "request": {
+        "id": "act-greet-1_speech",
+        "op": "apply_shape_keys",
+        "params": {
+          "object": "KVRC_face",
+          "name_hint": "animus_speech",
+          "frame_start": 1,
+          "frame_end": 114,
+          "samples": [
+            {
+              "frame": 1,
+              "at_ms": 0,
+              "viseme": "X",
+              "shape_key": "mouth_open",
+              "weight": 0.0
+            },
+            {
+              "frame": 1,
+              "at_ms": 0,
+              "viseme": "X",
+              "shape_key": "smile_width",
+              "weight": 0.1
+            },
+            {
+              "frame": 1,
+              "at_ms": 0,
+              "viseme": "X",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.05
+            },
+            {
+              "frame": 1,
+              "at_ms": 0,
+              "viseme": "X",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.05
+            },
+            {
+              "frame": 8,
+              "at_ms": 290,
+              "viseme": "C",
+              "shape_key": "mouth_open",
+              "weight": 0.45
+            },
+            {
+              "frame": 8,
+              "at_ms": 290,
+              "viseme": "C",
+              "shape_key": "smile_width",
+              "weight": 0.4
+            },
+            {
+              "frame": 8,
+              "at_ms": 290,
+              "viseme": "C",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.05
+            },
+            {
+              "frame": 8,
+              "at_ms": 290,
+              "viseme": "C",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.05
+            },
+            {
+              "frame": 11,
+              "at_ms": 420,
+              "viseme": "E",
+              "shape_key": "mouth_open",
+              "weight": 0.5
+            },
+            {
+              "frame": 11,
+              "at_ms": 420,
+              "viseme": "E",
+              "shape_key": "smile_width",
+              "weight": 0.15
+            },
+            {
+              "frame": 11,
+              "at_ms": 420,
+              "viseme": "E",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.0
+            },
+            {
+              "frame": 11,
+              "at_ms": 420,
+              "viseme": "E",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.0
+            },
+            {
+              "frame": 16,
+              "at_ms": 630,
+              "viseme": "F",
+              "shape_key": "mouth_open",
+              "weight": 0.3
+            },
+            {
+              "frame": 16,
+              "at_ms": 630,
+              "viseme": "F",
+              "shape_key": "smile_width",
+              "weight": 0.0
+            },
+            {
+              "frame": 16,
+              "at_ms": 630,
+              "viseme": "F",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.0
+            },
+            {
+              "frame": 16,
+              "at_ms": 630,
+              "viseme": "F",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.0
+            },
+            {
+              "frame": 20,
+              "at_ms": 800,
+              "viseme": "C",
+              "shape_key": "mouth_open",
+              "weight": 0.45
+            },
+            {
+              "frame": 20,
+              "at_ms": 800,
+              "viseme": "C",
+              "shape_key": "smile_width",
+              "weight": 0.4
+            },
+            {
+              "frame": 20,
+              "at_ms": 800,
+              "viseme": "C",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.05
+            },
+            {
+              "frame": 20,
+              "at_ms": 800,
+              "viseme": "C",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.05
+            },
+            {
+              "frame": 24,
+              "at_ms": 940,
+              "viseme": "A",
+              "shape_key": "mouth_open",
+              "weight": 0.0
+            },
+            {
+              "frame": 24,
+              "at_ms": 940,
+              "viseme": "A",
+              "shape_key": "smile_width",
+              "weight": 0.15
+            },
+            {
+              "frame": 24,
+              "at_ms": 940,
+              "viseme": "A",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.05
+            },
+            {
+              "frame": 24,
+              "at_ms": 940,
+              "viseme": "A",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.05
+            },
+            {
+              "frame": 25,
+              "at_ms": 1020,
+              "viseme": "C",
+              "shape_key": "mouth_open",
+              "weight": 0.45
+            },
+            {
+              "frame": 25,
+              "at_ms": 1020,
+              "viseme": "C",
+              "shape_key": "smile_width",
+              "weight": 0.4
+            },
+            {
+              "frame": 25,
+              "at_ms": 1020,
+              "viseme": "C",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.05
+            },
+            {
+              "frame": 25,
+              "at_ms": 1020,
+              "viseme": "C",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.05
+            },
+            {
+              "frame": 31,
+              "at_ms": 1260,
+              "viseme": "G",
+              "shape_key": "mouth_open",
+              "weight": 0.15
+            },
+            {
+              "frame": 31,
+              "at_ms": 1260,
+              "viseme": "G",
+              "shape_key": "smile_width",
+              "weight": 0.35
+            },
+            {
+              "frame": 31,
+              "at_ms": 1260,
+              "viseme": "G",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.05
+            },
+            {
+              "frame": 31,
+              "at_ms": 1260,
+              "viseme": "G",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.05
+            },
+            {
+              "frame": 33,
+              "at_ms": 1330,
+              "viseme": "B",
+              "shape_key": "mouth_open",
+              "weight": 0.2
+            },
+            {
+              "frame": 33,
+              "at_ms": 1330,
+              "viseme": "B",
+              "shape_key": "smile_width",
+              "weight": 0.55
+            },
+            {
+              "frame": 33,
+              "at_ms": 1330,
+              "viseme": "B",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.1
+            },
+            {
+              "frame": 33,
+              "at_ms": 1330,
+              "viseme": "B",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.1
+            },
+            {
+              "frame": 45,
+              "at_ms": 1820,
+              "viseme": "X",
+              "shape_key": "mouth_open",
+              "weight": 0.0
+            },
+            {
+              "frame": 45,
+              "at_ms": 1820,
+              "viseme": "X",
+              "shape_key": "smile_width",
+              "weight": 0.1
+            },
+            {
+              "frame": 45,
+              "at_ms": 1820,
+              "viseme": "X",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.05
+            },
+            {
+              "frame": 45,
+              "at_ms": 1820,
+              "viseme": "X",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.05
+            },
+            {
+              "frame": 53,
+              "at_ms": 2160,
+              "viseme": "B",
+              "shape_key": "mouth_open",
+              "weight": 0.2
+            },
+            {
+              "frame": 53,
+              "at_ms": 2160,
+              "viseme": "B",
+              "shape_key": "smile_width",
+              "weight": 0.55
+            },
+            {
+              "frame": 53,
+              "at_ms": 2160,
+              "viseme": "B",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.1
+            },
+            {
+              "frame": 53,
+              "at_ms": 2160,
+              "viseme": "B",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.1
+            },
+            {
+              "frame": 57,
+              "at_ms": 2320,
+              "viseme": "A",
+              "shape_key": "mouth_open",
+              "weight": 0.0
+            },
+            {
+              "frame": 57,
+              "at_ms": 2320,
+              "viseme": "A",
+              "shape_key": "smile_width",
+              "weight": 0.15
+            },
+            {
+              "frame": 57,
+              "at_ms": 2320,
+              "viseme": "A",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.05
+            },
+            {
+              "frame": 57,
+              "at_ms": 2320,
+              "viseme": "A",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.05
+            },
+            {
+              "frame": 59,
+              "at_ms": 2400,
+              "viseme": "H",
+              "shape_key": "mouth_open",
+              "weight": 0.35
+            },
+            {
+              "frame": 59,
+              "at_ms": 2400,
+              "viseme": "H",
+              "shape_key": "smile_width",
+              "weight": 0.3
+            },
+            {
+              "frame": 59,
+              "at_ms": 2400,
+              "viseme": "H",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.05
+            },
+            {
+              "frame": 59,
+              "at_ms": 2400,
+              "viseme": "H",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.05
+            },
+            {
+              "frame": 61,
+              "at_ms": 2520,
+              "viseme": "C",
+              "shape_key": "mouth_open",
+              "weight": 0.45
+            },
+            {
+              "frame": 61,
+              "at_ms": 2520,
+              "viseme": "C",
+              "shape_key": "smile_width",
+              "weight": 0.4
+            },
+            {
+              "frame": 61,
+              "at_ms": 2520,
+              "viseme": "C",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.05
+            },
+            {
+              "frame": 61,
+              "at_ms": 2520,
+              "viseme": "C",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.05
+            },
+            {
+              "frame": 70,
+              "at_ms": 2870,
+              "viseme": "A",
+              "shape_key": "mouth_open",
+              "weight": 0.0
+            },
+            {
+              "frame": 70,
+              "at_ms": 2870,
+              "viseme": "A",
+              "shape_key": "smile_width",
+              "weight": 0.15
+            },
+            {
+              "frame": 70,
+              "at_ms": 2870,
+              "viseme": "A",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.05
+            },
+            {
+              "frame": 70,
+              "at_ms": 2870,
+              "viseme": "A",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.05
+            },
+            {
+              "frame": 72,
+              "at_ms": 2950,
+              "viseme": "G",
+              "shape_key": "mouth_open",
+              "weight": 0.15
+            },
+            {
+              "frame": 72,
+              "at_ms": 2950,
+              "viseme": "G",
+              "shape_key": "smile_width",
+              "weight": 0.35
+            },
+            {
+              "frame": 72,
+              "at_ms": 2950,
+              "viseme": "G",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.05
+            },
+            {
+              "frame": 72,
+              "at_ms": 2950,
+              "viseme": "G",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.05
+            },
+            {
+              "frame": 73,
+              "at_ms": 3000,
+              "viseme": "B",
+              "shape_key": "mouth_open",
+              "weight": 0.2
+            },
+            {
+              "frame": 73,
+              "at_ms": 3000,
+              "viseme": "B",
+              "shape_key": "smile_width",
+              "weight": 0.55
+            },
+            {
+              "frame": 73,
+              "at_ms": 3000,
+              "viseme": "B",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.1
+            },
+            {
+              "frame": 73,
+              "at_ms": 3000,
+              "viseme": "B",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.1
+            },
+            {
+              "frame": 74,
+              "at_ms": 3050,
+              "viseme": "A",
+              "shape_key": "mouth_open",
+              "weight": 0.0
+            },
+            {
+              "frame": 74,
+              "at_ms": 3050,
+              "viseme": "A",
+              "shape_key": "smile_width",
+              "weight": 0.15
+            },
+            {
+              "frame": 74,
+              "at_ms": 3050,
+              "viseme": "A",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.05
+            },
+            {
+              "frame": 74,
+              "at_ms": 3050,
+              "viseme": "A",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.05
+            },
+            {
+              "frame": 76,
+              "at_ms": 3130,
+              "viseme": "C",
+              "shape_key": "mouth_open",
+              "weight": 0.45
+            },
+            {
+              "frame": 76,
+              "at_ms": 3130,
+              "viseme": "C",
+              "shape_key": "smile_width",
+              "weight": 0.4
+            },
+            {
+              "frame": 76,
+              "at_ms": 3130,
+              "viseme": "C",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.05
+            },
+            {
+              "frame": 76,
+              "at_ms": 3130,
+              "viseme": "C",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.05
+            },
+            {
+              "frame": 78,
+              "at_ms": 3220,
+              "viseme": "B",
+              "shape_key": "mouth_open",
+              "weight": 0.2
+            },
+            {
+              "frame": 78,
+              "at_ms": 3220,
+              "viseme": "B",
+              "shape_key": "smile_width",
+              "weight": 0.55
+            },
+            {
+              "frame": 78,
+              "at_ms": 3220,
+              "viseme": "B",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.1
+            },
+            {
+              "frame": 78,
+              "at_ms": 3220,
+              "viseme": "B",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.1
+            },
+            {
+              "frame": 80,
+              "at_ms": 3290,
+              "viseme": "E",
+              "shape_key": "mouth_open",
+              "weight": 0.5
+            },
+            {
+              "frame": 80,
+              "at_ms": 3290,
+              "viseme": "E",
+              "shape_key": "smile_width",
+              "weight": 0.15
+            },
+            {
+              "frame": 80,
+              "at_ms": 3290,
+              "viseme": "E",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.0
+            },
+            {
+              "frame": 80,
+              "at_ms": 3290,
+              "viseme": "E",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.0
+            },
+            {
+              "frame": 82,
+              "at_ms": 3360,
+              "viseme": "F",
+              "shape_key": "mouth_open",
+              "weight": 0.3
+            },
+            {
+              "frame": 82,
+              "at_ms": 3360,
+              "viseme": "F",
+              "shape_key": "smile_width",
+              "weight": 0.0
+            },
+            {
+              "frame": 82,
+              "at_ms": 3360,
+              "viseme": "F",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.0
+            },
+            {
+              "frame": 82,
+              "at_ms": 3360,
+              "viseme": "F",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.0
+            },
+            {
+              "frame": 85,
+              "at_ms": 3500,
+              "viseme": "E",
+              "shape_key": "mouth_open",
+              "weight": 0.5
+            },
+            {
+              "frame": 85,
+              "at_ms": 3500,
+              "viseme": "E",
+              "shape_key": "smile_width",
+              "weight": 0.15
+            },
+            {
+              "frame": 85,
+              "at_ms": 3500,
+              "viseme": "E",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.0
+            },
+            {
+              "frame": 85,
+              "at_ms": 3500,
+              "viseme": "E",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.0
+            },
+            {
+              "frame": 88,
+              "at_ms": 3640,
+              "viseme": "C",
+              "shape_key": "mouth_open",
+              "weight": 0.45
+            },
+            {
+              "frame": 88,
+              "at_ms": 3640,
+              "viseme": "C",
+              "shape_key": "smile_width",
+              "weight": 0.4
+            },
+            {
+              "frame": 88,
+              "at_ms": 3640,
+              "viseme": "C",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.05
+            },
+            {
+              "frame": 88,
+              "at_ms": 3640,
+              "viseme": "C",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.05
+            },
+            {
+              "frame": 90,
+              "at_ms": 3710,
+              "viseme": "B",
+              "shape_key": "mouth_open",
+              "weight": 0.2
+            },
+            {
+              "frame": 90,
+              "at_ms": 3710,
+              "viseme": "B",
+              "shape_key": "smile_width",
+              "weight": 0.55
+            },
+            {
+              "frame": 90,
+              "at_ms": 3710,
+              "viseme": "B",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.1
+            },
+            {
+              "frame": 90,
+              "at_ms": 3710,
+              "viseme": "B",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.1
+            },
+            {
+              "frame": 92,
+              "at_ms": 3780,
+              "viseme": "A",
+              "shape_key": "mouth_open",
+              "weight": 0.0
+            },
+            {
+              "frame": 92,
+              "at_ms": 3780,
+              "viseme": "A",
+              "shape_key": "smile_width",
+              "weight": 0.15
+            },
+            {
+              "frame": 92,
+              "at_ms": 3780,
+              "viseme": "A",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.05
+            },
+            {
+              "frame": 92,
+              "at_ms": 3780,
+              "viseme": "A",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.05
+            },
+            {
+              "frame": 94,
+              "at_ms": 3880,
+              "viseme": "B",
+              "shape_key": "mouth_open",
+              "weight": 0.2
+            },
+            {
+              "frame": 94,
+              "at_ms": 3880,
+              "viseme": "B",
+              "shape_key": "smile_width",
+              "weight": 0.55
+            },
+            {
+              "frame": 94,
+              "at_ms": 3880,
+              "viseme": "B",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.1
+            },
+            {
+              "frame": 94,
+              "at_ms": 3880,
+              "viseme": "B",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.1
+            },
+            {
+              "frame": 95,
+              "at_ms": 3930,
+              "viseme": "C",
+              "shape_key": "mouth_open",
+              "weight": 0.45
+            },
+            {
+              "frame": 95,
+              "at_ms": 3930,
+              "viseme": "C",
+              "shape_key": "smile_width",
+              "weight": 0.4
+            },
+            {
+              "frame": 95,
+              "at_ms": 3930,
+              "viseme": "C",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.05
+            },
+            {
+              "frame": 95,
+              "at_ms": 3930,
+              "viseme": "C",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.05
+            },
+            {
+              "frame": 98,
+              "at_ms": 4050,
+              "viseme": "B",
+              "shape_key": "mouth_open",
+              "weight": 0.2
+            },
+            {
+              "frame": 98,
+              "at_ms": 4050,
+              "viseme": "B",
+              "shape_key": "smile_width",
+              "weight": 0.55
+            },
+            {
+              "frame": 98,
+              "at_ms": 4050,
+              "viseme": "B",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.1
+            },
+            {
+              "frame": 98,
+              "at_ms": 4050,
+              "viseme": "B",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.1
+            },
+            {
+              "frame": 103,
+              "at_ms": 4260,
+              "viseme": "X",
+              "shape_key": "mouth_open",
+              "weight": 0.0
+            },
+            {
+              "frame": 103,
+              "at_ms": 4260,
+              "viseme": "X",
+              "shape_key": "smile_width",
+              "weight": 0.1
+            },
+            {
+              "frame": 103,
+              "at_ms": 4260,
+              "viseme": "X",
+              "shape_key": "mouth_curl_left",
+              "weight": 0.05
+            },
+            {
+              "frame": 103,
+              "at_ms": 4260,
+              "viseme": "X",
+              "shape_key": "mouth_curl_right",
+              "weight": 0.05
+            }
+          ]
+        }
+      },
+      "response": {
+        "id": "act-greet-1_speech",
+        "ok": true,
+        "op": "apply_shape_keys",
+        "result": {
+          "action": "ANIMUS_animus_speech_take001",
+          "track": "ANIMUS_animus_speech_take001_track",
+          "strip": "ANIMUS_animus_speech_take001",
+          "shape_keys": [
+            "mouth_curl_left",
+            "mouth_curl_right",
+            "mouth_open",
+            "smile_width"
+          ],
+          "sample_count": 120,
+          "key_count": 120,
+          "frame_start": 1,
+          "frame_end": 114
+        }
+      }
+    }
+  ],
+  "voice": [
+    {
+      "beat_id": "greet-1",
+      "voice_mode": "live",
+      "wav": "C:\\Users\\jainl\\resume-projects\\k-vrc-animus-poc\\voice\\animus_voice\\out\\actor\\greet-1_speech.wav",
+      "take_json": "C:\\Users\\jainl\\resume-projects\\k-vrc-animus-poc\\voice\\animus_voice\\out\\actor\\greet-1_speech.animus.json",
+      "cue_count": 30,
+      "sample_count": 120,
+      "duration_ms": 4720
+    }
+  ],
+  "bridge": {
+    "mode": "stage",
+    "host": "127.0.0.1",
+    "port": 61022,
+    "blender": "C:\\Users\\jainl\\tools\\blender-4.5\\blender-4.5.12-stable+v45.84afd5f785f7-windows.amd64-release\\blender.exe",
+    "stage_exit_code": 0,
+    "stage_log": "C:\\Users\\jainl\\resume-projects\\k-vrc-animus-poc\\voice\\animus_voice\\out\\actor\\stage.log"
+  },
+  "stage": {
+    "kind": "animus_actor_stage_report",
+    "blender_version": "4.5.12 LTS",
+    "background": true,
+    "port": 61022,
+    "timed_out": false,
+    "scene": {
+      "actions": [
+        "ANIMUS_animus_speech_take001",
+        "ANIMUS_face_warm_amused_take001",
+        "ANIMUS_gaze_camera_take001",
+        "ANIMUS_wave_take001"
+      ],
+      "pose_strips": [
+        "ANIMUS_gaze_camera_take001",
+        "ANIMUS_wave_take001"
+      ],
+      "face_strips": [
+        "ANIMUS_animus_speech_take001",
+        "ANIMUS_face_warm_amused_take001"
+      ]
+    },
+    "action_keyframes": {
+      "ANIMUS_animus_speech_take001": 120,
+      "ANIMUS_face_warm_amused_take001": 16,
+      "ANIMUS_gaze_camera_take001": 12,
+      "ANIMUS_wave_take001": 40
+    }
+  }
+}

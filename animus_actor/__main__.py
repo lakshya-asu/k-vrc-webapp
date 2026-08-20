@@ -14,6 +14,10 @@ Examples, all from the repo root:
 
     # No voice tools installed: rebuild visemes from the fixture cues.
     python -m animus_actor "Hello, I am K-VRC" --voice-mode convert
+
+    # Model-authored plan from the director's local endpoint (needs the
+    # llama server from scripts/start-animus-model.ps1 on port 8081).
+    python -m animus_actor "Hello, I am K-VRC" --brain model
 """
 
 import argparse
@@ -22,6 +26,7 @@ import sys
 
 from .contract import CONTROL_LEVELS
 from .loop import (
+    BRAINS,
     DEFAULT_OUT_DIR,
     DEFAULT_PROFILE,
     ActorLoopError,
@@ -52,6 +57,14 @@ def build_parser():
         dest="control_level",
         default="perform",
         choices=CONTROL_LEVELS,
+    )
+    parser.add_argument(
+        "--brain",
+        default="fallback",
+        choices=BRAINS,
+        help="plan source: deterministic fallback (default) or the local "
+        "model endpoint the director uses (ANIMUS_LLM_BASE_URL, "
+        "ANIMUS_MODEL, ANIMUS_LLM_ATTEMPTS)",
     )
     parser.add_argument("--profile", default=DEFAULT_PROFILE)
     parser.add_argument(
@@ -92,6 +105,7 @@ def main(argv=None):
             target=args.target,
             actor_id=args.actor_id,
             control_level=args.control_level,
+            brain=args.brain,
             profile_path=args.profile,
             voice_mode=args.voice_mode,
             out_dir=args.out,

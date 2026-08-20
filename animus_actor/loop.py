@@ -5,9 +5,11 @@
     receipts
 
 Authority stays caller-owned: only control level 'perform' opens a
-socket (decision A-009). The plan source here is the deterministic
-fallback only; no model, no GPU. Providers stay a director concern
-(scripts/animus-director.mjs); this loop proves the performance path.
+socket (decision A-009). The default plan source is the deterministic
+fallback: no model, no GPU. --brain model asks the same local
+OpenAI-compatible endpoint the Node director uses (model_brain.py);
+a model plan that fails the strict contract falls back loudly, never
+silently.
 
 By default a perform run launches its own headless Blender with
 animus_actor/stage.py and tears it down afterward. --attach targets a
@@ -28,7 +30,10 @@ from .embodiment import (
     viseme_artifact_to_request,
 )
 from .fallback import deterministic_actor_plan
+from .model_brain import model_actor_plan
 from .voice import run_voice_job
+
+BRAINS = ("fallback", "model")
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_PROFILE = os.path.join(
@@ -68,17 +73,26 @@ def find_blender(explicit=None):
 
 
 def build_plan(line, instruction=None, speech=None, target="camera",
-               actor_id="kvrc", control_level="perform"):
-    """Deterministic plan plus contract validation plus provenance."""
+               actor_id="kvrc", control_level="perform", brain="fallback"):
+    """Plan plus contract validation plus provenance.
+
+    brain 'fallback' is the deterministic table; brain 'model' calls the
+    director's local endpoint and keeps the deterministic plan as a loud
+    fallback (model_brain.model_actor_plan owns that policy).
+    """
+    if brain not in BRAINS:
+        raise ActorLoopError(f"unknown brain '{brain}'; choose from {BRAINS}")
     request = {
         "instruction": instruction if instruction is not None else line,
         "target": target,
         "speech": speech if speech is not None else line,
+        "capabilities": {"body": True, "gaze": True, "face": True, "speech": True},
     }
+    authority = {"actor_id": actor_id, "control_level": control_level}
+    if brain == "model":
+        return model_actor_plan(request, authority)
     candidate = deterministic_actor_plan(request)
-    checked = validate_actor_plan(
-        candidate, {"actor_id": actor_id, "control_level": control_level}
-    )
+    checked = validate_actor_plan(candidate, authority)
     if not checked["ok"]:
         raise ActorLoopError(
             "deterministic plan violated the actor contract:\n"
@@ -160,6 +174,7 @@ def run_actor_loop(
     target="camera",
     actor_id="kvrc",
     control_level="perform",
+    brain="fallback",
     profile_path=DEFAULT_PROFILE,
     voice_mode="live",
     out_dir=DEFAULT_OUT_DIR,
@@ -184,6 +199,7 @@ def run_actor_loop(
         target=target,
         actor_id=actor_id,
         control_level=control_level,
+        brain=brain,
     )
     jobs = map_plan_to_bridge_jobs(plan, profile)
 
@@ -248,6 +264,7 @@ def run_actor_loop(
         "requested_speech": speech if speech is not None else line,
         "control_level": plan["control_level"],
         "performed": performed,
+        "brain": brain,
         "voice_mode": voice_mode,
         "plan": plan,
         "profile": jobs["profile"],

@@ -7,9 +7,15 @@ take in headless Blender:
 
 Run it from the repo root. What happens, in order:
 
-1. The line becomes a semantic actor plan through the DETERMINISTIC
-   fallback brain (animus_actor/fallback.py, a port of
-   src/animus/fallback.js). No model, no GPU.
+1. The line becomes a semantic actor plan. Default brain: the
+   DETERMINISTIC fallback (animus_actor/fallback.py, a port of
+   src/animus/fallback.js), no model, no GPU. With --brain model the
+   plan comes from the same local OpenAI-compatible endpoint the Node
+   director uses (animus_actor/model_brain.py, port 8081 by default;
+   start it with scripts/start-animus-model.ps1 and claim the GPU
+   first). A model plan that fails the contract falls back loudly to
+   the deterministic brain, never silently; the receipt records
+   provenance and every failed attempt.
 2. The plan is checked by the strict contract validator
    (animus_actor/contract.py, a port of src/animus/contract.js): beats
    only, never raw keyframes, authority owned by the caller.
@@ -31,6 +37,11 @@ Run it from the repo root. What happens, in order:
 
 Useful flags:
 
+    --brain model              model-authored plan from the director's
+                               endpoint (ANIMUS_LLM_BASE_URL, default
+                               http://127.0.0.1:8081/v1; ANIMUS_MODEL;
+                               ANIMUS_LLM_ATTEMPTS, default 3).
+                               Default stays fallback.
     --attach --port N          use a bridge that is already listening
                                (the acceptance harness does this)
     --control-level suggest    map everything, perform nothing
@@ -75,9 +86,11 @@ Acceptance: run_acceptance 27/27, run_director_acceptance 22/22
 
 ## Honest gaps
 
-- The brain here is the deterministic fallback only. Model-authored
-  plans stay a director concern (scripts/animus-director.mjs); wiring a
-  local model into the Python loop is future work.
+- The default brain is the deterministic fallback; --brain model needs
+  the port 8081 server running (and the GPU claimed) or every attempt
+  fails over to the fallback, loudly.
+- The 4B model emits malformed JSON roughly 1 in 3 attempts; retries
+  are caller policy (ANIMUS_LLM_ATTEMPTS), same as the director.
 - The rig is the plain acceptance armature, not the real K-VRC
   character.
 - suggest and preview behave the same: map, never perform.

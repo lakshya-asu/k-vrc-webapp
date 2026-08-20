@@ -65,6 +65,9 @@ still performs. Committed results:
 - `acceptance/results-director-live.json`: live Qwen3-4B plan
   (`operator: local-small-retry1`, `fallback: false`), live voice, 22/22,
   on Blender 4.5.12 headless, CPU only.
+- `acceptance/results-director-live-gpu.json`: same live mode with the
+  model on the GPU (`start-animus-model.ps1` defaults, `-ngl 99`),
+  22/22, model-authored suggest and perform plans, 2026-08-20.
 
 ## Tests
 
