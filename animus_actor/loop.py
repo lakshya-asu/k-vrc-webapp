@@ -127,7 +127,8 @@ def _voice_layers(jobs, voice_mode, out_dir):
     return voice_receipts
 
 
-def _launch_stage(port, profile_path, run_dir, blender, deadline):
+def _launch_stage(port, profile_path, run_dir, blender, deadline,
+                  render_dir=None, render_audio=None):
     done_file = os.path.join(run_dir, "stage.done")
     report_path = os.path.join(run_dir, "stage-report.json")
     log_path = os.path.join(run_dir, "stage.log")
@@ -152,6 +153,10 @@ def _launch_stage(port, profile_path, run_dir, blender, deadline):
         "--deadline",
         str(deadline),
     ]
+    if render_dir:
+        command += ["--render-dir", render_dir]
+        if render_audio:
+            command += ["--render-audio", render_audio]
     log_handle = open(log_path, "w", encoding="utf-8")
     process = subprocess.Popen(
         command, cwd=REPO, stdout=log_handle, stderr=subprocess.STDOUT
@@ -185,6 +190,7 @@ def run_actor_loop(
     blender=None,
     stage_deadline=300.0,
     sender=None,
+    render_dir=None,
 ):
     """Run the whole chain. Returns the full receipt dict.
 
@@ -223,8 +229,15 @@ def run_actor_loop(
     elif performed:
         blender_bin = find_blender(blender)
         stage_port = port or pick_free_port()
+        render_audio = None
+        if render_dir:
+            for item in voice_receipts:
+                if item.get("wav"):
+                    render_audio = item["wav"]
+                    break
         process, done_file, report_path, log_path, log_handle = _launch_stage(
-            stage_port, profile_path, out_dir, blender_bin, stage_deadline
+            stage_port, profile_path, out_dir, blender_bin, stage_deadline,
+            render_dir=render_dir, render_audio=render_audio,
         )
         try:
             if not wait_for_bridge("127.0.0.1", stage_port, deadline_s=120.0):
@@ -238,10 +251,12 @@ def run_actor_loop(
                 )
         finally:
             # Always release the stage so Blender exits, even on error.
+            # A render run keeps encoding after the done-file, so give it
+            # a much longer exit window before killing anything.
             with open(done_file, "w", encoding="utf-8") as handle:
                 handle.write("done\n")
             try:
-                process.wait(timeout=60)
+                process.wait(timeout=600 if render_dir else 60)
             except subprocess.TimeoutExpired:
                 process.kill()
             log_handle.close()
@@ -316,6 +331,7 @@ def summarize(receipt):
         else None,
         "viseme_count": sum(item.get("sample_count", 0) for item in voice),
         "stage_timed_out": (receipt.get("stage") or {}).get("timed_out"),
+        "render": (receipt.get("stage") or {}).get("render"),
         "receipt_path": receipt.get("receipt_path"),
     }
 

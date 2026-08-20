@@ -87,6 +87,14 @@ def build_parser():
     parser.add_argument(
         "--stage-deadline", dest="stage_deadline", type=float, default=300.0
     )
+    parser.add_argument(
+        "--render-dir",
+        dest="render_dir",
+        default=None,
+        help="after the take lands, render it there: animus-take.mp4 "
+        "(H.264, AAC voice when a live wav exists) plus four still PNGs. "
+        "Stage runs only, ignored with --attach or an injected sender.",
+    )
     return parser
 
 
@@ -115,6 +123,7 @@ def main(argv=None):
             port=args.port,
             blender=args.blender,
             stage_deadline=args.stage_deadline,
+            render_dir=args.render_dir,
         )
     except (ActorLoopError, ValueError, RuntimeError) as error:
         print(
