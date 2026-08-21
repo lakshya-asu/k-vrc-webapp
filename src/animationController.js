@@ -69,6 +69,12 @@ export class AnimationController {
     this._idleTimer = 0;
     this._idleInterval = 6 + Math.random() * 6; // 6-12s — long enough for dances to play out
     this._lastIdleClip = null;
+    this.autoIdle = true; // agent mode turns this off and drives cadence itself
+  }
+
+  /** Enable or disable the internal idle-clip rotation. */
+  setAutoIdle(enabled) {
+    this.autoIdle = !!enabled;
   }
 
   // Normalize a clip name for fuzzy matching:
@@ -163,7 +169,7 @@ export class AnimationController {
     this.mixer.update(delta);
 
     // Periodically rotate idle animation for variety
-    if (this.currentName && this._isIdling()) {
+    if (this.autoIdle && this.currentName && this._isIdling()) {
       this._idleTimer += delta;
       if (this._idleTimer >= this._idleInterval) {
         this._idleTimer = 0;

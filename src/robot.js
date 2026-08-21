@@ -6,13 +6,15 @@ import { attachFaceScreen, updateFaceScreen, tickFaceScreen, setExpression as fa
 import { AnimationController } from './animationController.js';
 import { EXPRESSION_LIBRARY } from './expressionLibrary.js';
 
+// Candidate names per bone; first match wins. The current GLB export
+// names the head bone 'Head_1', older exports used 'Head'.
 const BONES = {
-  head:    'Head',
-  chest:   'Spine2',
-  armL:    'LeftArm',
-  forearmL:'LeftForeArm',
-  armR:    'RightArm',
-  forearmR:'RightForeArm',
+  head:    ['Head', 'Head_1'],
+  chest:   ['Spine2'],
+  armL:    ['LeftArm'],
+  forearmL:['LeftForeArm'],
+  armR:    ['RightArm'],
+  forearmR:['RightForeArm'],
 };
 
 let robotRoot = null;
@@ -39,6 +41,7 @@ const FACE_IDLE_POOL = [
 let _faceIdleTimer = 0;
 let _faceIdleInterval = rand(8, 14);
 let _faceIdleLast = null;
+let _faceIdleEnabled = true;         // agent mode drives expressions itself
 let _faceOverrideTimer = 0;          // counts down after LLM sets an expression
 const FACE_OVERRIDE_HOLD = 12;       // seconds to hold LLM expression before idle resumes
 
@@ -99,8 +102,8 @@ export async function initRobot(scene, emotionMap) {
 
   robotRoot.traverse(obj => {
     if (!obj.isBone && obj.type !== 'Bone') return;
-    for (const [key, name] of Object.entries(BONES)) {
-      if (obj.name === name) bones[key] = obj;
+    for (const [key, names] of Object.entries(BONES)) {
+      if (!bones[key] && names.includes(obj.name)) bones[key] = obj;
     }
   });
 
@@ -153,6 +156,19 @@ export async function initRobot(scene, emotionMap) {
     startBodyMotion,
     triggerHeadJerk,
     playGesture: name => animCtrl.playGesture(name),
+    // Agent-mode hooks: take over the internal idle randomizers and
+    // point the head somewhere (degrees; the same targets the cursor
+    // tracker writes, so the last writer wins).
+    setIdleAutonomy: ({ body = true, face = true } = {}) => {
+      animCtrl.setAutoIdle(body);
+      _faceIdleEnabled = face;
+    },
+    setGaze: (yawDeg, pitchDeg) => {
+      targetHeadYaw = THREE.MathUtils.degToRad(yawDeg);
+      targetHeadPitch = THREE.MathUtils.degToRad(pitchDeg);
+      targetChestYaw = THREE.MathUtils.degToRad(yawDeg * 0.3);
+    },
+    getHeadBone: () => bones.head ?? null,
     get faceScreenMesh() { return faceScreenMesh; },
     setExpression: name => {
       _faceOverrideTimer = FACE_OVERRIDE_HOLD; // pause idle cycling for 12 s
@@ -205,7 +221,7 @@ export function updateRobot(delta) {
 
   // Face idle cycling — rotates through subtle expressions when LLM isn't driving
   _faceOverrideTimer = Math.max(0, _faceOverrideTimer - delta);
-  if (_faceOverrideTimer === 0) {
+  if (_faceIdleEnabled && _faceOverrideTimer === 0) {
     _faceIdleTimer += delta;
     if (_faceIdleTimer >= _faceIdleInterval) {
       _faceIdleTimer = 0;

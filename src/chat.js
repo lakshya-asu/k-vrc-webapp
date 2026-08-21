@@ -138,6 +138,7 @@ async function sendMessage(text) {
   setTimeout(() => { sendBtn.disabled = false; }, 1000);
 
   addBubble(trimmed, 'user');
+  window.dispatchEvent(new CustomEvent('kvrc:user-message'));
   const historySnapshot = history.slice(-20);
   history = [...history, { role: 'user', text: trimmed }].slice(-20);
   applyEmotionFull('thinking');
@@ -164,6 +165,7 @@ async function sendMessage(text) {
     console.error(err);
     addBubble("K-VRC is offline. Try again?", 'robot');
     applyEmotionFull('sad');
+    window.dispatchEvent(new CustomEvent('kvrc:reply-error'));
     return;
   }
 
@@ -174,6 +176,7 @@ async function sendMessage(text) {
   robotRef?.setExpression(expr);
   const label = document.getElementById('emotion-label');
   if (label) label.textContent = expr;
+  window.dispatchEvent(new CustomEvent('kvrc:reply', { detail: { emotion } }));
   setTimeout(() => speak(reply, emotion), 300);
 
   if (sidenote_topic) fetchSidenote(sidenote_topic, trimmed);

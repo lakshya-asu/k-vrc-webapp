@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { drawGlyphFace, validateFaceGlyph } from './agent/glyphComposer.js';
 
 // ── Canvas setup ─────────────────────────────────────────────
 const W = 512, H = 512;
@@ -34,6 +35,7 @@ let faceMaterial = null;
 let fadeAnimId = null;
 let _expressionWeights = null; // null = use emotion draw path
 let _expressionMood = null;    // null = use emotion color path
+let _glyphSpec = null;         // composed glyph face (agent mode), wins over both
 
 function randomBetween(a, b) { return a + Math.random() * (b - a); }
 
@@ -59,6 +61,7 @@ const MOOD_COLORS = {
 };
 
 function getColors() {
+  if (_glyphSpec?.mood) return MOOD_COLORS[_glyphSpec.mood] ?? MOOD_COLORS.cold;
   if (_expressionMood) return MOOD_COLORS[_expressionMood] ?? MOOD_COLORS.cold;
   return COLORS[currentEmotion] ?? COLORS.neutral;
 }
@@ -539,7 +542,9 @@ function draw() {
   ctx.strokeStyle = c.primary;
   glow(c.primary, 24);
 
-  if (_expressionWeights) {
+  if (_glyphSpec) {
+    drawGlyphFace(ctx, _glyphSpec, c, blinkProgress, amplitude);
+  } else if (_expressionWeights) {
     drawWeighted(_expressionWeights, c, blinkProgress);
   } else {
     const expr = EXPRESSIONS[currentEmotion] ?? EXPRESSIONS.neutral;
@@ -617,12 +622,14 @@ export function tickFaceScreen(deltaMs) {
 export function setEmotion(emotion) {
   _expressionWeights = null;                           // always clear first
   _expressionMood = null;
+  _glyphSpec = null;
   if (emotion === currentEmotion && !booting) return;  // guard retained, moved to line 3
   currentEmotion = emotion;
   morphP = 0;
 }
 
 export function setExpression(name) {
+  _glyphSpec = null;
   if (!setExpression._lib) {
     _expressionWeights = null;
     _expressionMood = null;
@@ -642,6 +649,23 @@ export function setExpression(name) {
 
 export function initExpressionLibrary(lib) {
   setExpression._lib = lib;
+}
+
+// ── Composed glyph face (agent mode) ─────────────────────────
+// Accepts a face_glyph spec (see agent/glyphComposer.js). Returns
+// true when the spec validated and is now on screen.
+export function setFaceGlyph(spec) {
+  const res = validateFaceGlyph(spec);
+  if (!res.ok) {
+    console.warn('setFaceGlyph rejected:', res.errors.join('; '));
+    return false;
+  }
+  _glyphSpec = res.value;
+  return true;
+}
+
+export function clearFaceGlyph() {
+  _glyphSpec = null;
 }
 
 export function setSpeakingAmplitude(amp) {

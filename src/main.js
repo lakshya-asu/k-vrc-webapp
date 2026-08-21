@@ -9,6 +9,7 @@ import { EMOTION_MAP, applyEmotion } from './emotions.js';
 import { initRobot, updateRobot } from './robot.js';
 import { initChat } from './chat.js';
 import { initHints } from './hints.js';
+import { initAgent } from './agent/agentLoop.js';
 import './style.css';
 
 // ── Renderer ─────────────────────────────────────────────────
@@ -115,11 +116,20 @@ window.addEventListener('resize', () => {
 const clock = new THREE.Clock();
 
 (async () => {
+  let agent = null;
   try {
     const robot = await initRobot(scene, EMOTION_MAP);
     applyEmotion('neutral', { rimLight, faceLight, bloomPass });
     initChat(robot, { rimLight, faceLight, bloomPass });
     initHints();
+
+    // Agent mode: the deterministic behavior brain that makes K-VRC
+    // self-animate and react to the visitor. On by default; ?agent=off
+    // falls back to the old scripted idle randomizers.
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('agent') !== 'off') {
+      agent = initAgent({ robot, camera });
+    }
   } catch (err) {
     console.error('K-VRC boot error:', err);
   } finally {
@@ -128,6 +138,7 @@ const clock = new THREE.Clock();
 
   renderer.setAnimationLoop(() => {
     updateRobot(clock.getDelta());
+    agent?.update();
     composer.render();
   });
 })();
