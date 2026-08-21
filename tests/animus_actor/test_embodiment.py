@@ -148,6 +148,98 @@ class MappingTests(unittest.TestCase):
             viseme_artifact_to_request({"kind": "something_else"})
 
 
+class BlendOutTests(unittest.TestCase):
+    """Gesture blend-back-to-idle (blend_out_frames)."""
+
+    BLEND_FIXTURE = os.path.join(
+        REPO, "tests", "animus_bridge", "fixtures",
+        "blend_out_body_request.json",
+    )
+
+    def _profile_with_blend(self, frames=6):
+        with open(PROFILE_PATH, "r", encoding="utf-8-sig") as handle:
+            raw = json.load(handle)
+        raw["gestures"]["wave"]["blend_out_frames"] = frames
+        checked = validate_embodiment_profile(raw)
+        self.assertTrue(checked["ok"], checked["errors"])
+        return checked["value"]
+
+    def test_blend_out_appends_entry_pose_keys_and_extends_the_take(self):
+        profile = self._profile_with_blend(6)
+        jobs = map_plan_to_bridge_jobs(validated_plan(), profile)
+        params = jobs["layers"][0]["request"]["params"]
+        gesture = profile["gestures"]["wave"]
+        self.assertEqual(params["frame_end"], gesture["frames"] + 6)
+        # One appended key per animated bone, at the blend frame. The
+        # testrig idle gesture does not animate the wave bones, so the
+        # blend target falls back to each bone's own lowest-frame
+        # (entry) pose.
+        bones = []
+        first = {}
+        for sample in gesture["samples"]:
+            if sample["bone"] not in bones:
+                bones.append(sample["bone"])
+            kept = first.get(sample["bone"])
+            if kept is None or sample["frame"] < kept["frame"]:
+                first[sample["bone"]] = sample
+        appended = params["samples"][len(gesture["samples"]):]
+        self.assertEqual([sample["bone"] for sample in appended], bones)
+        for sample in appended:
+            self.assertEqual(sample["frame"], gesture["frames"] + 6)
+            self.assertEqual(
+                sample.get("rotation_quaternion"),
+                first[sample["bone"]].get("rotation_quaternion"),
+            )
+        # The extended request still passes the bridge validators.
+        request = jobs["layers"][0]["request"]
+        _, op, raw = protocol.validate_envelope(request)
+        protocol.validate_params(op, raw)
+
+    def test_gesture_without_blend_is_unchanged(self):
+        profile = load_profile(PROFILE_PATH)
+        jobs = map_plan_to_bridge_jobs(validated_plan(), profile)
+        params = jobs["layers"][0]["request"]["params"]
+        self.assertEqual(params["frame_end"], profile["gestures"]["wave"]["frames"])
+        self.assertEqual(
+            len(params["samples"]), len(profile["gestures"]["wave"]["samples"])
+        )
+
+    def test_blend_out_validation_refuses_bad_values(self):
+        for bad in (0, -3, 241, 1.5, "6"):
+            with open(PROFILE_PATH, "r", encoding="utf-8-sig") as handle:
+                raw = json.load(handle)
+            raw["gestures"]["wave"]["blend_out_frames"] = bad
+            checked = validate_embodiment_profile(raw)
+            self.assertFalse(checked["ok"], f"blend {bad!r} must be refused")
+            self.assertTrue(
+                any("blend_out_frames" in error for error in checked["errors"])
+            )
+
+    def test_blend_out_cannot_push_past_the_frame_span_cap(self):
+        with open(PROFILE_PATH, "r", encoding="utf-8-sig") as handle:
+            raw = json.load(handle)
+        raw["gestures"]["wave"]["frames"] = 9990
+        raw["gestures"]["wave"]["samples"] = [
+            dict(sample, frame=min(sample["frame"], 9990))
+            for sample in raw["gestures"]["wave"]["samples"]
+        ]
+        raw["gestures"]["wave"]["blend_out_frames"] = 20
+        checked = validate_embodiment_profile(raw)
+        self.assertFalse(checked["ok"])
+        self.assertTrue(
+            any("exceeds" in error for error in checked["errors"])
+        )
+
+    def test_python_blend_out_matches_the_js_mapper_fixture(self):
+        with open(self.BLEND_FIXTURE, "r", encoding="utf-8-sig") as handle:
+            fixture = json.load(handle)
+        profile = self._profile_with_blend(6)
+        jobs = map_plan_to_bridge_jobs(validated_plan(), profile)
+        body = jobs["layers"][0]
+        self.assertEqual(body["gesture"], fixture["gesture"])
+        self.assertEqual(body["request"]["params"], fixture["params"])
+
+
 class CrossLanguageParityTests(unittest.TestCase):
     """Python mapper output must equal the committed JS mapper output."""
 
@@ -217,6 +309,37 @@ class KvrcProfileTests(unittest.TestCase):
         self.assertEqual(self.profile["profile"], "kvrc")
         self.assertEqual(self.profile["rig"]["object"], "KVRCArmature")
         self.assertNotIn("face_object", self.profile["rig"])
+
+    def test_every_kvrc_gesture_blends_back_to_idle(self):
+        for name, gesture in self.profile["gestures"].items():
+            self.assertEqual(
+                gesture.get("blend_out_frames"), 12,
+                f"gesture '{name}' must carry the half-second blend-out",
+            )
+
+    def test_kvrc_wave_blends_to_the_idle_entry_pose(self):
+        # The rest target is the default gesture's (breathing_idle)
+        # entry pose, not the wave clip's own raised-hand first frame.
+        plan = validated_plan()
+        jobs = map_plan_to_bridge_jobs(plan, self.profile)
+        params = jobs["layers"][0]["request"]["params"]
+        wave = self.profile["gestures"]["wave"]
+        idle = self.profile["gestures"][self.profile["default_gesture"]]
+        self.assertEqual(params["frame_end"], wave["frames"] + 12)
+        idle_entry = {}
+        for sample in idle["samples"]:
+            kept = idle_entry.get(sample["bone"])
+            if kept is None or sample["frame"] < kept["frame"]:
+                idle_entry[sample["bone"]] = sample
+        appended = params["samples"][len(wave["samples"]):]
+        self.assertGreater(len(appended), 0)
+        for sample in appended:
+            self.assertEqual(sample["frame"], wave["frames"] + 12)
+            self.assertIn(sample["bone"], idle_entry)
+            self.assertEqual(
+                sample.get("rotation_quaternion"),
+                idle_entry[sample["bone"]].get("rotation_quaternion"),
+            )
         self.assertNotIn("shape_keys", self.profile["rig"])
 
     def test_shape_key_modes_still_require_shape_keys(self):

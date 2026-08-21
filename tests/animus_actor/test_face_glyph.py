@@ -25,6 +25,7 @@ from animus_actor.contract import (  # noqa: E402
 from animus_actor.face_frames import build_face_job  # noqa: E402
 from animus_actor.stage_look import (  # noqa: E402
     DEFAULT_LOOK,
+    clamped_energy,
     resolve_look,
 )
 from animus_actor.voice import run_voice_job  # noqa: E402
@@ -143,6 +144,22 @@ class StageLookTest(unittest.TestCase):
             resolve_look({"look": "film_noir"})
         with self.assertRaises(ValueError):
             resolve_look({"look": {"blom_strength": 0.5}})
+
+    def test_wash_guard_ships_in_the_preset(self):
+        # Scene-5 lesson: key 1150 / fill 340 washed the shell white.
+        look = resolve_look({"look": True})
+        self.assertEqual(look["key_energy_max"], 1000.0)
+        self.assertEqual(look["fill_energy_max"], 300.0)
+
+    def test_clamped_energy_caps_hot_scenes_and_passes_sane_ones(self):
+        # The exact scene-5 request is pulled back under the ceiling.
+        self.assertEqual(clamped_energy(1150.0, 1000.0), 1000.0)
+        self.assertEqual(clamped_energy(340.0, 300.0), 300.0)
+        # Requests inside the ceiling pass through untouched.
+        self.assertEqual(clamped_energy(950.0, 1000.0), 950.0)
+        # A scene may disable the clamp knowingly.
+        self.assertEqual(clamped_energy(1150.0, None), 1150.0)
+        self.assertEqual(clamped_energy(1150.0, 0), 1150.0)
 
 
 class VoiceReuseTest(unittest.TestCase):

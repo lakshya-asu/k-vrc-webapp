@@ -206,6 +206,18 @@ def validate_embodiment_profile(profile):
                 )
             else:
                 _validate_gesture_samples(gesture, name, bones, errors)
+                blend = gesture.get("blend_out_frames")
+                if blend is not None:
+                    if not _is_integer(blend) or blend < 1 or blend > 240:
+                        errors.append(
+                            f"gestures.{name}.blend_out_frames must be an "
+                            "integer from 1 to 240"
+                        )
+                    elif frames + blend > MAX_FRAME_SPAN:
+                        errors.append(
+                            f"gestures.{name}.frames plus blend_out_frames "
+                            f"exceeds {MAX_FRAME_SPAN}"
+                        )
         default_gesture = profile.get("default_gesture")
         if not isinstance(default_gesture, str) or default_gesture not in gestures:
             errors.append("profile.default_gesture must name a defined gesture")
@@ -382,6 +394,16 @@ def _resolve_gesture_name(body, profile):
     )
 
 
+def _entry_pose_by_bone(gesture):
+    """Each animated bone's lowest-frame sample, in first-seen order."""
+    entry = {}
+    for sample in gesture["samples"]:
+        kept = entry.get(sample["bone"])
+        if kept is None or sample["frame"] < kept["frame"]:
+            entry[sample["bone"]] = sample
+    return entry
+
+
 def _map_body_beat(beat, profile):
     gesture_name = _resolve_gesture_name(beat["body"], profile)
     gesture = profile["gestures"][gesture_name]
@@ -395,6 +417,33 @@ def _map_body_beat(beat, profile):
         if "location" in sample:
             moved["location"] = sample["location"]
         samples.append(moved)
+    frame_end = offset + gesture["frames"]
+
+    # Blend back to idle: instead of holding the clip's last pose, a
+    # gesture with blend_out_frames keys every animated bone back to a
+    # rest pose blend_out_frames after the clip ends. The rest pose is
+    # the profile's default gesture's entry pose (its per-bone
+    # lowest-frame sample: for K-VRC that is breathing_idle frame 1);
+    # a bone the default gesture does not animate falls back to the
+    # gesture's own entry pose. The FCurve interpolation between the
+    # last clip key and this one is the blend. All numbers still come
+    # from the profile.
+    blend = gesture.get("blend_out_frames")
+    if blend:
+        rest_by_bone = _entry_pose_by_bone(
+            profile["gestures"][profile["default_gesture"]]
+        )
+        first_by_bone = _entry_pose_by_bone(gesture)
+        for bone, sample in first_by_bone.items():
+            pose = rest_by_bone.get(bone, sample)
+            rest = {"bone": bone, "frame": frame_end + blend}
+            if "rotation_quaternion" in pose:
+                rest["rotation_quaternion"] = pose["rotation_quaternion"]
+            if "location" in pose:
+                rest["location"] = pose["location"]
+            samples.append(rest)
+        frame_end += blend
+
     return {
         "beat_id": beat["id"],
         "channel": "body",
@@ -406,7 +455,7 @@ def _map_body_beat(beat, profile):
                 "object": profile["rig"]["object"],
                 "name_hint": sanitize_name_hint(gesture["name_hint"], "gesture"),
                 "frame_start": base,
-                "frame_end": offset + gesture["frames"],
+                "frame_end": frame_end,
                 "samples": samples,
             },
         },

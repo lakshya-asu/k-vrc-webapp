@@ -39,6 +39,14 @@ DEFAULT_LOOK = {
     # session receipts): warm key, dark falloff, pooled backdrop.
     "key_energy": 700.0,
     "fill_energy": 150.0,
+    # Wash guard (scene-5 lesson, 2026-08-20 board note): a per-scene
+    # render config may raise key/fill energy for mood, but past these
+    # ceilings the orange shell blows out toward white under studio_v2's
+    # AgX Punchy grade (scene 5 shipped at key 1150 / fill 340 and
+    # visibly washed). The preset clamps what profiles request; a scene
+    # that truly needs more must override the ceilings knowingly.
+    "key_energy_max": 1000.0,
+    "fill_energy_max": 300.0,
     "rim_energy": 1000.0,
     "rim_color": [0.85, 0.92, 1.0],
     # Set geometry + colors.
@@ -118,12 +126,27 @@ def resolve_look(render_cfg):
 # --- lighting -------------------------------------------------------------
 
 
+def clamped_energy(requested, maximum):
+    """The effective light energy: the request, capped by the preset.
+
+    A falsy maximum disables the clamp (a scene overriding
+    key_energy_max/fill_energy_max to 0 or null opts out knowingly).
+    """
+    value = float(requested)
+    if maximum:
+        return min(value, float(maximum))
+    return value
+
+
 def build_lighting(bpy, render_cfg, look):
     """Warm three-point studio lighting with soft area shadows."""
     scene = bpy.context.scene
 
     key = bpy.data.objects.new("KeyLight", bpy.data.lights.new("KeyLight", "AREA"))
-    key.data.energy = float(render_cfg.get("key_energy", look["key_energy"]))
+    key.data.energy = clamped_energy(
+        render_cfg.get("key_energy", look["key_energy"]),
+        look.get("key_energy_max"),
+    )
     key.data.size = 2.6
     key.data.use_shadow = True
     key.location = tuple(render_cfg.get("key_location", (2.1, -2.6, 2.9)))
@@ -131,7 +154,10 @@ def build_lighting(bpy, render_cfg, look):
     scene.collection.objects.link(key)
 
     fill = bpy.data.objects.new("FillLight", bpy.data.lights.new("FillLight", "AREA"))
-    fill.data.energy = float(render_cfg.get("fill_energy", look["fill_energy"]))
+    fill.data.energy = clamped_energy(
+        render_cfg.get("fill_energy", look["fill_energy"]),
+        look.get("fill_energy_max"),
+    )
     fill.data.size = 3.5
     fill.data.use_shadow = True
     fill.location = tuple(render_cfg.get("fill_location", (-2.6, -1.8, 1.3)))

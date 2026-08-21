@@ -124,6 +124,10 @@ def main():
         gestures[name] = {
             "name_hint": name if name != "wave" else "wave",
             "frames": frames,
+            # Half a second back to the clip's entry pose after it
+            # ends, so gestures release instead of freezing on their
+            # last frame (embodiment mapper blend-out).
+            "blend_out_frames": 12,
             "source_clip": clip,
             "samples": sample_clip(action, frames, stride, bones),
         }

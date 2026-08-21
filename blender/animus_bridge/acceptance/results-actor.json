@@ -133,7 +133,7 @@
             "ok": true,
             "action": "ANIMUS_wave_take002",
             "strip": "ANIMUS_wave_take001",
-            "key_count": 590,
+            "key_count": 649,
             "error": null
           },
           {
@@ -281,7 +281,7 @@
     {
       "name": "kvrc_every_layer_ok",
       "passed": true,
-      "detail": "[{'id': 'act-fallback-1-body', 'ok': True, 'op': 'perform_take', 'result': {'action': 'ANIMUS_wave_take002', 'track': 'ANIMUS_wave_take001_track', 'strip': 'ANIMUS_wave_take001', 'bones': ['Hips', 'LeftArm', 'LeftForeArm', 'LeftHand', 'LeftShoulder', 'LeftShoulderPlate', 'RightArm', 'RightForeArm', 'RightHand', 'RightShoulder', 'RightShoulderPlate', 'Spine', 'Spine1', 'Spine2'], 'sample_count': 140, 'key_count': 590, 'frame_start': 1, 'frame_end': 27}}, {'id': 'act-fallback-1-gaze', 'ok': True, 'op': 'perform_take', 'result': {'action': 'ANIMUS_gaze_camera_take002', 'track': 'ANIMUS_gaze_camera_take001_track', 'strip': 'ANIMUS_gaze_camera_take001', 'bones': ['Neck'], 'sample_count': 3, 'key_count': 12, 'frame_start': 1, 'frame_end': 43}}, {'id': 'act-fallback-1-face', 'ok': True, 'op': 'perform_take', 'result': {'action': 'ANIMUS_face_neutral_idle_take002', 'track': 'ANIMUS_face_neutral_idle_take001_track', 'strip': 'ANIMUS_face_neutral_idle_take001', 'bones': ['Head'], 'sample_count': 4, 'key_count': 16, 'frame_start': 1, 'frame_end': 43}}, {'id': 'act-fallback-1_speech', 'ok': True, 'op': 'perform_take', 'result': {'action': 'ANIMUS_animus_speech_take002', 'track': 'ANIMUS_animus_speech_take001_track', 'strip': 'ANIMUS_animus_speech_take001', 'bones': ['LeftEar', 'RightEar'], 'sample_count': 20, 'key_count': 80, 'frame_start': 1, 'frame_end': 49}}]"
+      "detail": "[{'id': 'act-fallback-1-body', 'ok': True, 'op': 'perform_take', 'result': {'action': 'ANIMUS_wave_take002', 'track': 'ANIMUS_wave_take001_track', 'strip': 'ANIMUS_wave_take001', 'bones': ['Hips', 'LeftArm', 'LeftForeArm', 'LeftHand', 'LeftShoulder', 'LeftShoulderPlate', 'RightArm', 'RightForeArm', 'RightHand', 'RightShoulder', 'RightShoulderPlate', 'Spine', 'Spine1', 'Spine2'], 'sample_count': 154, 'key_count': 649, 'frame_start': 1, 'frame_end': 39}}, {'id': 'act-fallback-1-gaze', 'ok': True, 'op': 'perform_take', 'result': {'action': 'ANIMUS_gaze_camera_take002', 'track': 'ANIMUS_gaze_camera_take001_track', 'strip': 'ANIMUS_gaze_camera_take001', 'bones': ['Neck'], 'sample_count': 3, 'key_count': 12, 'frame_start': 1, 'frame_end': 43}}, {'id': 'act-fallback-1-face', 'ok': True, 'op': 'perform_take', 'result': {'action': 'ANIMUS_face_neutral_idle_take002', 'track': 'ANIMUS_face_neutral_idle_take001_track', 'strip': 'ANIMUS_face_neutral_idle_take001', 'bones': ['Head'], 'sample_count': 4, 'key_count': 16, 'frame_start': 1, 'frame_end': 43}}, {'id': 'act-fallback-1_speech', 'ok': True, 'op': 'perform_take', 'result': {'action': 'ANIMUS_animus_speech_take002', 'track': 'ANIMUS_animus_speech_take001_track', 'strip': 'ANIMUS_animus_speech_take001', 'bones': ['LeftEar', 'RightEar'], 'sample_count': 20, 'key_count': 80, 'frame_start': 1, 'frame_end': 49}}]"
     },
     {
       "name": "kvrc_all_layers_land_on_the_armature",
@@ -291,17 +291,17 @@
     {
       "name": "kvrc_actions_have_keyframes",
       "passed": true,
-      "detail": "{'ANIMUS_wave_take002': 590, 'ANIMUS_gaze_camera_take002': 12, 'ANIMUS_face_neutral_idle_take002': 16, 'ANIMUS_animus_speech_take002': 80}"
+      "detail": "{'ANIMUS_wave_take002': 649, 'ANIMUS_gaze_camera_take002': 12, 'ANIMUS_face_neutral_idle_take002': 16, 'ANIMUS_animus_speech_take002': 80}"
     },
     {
       "name": "kvrc_face_frames_rendered",
       "passed": true,
-      "detail": "{'dir': 'C:\\\\Users\\\\jainl\\\\AppData\\\\Local\\\\Temp\\\\animus-face-acc-r6wup1af\\\\frames', 'job': 'C:\\\\Users\\\\jainl\\\\AppData\\\\Local\\\\Temp\\\\animus-face-acc-r6wup1af\\\\frames\\\\face-job.json', 'manifest': 'C:\\\\Users\\\\jainl\\\\AppData\\\\Local\\\\Temp\\\\animus-face-acc-r6wup1af\\\\frames\\\\face-frames-manifest.json', 'frame_count': 49, 'frame_start': 1, 'frame_end': 49, 'seed': 0, 'moods': ['cold']}"
+      "detail": "{'dir': 'C:\\\\Users\\\\jainl\\\\AppData\\\\Local\\\\Temp\\\\animus-face-acc-1xpy9874\\\\frames', 'job': 'C:\\\\Users\\\\jainl\\\\AppData\\\\Local\\\\Temp\\\\animus-face-acc-1xpy9874\\\\frames\\\\face-job.json', 'manifest': 'C:\\\\Users\\\\jainl\\\\AppData\\\\Local\\\\Temp\\\\animus-face-acc-1xpy9874\\\\frames\\\\face-frames-manifest.json', 'frame_count': 49, 'frame_start': 1, 'frame_end': 49, 'seed': 0, 'moods': ['cold']}"
     },
     {
       "name": "kvrc_face_material_bound",
       "passed": true,
-      "detail": "{'object': 'screen', 'material': 'AnimusFaceScreen', 'image': 'face_0001.png', 'frames_dir': 'C:\\\\Users\\\\jainl\\\\AppData\\\\Local\\\\Temp\\\\animus-face-acc-r6wup1af\\\\frames', 'frame_count': 49, 'frame_start': 1, 'emission_strength': 3.5}"
+      "detail": "{'object': 'screen', 'material': 'AnimusFaceScreen', 'image': 'face_0001.png', 'frames_dir': 'C:\\\\Users\\\\jainl\\\\AppData\\\\Local\\\\Temp\\\\animus-face-acc-1xpy9874\\\\frames', 'frame_count': 49, 'frame_start': 1, 'emission_strength': 3.5}"
     }
   ],
   "environment": {
@@ -325,16 +325,16 @@
     "cue_count": 10
   },
   "kvrc_actions": {
-    "ANIMUS_wave_take002": 590,
+    "ANIMUS_wave_take002": 649,
     "ANIMUS_gaze_camera_take002": 12,
     "ANIMUS_face_neutral_idle_take002": 16,
     "ANIMUS_animus_speech_take002": 80
   },
   "kvrc_face": {
     "frames": {
-      "dir": "C:\\Users\\jainl\\AppData\\Local\\Temp\\animus-face-acc-r6wup1af\\frames",
-      "job": "C:\\Users\\jainl\\AppData\\Local\\Temp\\animus-face-acc-r6wup1af\\frames\\face-job.json",
-      "manifest": "C:\\Users\\jainl\\AppData\\Local\\Temp\\animus-face-acc-r6wup1af\\frames\\face-frames-manifest.json",
+      "dir": "C:\\Users\\jainl\\AppData\\Local\\Temp\\animus-face-acc-1xpy9874\\frames",
+      "job": "C:\\Users\\jainl\\AppData\\Local\\Temp\\animus-face-acc-1xpy9874\\frames\\face-job.json",
+      "manifest": "C:\\Users\\jainl\\AppData\\Local\\Temp\\animus-face-acc-1xpy9874\\frames\\face-frames-manifest.json",
       "frame_count": 49,
       "frame_start": 1,
       "frame_end": 49,
@@ -347,7 +347,7 @@
       "object": "screen",
       "material": "AnimusFaceScreen",
       "image": "face_0001.png",
-      "frames_dir": "C:\\Users\\jainl\\AppData\\Local\\Temp\\animus-face-acc-r6wup1af\\frames",
+      "frames_dir": "C:\\Users\\jainl\\AppData\\Local\\Temp\\animus-face-acc-1xpy9874\\frames",
       "frame_count": 49,
       "frame_start": 1,
       "emission_strength": 3.5

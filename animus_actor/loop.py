@@ -92,7 +92,13 @@ def build_plan(line, instruction=None, speech=None, target="camera",
         "instruction": instruction if instruction is not None else line,
         "target": target,
         "speech": speech if speech is not None else line,
-        "capabilities": {"body": True, "gaze": True, "face": True, "speech": True},
+        "capabilities": {
+            "body": True,
+            "gaze": True,
+            "face": True,
+            "face_glyph": True,
+            "speech": True,
+        },
     }
     authority = {"actor_id": actor_id, "control_level": control_level}
     if brain == "model":

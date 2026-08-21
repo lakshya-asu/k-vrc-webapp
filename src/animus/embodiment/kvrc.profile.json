@@ -45,6 +45,7 @@
   "wave": {
    "name_hint": "wave",
    "frames": 27,
+   "blend_out_frames": 12,
    "source_clip": "waving_1",
    "samples": [
     {
@@ -1502,6 +1503,7 @@
   "idle": {
    "name_hint": "idle",
    "frames": 48,
+   "blend_out_frames": 12,
    "source_clip": "breathing_idle",
    "samples": [
     {
@@ -2814,6 +2816,7 @@
   "talk": {
    "name_hint": "talk",
    "frames": 72,
+   "blend_out_frames": 12,
    "source_clip": "talking",
    "samples": [
     {
@@ -4706,6 +4709,7 @@
   "nod": {
    "name_hint": "nod",
    "frames": 47,
+   "blend_out_frames": 12,
    "source_clip": "head_nod_yes",
    "samples": [
     {
@@ -6858,6 +6862,7 @@
   "point": {
    "name_hint": "point",
    "frames": 60,
+   "blend_out_frames": 12,
    "source_clip": "angry_point",
    "samples": [
     {
@@ -8750,6 +8755,7 @@
   "think": {
    "name_hint": "think",
    "frames": 100,
+   "blend_out_frames": 12,
    "source_clip": "thinking",
    "samples": [
     {
@@ -11367,6 +11373,7 @@
   "sad": {
    "name_hint": "sad",
    "frames": 96,
+   "blend_out_frames": 12,
    "source_clip": "sad_idle",
    "samples": [
     {
@@ -13839,6 +13846,7 @@
   "cocky": {
    "name_hint": "cocky",
    "frames": 56,
+   "blend_out_frames": 12,
    "source_clip": "being_cocky",
    "samples": [
     {
@@ -16021,6 +16029,7 @@
   "focus": {
    "name_hint": "focus",
    "frames": 96,
+   "blend_out_frames": 12,
    "source_clip": "focus",
    "samples": [
     {
@@ -18493,6 +18502,7 @@
   "dance": {
    "name_hint": "dance",
    "frames": 180,
+   "blend_out_frames": 12,
    "source_clip": "silly_dancing",
    "samples": [
     {

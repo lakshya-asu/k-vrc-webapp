@@ -30,14 +30,18 @@ export class ActorDirector {
         const candidate = await callWithTimeout(provider, request, this.timeoutMs);
         const checked = validateActorPlan(candidate, authority);
         if (checked.ok) {
-          return {
-            ...checked.value,
-            provenance: {
-              operator: provider.name,
-              model: provider.model ?? null,
-              fallback: false,
-            },
+          const provenance = {
+            operator: provider.name,
+            model: provider.model ?? null,
+            fallback: false,
           };
+          if (checked.value.beats.some((beat) => beat.face_glyph != null)) {
+            // The model composed its own visor face; the receipt says
+            // so explicitly (hand-authored glyphs are marked
+            // "augmented" instead by the lanes that add them).
+            provenance.face_glyph = 'model-authored';
+          }
+          return { ...checked.value, provenance };
         }
         failures.push({ provider: provider.name, reason: checked.errors.join('; ') });
       } catch (error) {

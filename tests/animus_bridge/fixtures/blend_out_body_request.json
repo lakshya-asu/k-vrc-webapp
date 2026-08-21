@@ -1,0 +1,132 @@
+{
+  "note": "JS mapper output for the testrig wave gesture with blend_out_frames 6; the Python mapper must reproduce params byte for byte (cross-language blend-out parity). The testrig idle gesture does not animate the wave bones, so the blend targets fall back to the wave clip entry poses.",
+  "gesture": "wave",
+  "params": {
+    "object": "KVRC",
+    "name_hint": "wave",
+    "frame_start": 1,
+    "frame_end": 54,
+    "samples": [
+      {
+        "bone": "arm.R",
+        "frame": 1,
+        "rotation_quaternion": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "bone": "arm.R",
+        "frame": 12,
+        "rotation_quaternion": [
+          0.92,
+          0,
+          0,
+          0.38
+        ]
+      },
+      {
+        "bone": "arm.R",
+        "frame": 24,
+        "rotation_quaternion": [
+          0.98,
+          0,
+          0,
+          -0.2
+        ]
+      },
+      {
+        "bone": "arm.R",
+        "frame": 36,
+        "rotation_quaternion": [
+          0.92,
+          0,
+          0,
+          0.38
+        ]
+      },
+      {
+        "bone": "arm.R",
+        "frame": 48,
+        "rotation_quaternion": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "bone": "hand.R",
+        "frame": 8,
+        "rotation_quaternion": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "bone": "hand.R",
+        "frame": 16,
+        "rotation_quaternion": [
+          0.966,
+          0,
+          0.259,
+          0
+        ]
+      },
+      {
+        "bone": "hand.R",
+        "frame": 24,
+        "rotation_quaternion": [
+          0.966,
+          0,
+          -0.259,
+          0
+        ]
+      },
+      {
+        "bone": "hand.R",
+        "frame": 32,
+        "rotation_quaternion": [
+          0.966,
+          0,
+          0.259,
+          0
+        ]
+      },
+      {
+        "bone": "hand.R",
+        "frame": 40,
+        "rotation_quaternion": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "bone": "arm.R",
+        "frame": 54,
+        "rotation_quaternion": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "bone": "hand.R",
+        "frame": 54,
+        "rotation_quaternion": [
+          1,
+          0,
+          0,
+          0
+        ]
+      }
+    ]
+  }
+}

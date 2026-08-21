@@ -164,6 +164,14 @@ export function validateEmbodimentProfile(profile) {
         errors.push(`gestures.${name}.frames must be an integer from 1 to ${MAX_FRAME_SPAN}`);
       } else {
         validateGestureSamples(gesture, name, bones, errors);
+        const blend = gesture.blend_out_frames;
+        if (blend !== undefined && blend !== null) {
+          if (!Number.isInteger(blend) || blend < 1 || blend > 240) {
+            errors.push(`gestures.${name}.blend_out_frames must be an integer from 1 to 240`);
+          } else if (gesture.frames + blend > MAX_FRAME_SPAN) {
+            errors.push(`gestures.${name}.frames plus blend_out_frames exceeds ${MAX_FRAME_SPAN}`);
+          }
+        }
       }
     }
     if (typeof profile.default_gesture !== 'string' || !(profile.default_gesture in gestures)) {
@@ -315,6 +323,16 @@ function resolveGestureName(body, profile) {
   return profile.body_action_gestures[body.action] ?? profile.default_gesture;
 }
 
+// Each animated bone's lowest-frame sample, in first-seen order.
+function entryPoseByBone(gesture) {
+  const entry = new Map();
+  for (const sample of gesture.samples) {
+    const kept = entry.get(sample.bone);
+    if (!kept || sample.frame < kept.frame) entry.set(sample.bone, sample);
+  }
+  return entry;
+}
+
 function mapBodyBeat(beat, profile) {
   const gestureName = resolveGestureName(beat.body, profile);
   const gesture = profile.gestures[gestureName];
@@ -326,6 +344,31 @@ function mapBodyBeat(beat, profile) {
     if ('location' in sample) moved.location = sample.location;
     return moved;
   });
+  let frameEnd = offset + gesture.frames;
+
+  // Blend back to idle: instead of holding the clip's last pose, a
+  // gesture with blend_out_frames keys every animated bone back to a
+  // rest pose blend_out_frames after the clip ends. The rest pose is
+  // the profile's default gesture's entry pose (its per-bone
+  // lowest-frame sample: for K-VRC that is breathing_idle frame 1); a
+  // bone the default gesture does not animate falls back to the
+  // gesture's own entry pose. The FCurve interpolation between the
+  // last clip key and this one is the blend. All numbers still come
+  // from the profile.
+  const blend = gesture.blend_out_frames;
+  if (blend) {
+    const restByBone = entryPoseByBone(profile.gestures[profile.default_gesture]);
+    const firstByBone = entryPoseByBone(gesture);
+    for (const [bone, sample] of firstByBone.entries()) {
+      const pose = restByBone.get(bone) ?? sample;
+      const rest = { bone, frame: frameEnd + blend };
+      if ('rotation_quaternion' in pose) rest.rotation_quaternion = pose.rotation_quaternion;
+      if ('location' in pose) rest.location = pose.location;
+      samples.push(rest);
+    }
+    frameEnd += blend;
+  }
+
   return {
     beat_id: beat.id,
     channel: 'body',
@@ -337,7 +380,7 @@ function mapBodyBeat(beat, profile) {
         object: profile.rig.object,
         name_hint: sanitizeNameHint(gesture.name_hint, 'gesture'),
         frame_start: base,
-        frame_end: offset + gesture.frames,
+        frame_end: frameEnd,
         samples,
       },
     },

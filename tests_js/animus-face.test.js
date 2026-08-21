@@ -4,9 +4,16 @@
 
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { createRequire } from 'node:module';
 
 import { EXPRESSION_LIBRARY } from '../src/animus/face/expressionLibrary.js';
-import { MOOD_COLORS } from '../src/animus/face/faceScreenDraw.js';
+import {
+  MOOD_COLORS,
+  VISEME_MOUTH_CLASSES,
+  W,
+  H,
+  drawFaceFrame,
+} from '../src/animus/face/faceScreenDraw.js';
 import {
   FACE_WEIGHT_KEYS,
   buildFaceTimeline,
@@ -14,7 +21,10 @@ import {
   msToFrame,
   mulberry32,
   resolveExpression,
+  visemeClassTrack,
 } from '../src/animus/face/faceTimeline.js';
+
+const require = createRequire(import.meta.url);
 
 function makeJob(overrides = {}) {
   return {
@@ -180,4 +190,83 @@ test('mulberry32 streams are reproducible', () => {
   for (let i = 0; i < 16; i++) assert.equal(a(), b());
   const c = mulberry32(1235);
   assert.notEqual(mulberry32(1234)(), c());
+});
+
+// --- viseme-class mouths (Rhubarb A-H) ------------------------------------
+
+const CLASSED_SAMPLES = [
+  { frame: 1, shape_key: 'mouth_open', weight: 0.0, viseme: 'X' },
+  { frame: 11, shape_key: 'mouth_open', weight: 0.85, viseme: 'D' },
+  { frame: 21, shape_key: 'mouth_open', weight: 0.2, viseme: 'B' },
+  { frame: 40, shape_key: 'mouth_open', weight: 0.0, viseme: 'X' },
+];
+
+test('viseme classes hold from cue start until the next cue, like Rhubarb', () => {
+  const at = visemeClassTrack(CLASSED_SAMPLES);
+  assert.equal(at(1), 'X');
+  assert.equal(at(10), 'X');
+  assert.equal(at(11), 'D');
+  assert.equal(at(15), 'D');
+  assert.equal(at(21), 'B');
+  assert.equal(at(39), 'B');
+  assert.equal(at(40), 'X');
+  assert.equal(at(48), 'X'); // held past the last cue
+  // No classes recorded: no track (legacy artifacts keep working).
+  assert.equal(visemeClassTrack([{ frame: 1, shape_key: 'mouth_open', weight: 0.5 }])(1), null);
+  assert.equal(visemeClassTrack([])(1), null);
+});
+
+test('timeline states carry the held viseme class only when one exists', () => {
+  const classed = buildFaceTimeline(
+    makeJob({ viseme_samples: CLASSED_SAMPLES }), EXPRESSION_LIBRARY,
+  );
+  assert.equal(classed[0].viseme, 'X');
+  assert.equal(classed[14].viseme, 'D');
+  assert.equal(classed[24].viseme, 'B');
+  // Legacy jobs without classes never grow the field.
+  const legacy = buildFaceTimeline(makeJob(), EXPRESSION_LIBRARY);
+  assert.ok(legacy.every((state) => !('viseme' in state)));
+});
+
+test('each viseme class draws a distinct, deterministic LED mouth', () => {
+  const { createCanvas } = require('@napi-rs/canvas');
+  const canvas = createCanvas(W, H);
+  const ctx = canvas.getContext('2d');
+  const neutral = resolveExpression('neutral_idle', EXPRESSION_LIBRARY);
+  const baseState = {
+    frame: 12,
+    t: 11 / 24,
+    mood: 'warm',
+    weights: Object.fromEntries(FACE_WEIGHT_KEYS.map((key) => [
+      key, neutral.weights[key] ?? 0,
+    ])),
+    amplitude: 0.6,
+    blinkProgress: 0,
+    glitchActive: false,
+  };
+  baseState.weights.mouth_open = 0.6;
+
+  const render = (viseme) => {
+    const state = viseme == null ? { ...baseState } : { ...baseState, viseme };
+    drawFaceFrame(ctx, state, mulberry32(7));
+    return canvas.toBuffer('image/png');
+  };
+
+  // Every classed mouth differs from the weight-driven fallback, and
+  // the named classes differ from each other.
+  const fallback = render(null);
+  const rendered = new Map();
+  for (const viseme of VISEME_MOUTH_CLASSES) {
+    const png = render(viseme);
+    assert.notDeepEqual(png, fallback, `viseme ${viseme} must differ from the fallback mouth`);
+    for (const [other, otherPng] of rendered.entries()) {
+      assert.notDeepEqual(png, otherPng, `viseme ${viseme} must differ from ${other}`);
+    }
+    rendered.set(viseme, png);
+  }
+  // X and unknown classes keep the fallback mouth exactly.
+  assert.deepEqual(render('X'), fallback);
+  assert.deepEqual(render('Q'), fallback);
+  // Determinism: the same class renders byte-identically.
+  assert.deepEqual(render('D'), rendered.get('D'));
 });

@@ -118,6 +118,28 @@ function visemeTracks(samples) {
   };
 }
 
+// Rhubarb's mouth-shape classes ride on the viseme samples (the voice
+// converter stamps every sample with its cue's class letter, A-H or
+// X). A cue's class holds from its start frame until the next cue
+// starts, exactly like Rhubarb's own cue semantics. Frames before the
+// first cue have no class; the drawer's weight-driven mouth is the
+// fallback there and everywhere a job carries no classes at all.
+export function visemeClassTrack(samples) {
+  const byFrame = new Map();
+  for (const sample of samples || []) {
+    if (typeof sample.viseme === 'string' && sample.viseme.length > 0) {
+      byFrame.set(sample.frame, sample.viseme);
+    }
+  }
+  const frames = [...byFrame.keys()].sort((a, b) => a - b);
+  return function at(frame) {
+    if (frames.length === 0 || frame < frames[0]) return null;
+    let lo = 0;
+    while (lo + 1 < frames.length && frames[lo + 1] <= frame) lo += 1;
+    return byFrame.get(frames[lo]);
+  };
+}
+
 // The webapp's blink and glitch timers, advanced one frame at a time.
 function makeTwitchState(rng) {
   return {
@@ -180,13 +202,17 @@ function makeForcedGlitch(windows) {
 //   face_beats: [{expression, intensity, at_ms, duration_ms}] where an
 //     entry may carry {glyph: <validated composed-glyph spec>} instead
 //     of an expression name (the face_glyph beat channel),
-//   viseme_samples: [{frame, shape_key, weight}],
+//   viseme_samples: [{frame, shape_key, weight, viseme?}] where viseme
+//     is the sample's Rhubarb mouth-shape class (A-H or X) when the
+//     voice pipeline recorded one,
 //   seed,
 //   force_glitches: [{at_ms, duration_ms}]  (optional),
 // }
 // library: EXPRESSION_LIBRARY
 // Returns [{frame, t, mood, weights, amplitude, blinkProgress,
-//           glitchActive}] for frames 1..frame_end inclusive.
+//           glitchActive}] for frames 1..frame_end inclusive, plus
+//           viseme (the held Rhubarb class) on frames at or after the
+//           first classed cue.
 export function buildFaceTimeline(job, library) {
   const fps = job.fps;
   const frameEnd = job.frame_end;
@@ -236,6 +262,7 @@ export function buildFaceTimeline(job, library) {
   }
 
   const tracks = visemeTracks(job.viseme_samples);
+  const visemeAt = visemeClassTrack(job.viseme_samples);
   const forcedGlitch = makeForcedGlitch(job.force_glitches);
   const rng = mulberry32(job.seed >>> 0);
   const twitch = makeTwitchState(rng);
@@ -291,6 +318,8 @@ export function buildFaceTimeline(job, library) {
       glitchActive: twitch.glitchLeft > 0 || forcedGlitch((frame - 1) / fps),
     };
     if (glyph != null) state.glyph = glyph;
+    const viseme = visemeAt(frame);
+    if (viseme != null) state.viseme = viseme;
     frames.push(state);
   }
   return frames;

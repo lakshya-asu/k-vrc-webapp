@@ -59,7 +59,7 @@
           "object": "KVRCArmature",
           "name_hint": "wave",
           "frame_start": 1,
-          "frame_end": 27,
+          "frame_end": 39,
           "samples": [
             {
               "bone": "Hips",
@@ -1510,6 +1510,151 @@
                 0.0,
                 0.0
               ]
+            },
+            {
+              "bone": "Hips",
+              "frame": 39,
+              "rotation_quaternion": [
+                0.99987,
+                -0.013291,
+                -0.001127,
+                -0.009059
+              ],
+              "location": [
+                -0.002817,
+                -0.015444,
+                0.002478
+              ]
+            },
+            {
+              "bone": "Spine",
+              "frame": 39,
+              "rotation_quaternion": [
+                0.999963,
+                0.008489,
+                -0.001058,
+                -0.000235
+              ]
+            },
+            {
+              "bone": "Spine1",
+              "frame": 39,
+              "rotation_quaternion": [
+                0.999726,
+                0.008959,
+                -0.021616,
+                0.001068
+              ]
+            },
+            {
+              "bone": "Spine2",
+              "frame": 39,
+              "rotation_quaternion": [
+                0.999726,
+                0.008907,
+                -0.021588,
+                0.001448
+              ]
+            },
+            {
+              "bone": "LeftShoulderPlate",
+              "frame": 39,
+              "rotation_quaternion": [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "bone": "RightShoulderPlate",
+              "frame": 39,
+              "rotation_quaternion": [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "bone": "LeftShoulder",
+              "frame": 39,
+              "rotation_quaternion": [
+                0.997923,
+                -0.004144,
+                -0.003348,
+                0.064202
+              ]
+            },
+            {
+              "bone": "LeftArm",
+              "frame": 39,
+              "rotation_quaternion": [
+                0.79494,
+                -0.567806,
+                0.139865,
+                -0.161569
+              ]
+            },
+            {
+              "bone": "LeftForeArm",
+              "frame": 39,
+              "rotation_quaternion": [
+                0.967505,
+                0.0,
+                0.0,
+                -0.252851
+              ]
+            },
+            {
+              "bone": "LeftHand",
+              "frame": 39,
+              "rotation_quaternion": [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "bone": "RightShoulder",
+              "frame": 39,
+              "rotation_quaternion": [
+                0.999219,
+                0.032044,
+                -0.008039,
+                0.021654
+              ]
+            },
+            {
+              "bone": "RightArm",
+              "frame": 39,
+              "rotation_quaternion": [
+                0.777266,
+                -0.588744,
+                -0.115872,
+                0.189239
+              ]
+            },
+            {
+              "bone": "RightForeArm",
+              "frame": 39,
+              "rotation_quaternion": [
+                0.972156,
+                0.0,
+                0.0,
+                0.234332
+              ]
+            },
+            {
+              "bone": "RightHand",
+              "frame": 39,
+              "rotation_quaternion": [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ]
             }
           ]
         }
@@ -1538,10 +1683,10 @@
             "Spine1",
             "Spine2"
           ],
-          "sample_count": 140,
-          "key_count": 590,
+          "sample_count": 154,
+          "key_count": 649,
           "frame_start": 1,
-          "frame_end": 27
+          "frame_end": 39
         }
       }
     },

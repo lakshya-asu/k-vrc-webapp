@@ -188,7 +188,9 @@ const plan = await director.plan({
   instruction: line,
   target,
   speech,
-  capabilities: { body: true, gaze: true, face: true, speech: true },
+  capabilities: {
+    body: true, gaze: true, face: true, face_glyph: true, speech: true,
+  },
 });
 
 const jobs = mapPlanToBridgeJobs(plan, profile);

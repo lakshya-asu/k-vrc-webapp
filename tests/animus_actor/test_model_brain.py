@@ -16,9 +16,16 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import _bootstrap  # noqa: F401,E402
 
 from animus_actor import loop, model_brain  # noqa: E402
-from animus_actor.contract import SCHEMA_VERSION  # noqa: E402
+from animus_actor.contract import (  # noqa: E402
+    FACE_GLYPH_BROWS,
+    FACE_GLYPH_EYES,
+    FACE_GLYPH_MOODS,
+    FACE_GLYPH_MOUTHS,
+    SCHEMA_VERSION,
+)
 
 AUTHORITY = {"actor_id": "kvrc", "control_level": "perform"}
+HERE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 def valid_plan(summary="Greet the viewer"):
@@ -42,6 +49,28 @@ def valid_plan(summary="Greet the viewer"):
             }
         ],
     }
+
+
+def glyph_plan():
+    """A valid plan whose second beat composes the visor itself."""
+    plan = valid_plan()
+    plan["beats"].append(
+        {
+            "id": "greet-2",
+            "at_ms": 1800,
+            "duration_ms": 1200,
+            "body": None,
+            "gaze": None,
+            "face_glyph": {
+                "eyes": "happy_arc",
+                "mouth": "grin_rect",
+                "mood": "warm",
+                "intensity": 0.8,
+            },
+            "speech": None,
+        }
+    )
+    return plan
 
 
 def make_requester(candidates):
@@ -108,6 +137,43 @@ class PromptTests(unittest.TestCase):
         self.assertIn(f'schema_version "{SCHEMA_VERSION}"', model_brain.ACTOR_SYSTEM_PROMPT)
         self.assertIn("gesture", model_brain.ACTOR_SYSTEM_PROMPT)
         self.assertIn("Never emit Python", model_brain.ACTOR_SYSTEM_PROMPT)
+
+    def test_plan_schema_matches_the_js_provider_fixture(self):
+        # The decode-time grammar schema must stay identical in both
+        # languages; the committed fixture is generated from the JS
+        # module and pins them together.
+        fixture_path = os.path.join(
+            os.path.dirname(os.path.dirname(HERE_DIR)),
+            "tests", "animus_bridge", "fixtures", "actor_plan_schema.json",
+        )
+        with open(fixture_path, "r", encoding="utf-8-sig") as handle:
+            fixture = json.load(handle)
+        self.assertEqual(model_brain.ACTOR_PLAN_JSON_SCHEMA, fixture)
+
+    def test_plan_schema_is_structural_and_names_every_channel(self):
+        schema = model_brain.ACTOR_PLAN_JSON_SCHEMA
+        beat = schema["properties"]["beats"]["items"]
+        for channel in ("body", "gaze", "face", "face_glyph", "speech"):
+            self.assertIn(channel, beat["properties"])
+        glyph_forms = beat["properties"]["face_glyph"]["anyOf"]
+        self.assertEqual(glyph_forms[0], {"type": "null"})
+        self.assertEqual(
+            glyph_forms[1]["properties"]["eyes"]["enum"],
+            list(FACE_GLYPH_EYES),
+        )
+        self.assertEqual(glyph_forms[2]["required"], ["text"])
+        self.assertEqual(beat["required"], ["id", "at_ms", "duration_ms"])
+
+    def test_system_prompt_teaches_the_glyph_channel(self):
+        prompt = model_brain.ACTOR_SYSTEM_PROMPT
+        self.assertIn("face_glyph", prompt)
+        for vocab in (FACE_GLYPH_EYES, FACE_GLYPH_BROWS, FACE_GLYPH_MOUTHS,
+                      FACE_GLYPH_MOODS):
+            self.assertIn(", ".join(vocab), prompt)
+        self.assertIn("1 to 6 characters", prompt)
+        self.assertIn("Never use face and face_glyph in the same beat.", prompt)
+        # The example teaches the shape the validator accepts.
+        self.assertIn('"face_glyph":{"eyes":"happy_arc"', prompt)
 
 
 class ModelActorPlanTests(unittest.TestCase):
@@ -184,6 +250,36 @@ class ModelActorPlanTests(unittest.TestCase):
         )
         self.assertEqual(plan["control_level"], "suggest")
 
+    def test_glyph_plan_is_marked_model_authored(self):
+        plan = model_brain.model_actor_plan(
+            self.REQUEST,
+            AUTHORITY,
+            attempts=1,
+            requester=make_requester([glyph_plan()]),
+        )
+        self.assertIs(plan["provenance"]["fallback"], False)
+        self.assertEqual(plan["provenance"]["face_glyph"], "model-authored")
+
+    def test_plain_plan_carries_no_glyph_marker(self):
+        plan = model_brain.model_actor_plan(
+            self.REQUEST,
+            AUTHORITY,
+            attempts=1,
+            requester=make_requester([valid_plan()]),
+        )
+        self.assertNotIn("face_glyph", plan["provenance"])
+
+    def test_fallback_plan_carries_no_glyph_marker(self):
+        with contextlib.redirect_stderr(io.StringIO()):
+            plan = model_brain.model_actor_plan(
+                self.REQUEST,
+                AUTHORITY,
+                attempts=1,
+                requester=make_requester([RuntimeError("refused")]),
+            )
+        self.assertIs(plan["provenance"]["fallback"], True)
+        self.assertNotIn("face_glyph", plan["provenance"])
+
     def test_clean_model_plan_gets_callers_control_level(self):
         plan = model_brain.model_actor_plan(
             self.REQUEST,
@@ -214,6 +310,19 @@ class LoopBrainTests(unittest.TestCase):
             plan = loop.build_plan("Hello, I am K-VRC", brain="model")
         self.assertEqual(plan["provenance"]["operator"], "local-small")
         self.assertIs(plan["provenance"]["fallback"], False)
+
+    def test_loop_request_advertises_the_glyph_capability(self):
+        seen = {}
+
+        def capture(request, **kwargs):
+            seen.update(request)
+            return valid_plan()
+
+        with mock.patch.object(
+            model_brain, "request_model_plan", side_effect=capture
+        ):
+            loop.build_plan("Hello, I am K-VRC", brain="model")
+        self.assertIs(seen["capabilities"]["face_glyph"], True)
 
 
 if __name__ == "__main__":

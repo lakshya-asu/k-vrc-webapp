@@ -353,3 +353,125 @@ test('an unknown speech backend is refused', () => {
   assert.equal(checked.ok, false);
   assert.ok(checked.errors.some((error) => error.includes('speech.backend')));
 });
+
+// --- gesture blend-back-to-idle (blend_out_frames) ------------------------
+
+test('blend_out_frames appends per-bone entry-pose keys and extends the take', () => {
+  const raw = loadProfile();
+  raw.gestures.wave.blend_out_frames = 6;
+  const checked = validateEmbodimentProfile(raw);
+  assert.equal(checked.ok, true, checked.errors.join('; '));
+  const profile = checked.value;
+
+  const plan = validatedFallbackPlan({
+    instruction: 'Wave to the viewer and say hello.',
+    target: 'camera',
+    speech: 'Hello, I am K-VRC.',
+    controlLevel: 'perform',
+  });
+  const jobs = mapPlanToBridgeJobs(plan, profile);
+  const body = jobs.layers.find((layer) => layer.channel === 'body');
+  const gesture = profile.gestures.wave;
+  assert.equal(body.request.params.frame_end, gesture.frames + 6);
+
+  const bones = [];
+  const first = new Map();
+  for (const sample of gesture.samples) {
+    if (!bones.includes(sample.bone)) bones.push(sample.bone);
+    const kept = first.get(sample.bone);
+    if (!kept || sample.frame < kept.frame) first.set(sample.bone, sample);
+  }
+  const appended = body.request.params.samples.slice(gesture.samples.length);
+  assert.deepEqual(appended.map((sample) => sample.bone), bones);
+  for (const sample of appended) {
+    assert.equal(sample.frame, gesture.frames + 6);
+    assert.deepEqual(
+      sample.rotation_quaternion,
+      first.get(sample.bone).rotation_quaternion,
+    );
+  }
+  assertBridgeShaped(body.request);
+
+  // The committed cross-language fixture pins this exact output; the
+  // Python mapper is held to the same bytes.
+  const fixture = JSON.parse(readFileSync(
+    path.join(REPO, 'tests', 'animus_bridge', 'fixtures', 'blend_out_body_request.json'),
+    'utf-8',
+  ));
+  assert.equal(body.gesture, fixture.gesture);
+  assert.deepEqual(body.request.params, fixture.params);
+});
+
+test('gestures without blend_out_frames map exactly as before', () => {
+  const profile = validProfile();
+  const plan = validatedFallbackPlan({
+    instruction: 'Wave to the viewer and say hello.',
+    target: 'camera',
+    speech: 'Hello, I am K-VRC.',
+    controlLevel: 'perform',
+  });
+  const jobs = mapPlanToBridgeJobs(plan, profile);
+  const body = jobs.layers.find((layer) => layer.channel === 'body');
+  assert.equal(body.request.params.frame_end, profile.gestures.wave.frames);
+  assert.equal(body.request.params.samples.length, profile.gestures.wave.samples.length);
+});
+
+test('blend_out_frames validation refuses bad values and span overflows', () => {
+  for (const bad of [0, -3, 241, 1.5, '6']) {
+    const raw = loadProfile();
+    raw.gestures.wave.blend_out_frames = bad;
+    const checked = validateEmbodimentProfile(raw);
+    assert.equal(checked.ok, false, `blend ${bad} must be refused`);
+    assert.ok(checked.errors.some((error) => error.includes('blend_out_frames')));
+  }
+  const raw = loadProfile();
+  raw.gestures.wave.frames = 9990;
+  raw.gestures.wave.samples = raw.gestures.wave.samples.map((sample) => ({
+    ...sample, frame: Math.min(sample.frame, 9990),
+  }));
+  raw.gestures.wave.blend_out_frames = 20;
+  const checked = validateEmbodimentProfile(raw);
+  assert.equal(checked.ok, false);
+  assert.ok(checked.errors.some((error) => error.includes('exceeds')));
+});
+
+test('every committed K-VRC gesture blends back to idle', () => {
+  const profile = JSON.parse(readFileSync(KVRC_PROFILE_PATH, 'utf-8'));
+  const checked = validateEmbodimentProfile(profile);
+  assert.equal(checked.ok, true, checked.errors.join('; '));
+  for (const [name, gesture] of Object.entries(profile.gestures)) {
+    assert.equal(gesture.blend_out_frames, 12, `gesture '${name}'`);
+  }
+});
+
+test('the K-VRC wave blends to the idle entry pose, not its own raised hand', () => {
+  const profile = JSON.parse(readFileSync(KVRC_PROFILE_PATH, 'utf-8'));
+  const checked = validateEmbodimentProfile(profile);
+  assert.equal(checked.ok, true, checked.errors.join('; '));
+  const plan = validatedFallbackPlan({
+    instruction: 'Wave to the viewer and say hello.',
+    target: 'camera',
+    speech: 'Hello, I am K-VRC.',
+    controlLevel: 'perform',
+  });
+  const jobs = mapPlanToBridgeJobs(plan, checked.value);
+  const body = jobs.layers.find((layer) => layer.channel === 'body');
+  const wave = profile.gestures.wave;
+  const idle = profile.gestures[profile.default_gesture];
+  assert.equal(body.request.params.frame_end, wave.frames + 12);
+  const idleEntry = new Map();
+  for (const sample of idle.samples) {
+    const kept = idleEntry.get(sample.bone);
+    if (!kept || sample.frame < kept.frame) idleEntry.set(sample.bone, sample);
+  }
+  const appended = body.request.params.samples.slice(wave.samples.length);
+  assert.ok(appended.length > 0);
+  for (const sample of appended) {
+    assert.equal(sample.frame, wave.frames + 12);
+    assert.ok(idleEntry.has(sample.bone), sample.bone);
+    assert.deepEqual(
+      sample.rotation_quaternion,
+      idleEntry.get(sample.bone).rotation_quaternion,
+    );
+  }
+});

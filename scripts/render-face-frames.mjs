@@ -150,6 +150,7 @@ function main() {
       frame: state.frame,
       file: name,
       mood: state.mood,
+      viseme: state.viseme ?? null,
       amplitude: Number(state.amplitude.toFixed(6)),
       blink: Number(state.blinkProgress.toFixed(6)),
       sha256: createHash('sha256').update(png).digest('hex'),

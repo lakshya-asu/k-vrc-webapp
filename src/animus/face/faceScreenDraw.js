@@ -115,8 +115,98 @@ function applyChromaticFringe(ctx, shift = 2, mix = 0.4) {
   ctx.putImageData(image, 0, 0);
 }
 
-// Port of drawWeighted: the six-weight expression face.
-function drawWeighted(ctx, weights, c, blink, amplitude, rng) {
+// --- viseme-class mouths --------------------------------------------------
+// Rhubarb's mouth shapes (A-H) drawn as distinct LED glyphs so speech
+// reads articulated instead of one generic open ellipse. X (rest) and
+// any unknown class fall back to the weight-driven mouth, so takes
+// without class data render exactly as before. Geometry is centered on
+// the same mouth anchor drawWeighted uses; every shape is a pure
+// function of (class, weights), no randomness.
+export const VISEME_MOUTH_CLASSES = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+
+function drawVisemeMouth(ctx, viseme, weights, c) {
+  const MY = H * 0.65;
+  const wide = weights.smile_width * 10;
+  ctx.lineWidth = 8;
+  ctx.lineCap = 'round';
+  switch (viseme) {
+    case 'A': // P, B, M: pressed-closed line.
+      ctx.beginPath();
+      ctx.moveTo(W / 2 - 26 - wide, MY);
+      ctx.lineTo(W / 2 + 26 + wide, MY);
+      ctx.stroke();
+      break;
+    case 'B': // clenched teeth, EE: wide thin slit.
+      ctx.beginPath();
+      ctx.ellipse(W / 2, MY, 46 + wide, 8, 0, 0, Math.PI * 2);
+      ctx.fill();
+      break;
+    case 'C': // EH, AE: mid-open oval.
+      ctx.beginPath();
+      ctx.ellipse(W / 2, MY, 34 + wide, 20, 0, 0, Math.PI * 2);
+      ctx.fill();
+      break;
+    case 'D': // AA: wide-open jaw.
+      ctx.beginPath();
+      ctx.ellipse(W / 2, MY, 40 + wide, 34, 0, 0, Math.PI * 2);
+      ctx.fill();
+      break;
+    case 'E': // AO, ER: rounded mid-open.
+      ctx.beginPath();
+      ctx.ellipse(W / 2, MY, 24, 24, 0, 0, Math.PI * 2);
+      ctx.fill();
+      break;
+    case 'F': // UW, OW, W: small pucker.
+      ctx.beginPath();
+      ctx.ellipse(W / 2, MY, 14, 17, 0, 0, Math.PI * 2);
+      ctx.fill();
+      break;
+    case 'G': { // F, V: teeth on lip: narrow slit with a tooth line.
+      ctx.beginPath();
+      ctx.ellipse(W / 2, MY, 36 + wide, 11, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.save();
+      ctx.strokeStyle = c.bg;
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(W / 2 - 28, MY - 3);
+      ctx.lineTo(W / 2 + 28, MY - 3);
+      ctx.stroke();
+      ctx.restore();
+      break;
+    }
+    case 'H': { // L: mid-open with the tongue bar up.
+      ctx.beginPath();
+      ctx.ellipse(W / 2, MY, 30 + wide, 22, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.save();
+      ctx.fillStyle = c.secondary;
+      ctx.fillRect(W / 2 - 12, MY - 4, 24, 8);
+      ctx.restore();
+      break;
+    }
+    default:
+      break;
+  }
+}
+
+// The weighted face's glitch bars, shared by both mouth paths.
+function drawGlitchOverlay(ctx, intensity, c, rng) {
+  noGlow(ctx);
+  for (let i = 0; i < Math.floor(intensity * 8); i++) {
+    ctx.globalAlpha = 0.3 + rng() * 0.4;
+    ctx.fillStyle = c.primary;
+    ctx.fillRect(0, rng() * H, W, 2 + rng() * 3);
+  }
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = c.primary;
+  ctx.strokeStyle = c.primary;
+}
+
+// Port of drawWeighted: the six-weight expression face. viseme, when
+// present and a known Rhubarb class other than rest, replaces the
+// generic mouth with that class's LED glyph.
+function drawWeighted(ctx, weights, c, blink, amplitude, rng, viseme = null) {
   const EY = H * 0.42, EX_OFF = W * 0.175, ES = W * 0.12;
 
   ctx.fillStyle = c.primary;
@@ -153,8 +243,16 @@ function drawWeighted(ctx, weights, c, blink, amplitude, rng) {
     });
   }
 
-  // Mouth: live amplitude expands mouth_open during speech
+  // Mouth: a Rhubarb viseme class draws its own LED glyph; otherwise
+  // live amplitude expands mouth_open during speech, as before.
   const MY = H * 0.65;
+  if (viseme != null && viseme !== 'X' && VISEME_MOUTH_CLASSES.includes(viseme)) {
+    drawVisemeMouth(ctx, viseme, weights, c);
+    if (weights.glitch_intensity > 0.05) {
+      drawGlitchOverlay(ctx, weights.glitch_intensity, c, rng);
+    }
+    return;
+  }
   const liveMouthOpen = Math.max(weights.mouth_open, amplitude * 0.9);
   ctx.lineWidth = 7;
   ctx.lineCap = 'round';
@@ -177,16 +275,7 @@ function drawWeighted(ctx, weights, c, blink, amplitude, rng) {
 
   // Glitch overlay
   if (weights.glitch_intensity > 0.05) {
-    noGlow(ctx);
-    const intensity = weights.glitch_intensity;
-    for (let i = 0; i < Math.floor(intensity * 8); i++) {
-      ctx.globalAlpha = 0.3 + rng() * 0.4;
-      ctx.fillStyle = c.primary;
-      ctx.fillRect(0, rng() * H, W, 2 + rng() * 3);
-    }
-    ctx.globalAlpha = 1;
-    ctx.fillStyle = c.primary;
-    ctx.strokeStyle = c.primary;
+    drawGlitchOverlay(ctx, weights.glitch_intensity, c, rng);
   }
 }
 
@@ -281,7 +370,10 @@ export function drawFaceFrame(ctx, state, rng, opts = {}) {
   if (glyph) {
     drawGlyphFace(ctx, glyph, c, textMode ? 0 : state.blinkProgress, amplitude);
   } else {
-    drawWeighted(ctx, state.weights, c, state.blinkProgress, amplitude, rng);
+    drawWeighted(
+      ctx, state.weights, c, state.blinkProgress, amplitude, rng,
+      state.viseme ?? null,
+    );
   }
   noGlow(ctx);
   ctx.restore();

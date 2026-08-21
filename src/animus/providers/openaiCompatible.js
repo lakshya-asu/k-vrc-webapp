@@ -1,4 +1,8 @@
-import { ACTOR_SYSTEM_PROMPT, buildActorUserPrompt } from '../prompt.js';
+import {
+  ACTOR_PLAN_JSON_SCHEMA,
+  ACTOR_SYSTEM_PROMPT,
+  buildActorUserPrompt,
+} from '../prompt.js';
 
 function extractJson(text) {
   const trimmed = String(text ?? '').trim()
@@ -53,7 +57,12 @@ export function createOpenAICompatibleProvider(options = {}) {
           model,
           temperature: 0.2,
           max_tokens: 600,
-          response_format: { type: 'json_object' },
+          // Grammar-enforced structure (see ACTOR_PLAN_JSON_SCHEMA for
+          // why plain json_object was not enough for the 4B).
+          response_format: {
+            type: 'json_schema',
+            json_schema: { name: 'actor_plan', schema: ACTOR_PLAN_JSON_SCHEMA },
+          },
           messages: [
             { role: 'system', content: ACTOR_SYSTEM_PROMPT },
             { role: 'user', content: buildActorUserPrompt(request) },
